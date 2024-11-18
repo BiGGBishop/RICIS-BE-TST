@@ -1,10 +1,10 @@
 
-# RESIDA-Backend
+# RICIS-Backend
 
 
-Hello there, welcome to the RESIDA-Backend repository.
+Hello there, welcome to the RICIS-Backend repository.
 
-     The backend systems of RESIDA is built on an layered architecture with Node.js , ensuring a clear separation of concerns. This approach enhances modularity, maintainability, and scalability, allowing seamless integration of new features. The layers include presentation, application, domain, data, and repositories each serving specific functions, enabling a robust and flexible backend infrastructure.
+     The backend systems of RICIS is built on an layered architecture with Node.js , ensuring a clear separation of concerns. This approach enhances modularity, maintainability, and scalability, allowing seamless integration of new features. The layers include presentation, application, domain, data, and repositories each serving specific functions, enabling a robust and flexible backend infrastructure.
 
 ## Pre-requisites
 
@@ -70,7 +70,6 @@ This application has been built with the following technologies:
 - [MongoDB](https://www.mongodb.com/)
 - [Express](https://www.expressjs.com/)
 - [NodeJs](https://www.nodejs.org/en/)
-- [Typescript](https://www.typescriptlang.org/)
 - [NPM](https://www.npmjs.com/)
 - [GCP](https://https://cloud.google.com/)
 - [Render](https://www.render.com/)

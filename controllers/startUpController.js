@@ -48,6 +48,36 @@ exports.getCategories = async (req, res) => {
   });
 };
 
+exports.getCategoriesUser = async (req, res) => {
+  try {
+    const { application_type } = req.query;
+
+    if (!application_type) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: false,
+        message: "Application type is required.",
+      });
+    }
+
+    const data = await Categories.findAll({
+      where: { application_type },
+      order: [["createdAt", "DESC"]],
+    });
+
+    return res.status(StatusCodes.OK).json({
+      status: true,
+      data,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: "Something went wrong.",
+    });
+  }
+};
+
+
 exports.getSubCategories = async (req, res) => {
   const data = await SubCategories.findAll({
     where: { categoryId: req.params.catId },

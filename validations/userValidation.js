@@ -88,7 +88,7 @@ exports.userSignUpValidation = (req, res, next) => {
     last_name: Joi.string().required(),
     company_name: Joi.string().required(),
     company_location: Joi.string().required(),
-    company_role: Joi.string().required(),
+    // company_role: Joi.string().required(),
     company_email: Joi.string().email().required(),
     address: Joi.string().required(),
     phone_number: Joi.string().required(),

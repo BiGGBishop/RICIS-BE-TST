@@ -49,7 +49,6 @@ exports.getCategories = async (req, res) => {
 };
 
 exports.getCategoriesUser = async (req, res) => {
-  try {
     const { application_type } = req.query;
 
     if (!application_type) {
@@ -66,15 +65,8 @@ exports.getCategoriesUser = async (req, res) => {
 
     return res.status(StatusCodes.OK).json({
       status: true,
-      data,
+      data: data,
     });
-  } catch (error) {
-    console.error(error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      status: false,
-      message: "Something went wrong.",
-    });
-  }
 };
 
 

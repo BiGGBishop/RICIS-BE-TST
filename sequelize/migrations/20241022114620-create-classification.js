@@ -32,7 +32,7 @@ module.exports = {
       },
       restricted:  {
         defaultValue:false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN 
       },
       // fees:[ 
       //   {

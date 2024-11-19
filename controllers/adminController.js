@@ -1,6 +1,18 @@
 const AdminService = require("../services/adminServices");
 const UserService = require("../services/userServices");
 
+
+
+exports.getAdminDetails = async (req, res) => {
+  const data = await AdminService.getAdminDetails(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.fetchStaffs = async (req, res) => {
   const data = await AdminService.fetchStaffs(req, res);
 

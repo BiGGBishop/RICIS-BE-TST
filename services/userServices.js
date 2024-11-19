@@ -511,16 +511,12 @@ exports.getUsers = async () => {
 };
 
 exports.getUserDetails = async (req) => {
-  
-  const userOrAdminExist =
-    (await UserRepo.findUser({ id: req.user?.id })) ||
-    (await AdminRepo.findAdminUser({ id: req.user?.id }));
-
+  const userExist = await UserRepo.findUser({ email: req.user?.email });
   const filter = {
-    id: req.user?.id,
+    email: req.user?.email,
   };
 
-  if (!userOrAdminExist) {
+  if (!userExist) {
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,
@@ -528,11 +524,19 @@ exports.getUserDetails = async (req) => {
     };
   }
 
-  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
-  console.log({ userExist: role });
+  const role = await AdminRepo.findRole({ id: userExist?.userroleId });
+  // console.log({ userExistRole: role });
 
-  if (role?.name == "user") {
-    console.log({ userExist: role?.name });
+
+  if (role?.name != "user") {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      DATA: "Not a user",
+    };
+  
+  }
+    // console.log({ userExist: role?.name });
 
     let user = await UserRepo.findUser(filter);
 
@@ -545,24 +549,10 @@ exports.getUserDetails = async (req) => {
       STATUS: true,
       DATA: user,
     };
-  }
+  
 
-  if (role.name == "admin" || role.name == "staff") {
-    console.log("staff admin");
-
-    let user = await AdminRepo.findAdminUser(filter);
-
-    // Convert the instance to a plain object
-    user = user.get({ plain: true });
-    // remove the password field
-    delete user.password;
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      DATA: user,
-    };
-  }
 };
+
 
 exports.getUser = async (req) => {
   const filter = {

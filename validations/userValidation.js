@@ -147,8 +147,9 @@ exports.classificationValidation = (req, res, next) => {
 exports.appValidation = (req, res, next) => {
   const schema = Joi.object({
     save_as_draft: Joi.boolean().required(),
-    category: Joi.number().integer().required(),  // Corrected to number().integer()
-    sub_category: Joi.number().integer().required(),  // Corrected to number().integer()
+    // application_category: Joi.string().required(),  // Corrected to number().integer()
+    // categoryId: Joi.number().integer().required(),  // Corrected to number().integer()
+    // subcategoryId: Joi.number().integer().required(),  // Corrected to number().integer()
   });
 
   const validateOptions = {

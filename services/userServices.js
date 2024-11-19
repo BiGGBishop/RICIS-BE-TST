@@ -711,49 +711,11 @@ exports.staffLogin = async (req) => {
 };
 
 exports.createApplication = async (req) => {
-  const {
-    save_as_draft,
-    category,
-    sub_category,
-    equipment_incidental,
-    type_of_facility,
-    code_of_construction,
-    year_of_manufacturer,
-    place_of_manufacture,
-    hydro_test_pressure,
-    date_of_hydro_test,
-    inspection_agency,
-    aia_authorization,
-    equipment_distinctive,
-    mawp_or_mdmt,
-    equipment_category,
-    equipment_type,
-    design_presure,
-    operating_medium,
-    equipment_line,
-    equipment_classification,
-    equipment_sub_category,
-    manufacturer,
-    new_or_used,
-    intended_use_of_equipment,
-    object_use,
-    installation_start_date,
-    installation_complete_date,
-    installer_name,
-    installer_physical_address,
-    quality_cert_of_installer_comppany,
-    installer_authorization,
-    installer_contact_person,
-    installer_telephone,
-    installer_email,
-    name_of_occupier_or_owner,
-    nature_of_manufacturing_process,
-    owner_factory_reg,
-    owner_quality_cert_of_company,
-    owner_email,
-    owner_telephone,
-    contact_person,
-  } = req.body;
+
+
+  const applications = req.body.applications;
+  const userId = req?.user?.id;
+  const save_as_draft = req.body.save_as_draft
 
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
@@ -769,61 +731,62 @@ exports.createApplication = async (req) => {
     };
   }
 
-  const appObject = {
-    userId: req.user?.id,
-    save_as_draft,
+  try{
 
-    categoryId: category,
-    subcategoryId: sub_category,
-    ///////////////////////
-    equipment_incidental,
-    type_of_facility,
-    code_of_construction,
-    year_of_manufacturer,
-    place_of_manufacture,
-    hydro_test_pressure,
-    date_of_hydro_test,
-    inspection_agency,
-    aia_authorization,
-    equipment_distinctive,
-    equipment_type,
-    mawp_or_mdmt,
-    equipment_category,
-    design_presure,
-    operating_medium,
-    equipment_line,
-    equipment_classification,
-    equipment_sub_category,
-    manufacturer,
-    new_or_used,
-    intended_use_of_equipment,
-    object_use,
-    installation_start_date,
-    installation_complete_date,
-    installer_name,
-    installer_physical_address,
-    quality_cert_of_installer_comppany,
-    installer_authorization,
-    installer_contact_person,
-    installer_telephone,
-    installer_email,
-    name_of_occupier_or_owner,
-    nature_of_manufacturing_process,
-    owner_factory_reg,
-    owner_quality_cert_of_company,
-    owner_email,
-    owner_telephone,
-    contact_person,
-  };
-  console.log({ appObject });
 
-  const createApp = await UserRepo.createApp(appObject);
+  const applicationPromises = applications.map((application) => {
+    const object = {
+      save_as_draft,
+      userId,
+      application_category: application.application_category,
+      application_type: application.application_type,
+      categoryId: application.category, 
+      subcategoryId: application.sub_category, 
+      classificationId: application.classificationId,
+
+      //for authorization
+      company_tin :  application.company_tin,
+      company_rc_number :  application.company_rc_number,
+      company_phone :  application.company_phone,
+      representative_name :  application.representative_name,
+      representative_phone :  application.representative_phone,
+      comapany_address :  application.comapany_address,
+      email :  application.email,
+      website :  application.website,
+
+      // for certification
+
+      
+    
+    };
+    console.log({object})
+    return UserRepo.createApp(object);
+  });
+
+  const createApps = await Promise.all(applicationPromises);
+
+  console.log({ createApps });
+
+
+
   return {
     STATUS_CODE: StatusCodes.OK,
     STATUS: true,
     MESSAGE: "application created successfully",
-    DATA: createApp,
+    DATA: "createApp",
   };
+
+}
+catch(error){
+
+  console.error("Error saving applications:", error);
+
+  return {
+    STATUS_CODE: StatusCodes.SERVER_ERROR,
+    STATUS: false,
+    MESSAGE: "an error occured while saving application",
+  };
+}
 };
 
 exports.getUsersApplication = async (req) => {

@@ -11,6 +11,12 @@ module.exports = {
       },
       save_as_draft: Sequelize.BOOLEAN,
 
+      application_category: {
+        type: Sequelize.STRING,
+      },
+      application_type: {
+        type: Sequelize.STRING,
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: {
@@ -20,6 +26,7 @@ module.exports = {
         allowNull: true,
         onDelete: "SET NULL",
       },
+
       categoryId: {
         type: Sequelize.INTEGER,
         references: {
@@ -117,7 +124,7 @@ module.exports = {
       construction_code: {
         type: Sequelize.STRING,
       },
-      year_of_manufacturer: {
+      year_of_manufacture: {
         type: Sequelize.DATE,
       },
       place_of_manufacture: {
@@ -230,6 +237,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      feeId: Sequelize.INTEGER,
+
     });
   },
   async down(queryInterface) {

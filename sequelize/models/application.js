@@ -51,6 +51,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
 
+      application_category: DataTypes.STRING,
+      application_type: DataTypes.STRING,
       
 
       categoryId: {
@@ -152,6 +154,9 @@ module.exports = (sequelize, DataTypes) => {
       owner_email: DataTypes.STRING,
       owner_telephone: DataTypes.INTEGER,
       contact_person: DataTypes.INTEGER,
+
+      feeId: DataTypes.INTEGER,
+
     },
     {
       sequelize,

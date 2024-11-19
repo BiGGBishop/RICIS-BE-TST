@@ -765,7 +765,7 @@ exports.createApplication = async (req) => {
 
   const createApps = await Promise.all(applicationPromises);
 
-  console.log({ createApps });
+  // console.log({ createApps });
 
 
 
@@ -773,7 +773,7 @@ exports.createApplication = async (req) => {
     STATUS_CODE: StatusCodes.OK,
     STATUS: true,
     MESSAGE: "application created successfully",
-    DATA: "createApp",
+    DATA: createApps,
   };
 
 }

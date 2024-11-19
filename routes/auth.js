@@ -62,13 +62,12 @@ router.patch(
 
 router.post(
   "/register/staff",
-  // authToken,
+  authToken,
   asyncHandler(usersController.registerStaffAndAdmin)
 );
 
 router.post(
   "/login/staff",
-  // authToken,
   authValidation,
 
   asyncHandler(usersController.staffLogin)

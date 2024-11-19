@@ -755,9 +755,35 @@ exports.createApplication = async (req) => {
       website :  application.website,
 
       // for certification
-
-      
+      company_name:application.company_name,
+      name:  application.name,
+      address:  application.address,
+      phone_number:  application.phone_number,
     
+
+      // for registration
+      equipment_name: application.equipment_name,
+      construction_code: application.construction_code,
+      place_of_manufacture: application.place_of_manufacture,
+      year_of_manufacture: application.year_of_manufacture,
+      intended_use_of_equipment: application.intended_use_of_equipment,
+      new_or_used: application.new_or_used,
+      inspection_agency: application.inspection_agency,
+      aia_authorization: application.aia_authorization,
+      date_of_hydro_test: application.date_of_hydro_test,
+      hydro_test_pressure: application.hydro_test_pressure,
+      design_presure: application.design_presure,
+      mawp_or_mdmt: application.mawp_or_mdmt,
+      equipment_type: application.equipment_type,
+      equipment_distinctive: application.equipment_distinctive,
+      operating_medium: application.operating_medium,
+      equipment_category: application.equipment_category,
+      equipment_sub_category: application.equipment_sub_category,
+      equipment_classification: application.equipment_classification,
+      equipment_line: application.equipment_line,
+      equipment_incidental: application.equipment_incidental,
+      equipment_owner: application.equipment_owner,
+
     };
     console.log({object})
     return UserRepo.createApp(object);

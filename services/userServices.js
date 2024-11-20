@@ -746,6 +746,7 @@ exports.createApplication = async (req) => {
 
       //for authorization
       company_tin :  application.company_tin,
+      company_type :  application.company_type,
       company_rc_number :  application.company_rc_number,
       company_phone :  application.company_phone,
       representative_name :  application.representative_name,

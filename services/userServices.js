@@ -738,11 +738,11 @@ exports.createApplication = async (req) => {
     const object = {
       save_as_draft,
       userId,
-      application_category: application.application_category,
-      application_type: application.application_type,
-      categoryId: application.category, 
-      subcategoryId: application.sub_category, 
-      classificationId: application.classificationId,
+      application_category: req.body.application_category,
+      application_type: req.body.application_type,
+      categoryId: req.body.category, 
+      subcategoryId: req.body.sub_category, 
+      classificationId: req.body.classificationId,
 
       //for authorization
       company_tin :  application.company_tin,

@@ -276,7 +276,7 @@ exports.addClassification = async (req) => {
     subcategoryId: req.body.sub_category,
     classification_name: req.body.classification_name,
     classification_number: req.body.classification_number,
-    is_incidental: req.body.is_incidental,
+    has_incidental: req.body.has_incidental,
     form_type: req.body.form_type,
     // fees: req.body.application_fees,
   };
@@ -348,7 +348,7 @@ exports.updateClassifications = async (req) => {
     subcategoryId: req.body.sub_category,
     classification_name: req.body.classification_name,
     classification_number: req.body.classification_number,
-    is_incidental: req.body.is_incidental,
+    has_incidental: req.body.has_incidental,
     form_type: req.body.form_type,
   };
 

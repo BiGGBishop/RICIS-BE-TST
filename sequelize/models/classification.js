@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "SET NULL", // What to do if the referenced categories is deleted
         allowNull: true,
       },
-      is_incidental: {
+      has_incidental: {
         defaultValue: false,
         type: DataTypes.BOOLEAN,
       },

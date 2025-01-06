@@ -14,7 +14,7 @@ console.log({
 module.exports = {
 
   development: {
-    url:"postgresql://barron:bkgCKKHn4lwDQm2bHNn7EVzStlVyybQu@dpg-csoukh8gph6c73as2bf0-a.oregon-postgres.render.com/ricisdb_8177",
+    url:"postgresql://ricis_v3_user:bksTFv5kmHJvjLHo6j8fcfk0ZYwtkXGo@dpg-ctglqualqhvc739mmc80-a.oregon-postgres.render.com/ricis_v3",
     dialect: "postgres",
     dialectOptions:
       // ENVIRONMENT === "production" || ENVIRONMENT === "staging"

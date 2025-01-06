@@ -33,7 +33,7 @@ module.exports = {
         allowNull: true,
         onDelete: 'SET NULL',
       },
-      is_incidental:  {
+      has_incidental:  {
         defaultValue:false,
         type: Sequelize.BOOLEAN
       },

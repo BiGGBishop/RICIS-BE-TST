@@ -342,6 +342,96 @@ exports.getClassifications = async (req) => {
   }
 };
 
+exports.getClassificationsNoIncidental = async (req) => {
+  const userOrAdminExist =
+    (await UserRepo.findUser({ id: req.user?.id })) ||
+    (await AdminRepo.findAdminUser({ id: req.user?.id }));
+
+  if (!userOrAdminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+  console.log({ userExist: role });
+
+  if (role?.name == "user") {
+    const filter = {
+      restricted: { [Op.ne]: true },
+      has_incidental: false,
+    };
+
+    const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+
+  if (role.name == "admin" || role.name == "staff") {
+    const filter = {
+      has_incidental: false,
+    };
+    const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+};
+
+exports.getClassificationsYesIncidental = async (req) => {
+  const userOrAdminExist =
+    (await UserRepo.findUser({ id: req.user?.id })) ||
+    (await AdminRepo.findAdminUser({ id: req.user?.id }));
+
+  if (!userOrAdminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+  console.log({ userExist: role });
+
+  if (role?.name == "user") {
+    const filter = {
+      restricted: { [Op.ne]: true },
+      has_incidental: true,
+    };
+
+    const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+
+  if (role.name == "admin" || role.name == "staff") {
+    const filter = {
+      has_incidental: true,
+    };
+    const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+};
+
 exports.updateClassifications = async (req) => {
   const update = {
     categoryId: req.body.category,

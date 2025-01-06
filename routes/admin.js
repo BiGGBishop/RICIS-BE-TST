@@ -24,8 +24,13 @@ router.get("/users/data/:id", authToken, asyncHandler(adminController.fetchUser)
 
 router.post("/classification", authToken, classificationValidation, asyncHandler(adminController.addClassification)); 
 router.get("/classification", authToken, asyncHandler(adminController.getClassifications)); 
+router.get("/classification/noincidental", authToken, asyncHandler(adminController.getClassificationsNoIncidental)); 
+router.get("/classification/yesincidental", authToken, asyncHandler(adminController.getClassificationsYesIncidental)); 
 router.patch("/classification/:classId", authToken, asyncHandler(adminController.updateClassifications)); 
-router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications)); 
+router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications));
+router.post("/classificationMerge", authToken, asyncHandler(adminController.addClassificationMerge)); 
+router.patch("/updateclassificationMerge/:classId", authToken, asyncHandler(adminController.updateClassificationMerge)); 
+router.delete("/deleteclassificationMerge/:classId", authToken, asyncHandler(adminController.deleteClassificationMerge)); 
 router.put("/classification/restrict/:classId", authToken, asyncHandler(adminController.restrictClassifications)); 
 router.get("/application/", authToken, asyncHandler(adminController.getAllApplications)); 
 router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication)); 

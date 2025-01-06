@@ -1,6 +1,18 @@
 const AdminService = require("../services/adminServices");
 const UserService = require("../services/userServices");
 
+
+
+exports.getAdminDetails = async (req, res) => {
+  const data = await AdminService.getAdminDetails(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.fetchStaffs = async (req, res) => {
   const data = await AdminService.fetchStaffs(req, res);
 
@@ -133,6 +145,26 @@ exports.restrictClassifications = async (req, res) => {
 
 exports.addClassificationMerge = async (req, res) => {
   const data = await AdminService.addClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.updateClassificationMerge = async (req, res) => {
+  const data = await AdminService.updateClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.deleteClassificationMerge = async (req, res) => {
+  const data = await AdminService.deleteClassificationMerge(req, res);
 
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,

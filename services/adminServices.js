@@ -3,6 +3,48 @@ const UserRepo = require("../repositories/userRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { Op } = require("sequelize");
 
+exports.getAdminDetails = async (req) => {
+  const adminExist = await AdminRepo.findAdminUser({ email: req.user?.email });
+
+  const filter = {
+    email: req.user?.email
+  };
+
+  if (!adminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
+  // console.log({ userExistRole: role });
+
+  if (role?.name != "admin") {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      DATA: "Invalid Cred, strictly for admins and staffs",
+    };
+  
+  }
+
+    console.log("staff admin");
+
+    let user = await AdminRepo.findAdminUser(filter);
+
+    // Convert the instance to a plain object
+    user = user.get({ plain: true });
+    // remove the password field
+    delete user.password;
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+};
+
 exports.fetchStaffs = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({
     id: req.user?.id,

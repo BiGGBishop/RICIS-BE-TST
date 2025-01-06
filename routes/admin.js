@@ -12,6 +12,7 @@ const adminController = require("../controllers/adminController")
 const {authToken} =  require("../utils/AunthenticateUser")
 
 
+router.get("/details", authToken, asyncHandler(adminController.getAdminDetails)); //for a single user
 router.get("/staffs/data", authToken, asyncHandler(adminController.fetchStaffs)); //for a single user
 router.get("/staffs/data/:staffId", authToken, asyncHandler(adminController.fetchStaff)); 
 router.delete("/staffs/data/:staffId", authToken, asyncHandler(adminController.deleteStaff)); 
@@ -24,9 +25,12 @@ router.get("/users/data/:id", authToken, asyncHandler(adminController.fetchUser)
 router.post("/classification", authToken, classificationValidation, asyncHandler(adminController.addClassification)); 
 router.get("/classification", authToken, asyncHandler(adminController.getClassifications)); 
 router.get("/classification/noincidental", authToken, asyncHandler(adminController.getClassificationsNoIncidental)); 
-router.get("/classification/noincidental", authToken, asyncHandler(adminController.getClassificationsYesIncidental)); 
+router.get("/classification/yesincidental", authToken, asyncHandler(adminController.getClassificationsYesIncidental)); 
 router.patch("/classification/:classId", authToken, asyncHandler(adminController.updateClassifications)); 
-router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications)); 
+router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications));
+router.post("/classificationMerge", authToken, asyncHandler(adminController.addClassificationMerge)); 
+router.patch("/updateclassificationMerge/:classId", authToken, asyncHandler(adminController.updateClassificationMerge)); 
+router.delete("/deleteclassificationMerge/:classId", authToken, asyncHandler(adminController.deleteClassificationMerge)); 
 router.put("/classification/restrict/:classId", authToken, asyncHandler(adminController.restrictClassifications)); 
 router.get("/application/", authToken, asyncHandler(adminController.getAllApplications)); 
 router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication)); 

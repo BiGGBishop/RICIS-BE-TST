@@ -1,5 +1,5 @@
 const {
-  // SQLDB_URL,
+  SQLDB_URL,
   ENVIRONMENT,
   
 } = require("../../config/envConfig");
@@ -7,14 +7,15 @@ const {
 
 console.log({
   ENVIRONMENT,
-  // SQLDB_URL, 
+  SQLDB_URL, 
   
 })
 
 module.exports = {
 
   development: {
-    url:"postgresql://ricis_v3_user:bksTFv5kmHJvjLHo6j8fcfk0ZYwtkXGo@dpg-ctglqualqhvc739mmc80-a.oregon-postgres.render.com/ricis_v3",
+    // url: SQLDB_URL,
+    url: 'postgresql://ricis_v3_user:bksTFv5kmHJvjLHo6j8fcfk0ZYwtkXGo@dpg-ctglqualqhvc739mmc80-a.oregon-postgres.render.com/ricis_v3',
     dialect: "postgres",
     dialectOptions:
       // ENVIRONMENT === "production" || ENVIRONMENT === "staging"

@@ -511,16 +511,12 @@ exports.getUsers = async () => {
 };
 
 exports.getUserDetails = async (req) => {
-  
-  const userOrAdminExist =
-    (await UserRepo.findUser({ id: req.user?.id })) ||
-    (await AdminRepo.findAdminUser({ id: req.user?.id }));
-
+  const userExist = await UserRepo.findUser({ email: req.user?.email });
   const filter = {
-    id: req.user?.id,
+    email: req.user?.email,
   };
 
-  if (!userOrAdminExist) {
+  if (!userExist) {
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,
@@ -528,11 +524,19 @@ exports.getUserDetails = async (req) => {
     };
   }
 
-  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
-  console.log({ userExist: role });
+  const role = await AdminRepo.findRole({ id: userExist?.userroleId });
+  // console.log({ userExistRole: role });
 
-  if (role?.name == "user") {
-    console.log({ userExist: role?.name });
+
+  if (role?.name != "user") {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      DATA: "Not a user",
+    };
+  
+  }
+    // console.log({ userExist: role?.name });
 
     let user = await UserRepo.findUser(filter);
 
@@ -545,24 +549,10 @@ exports.getUserDetails = async (req) => {
       STATUS: true,
       DATA: user,
     };
-  }
+  
 
-  if (role.name == "admin" || role.name == "staff") {
-    console.log("staff admin");
-
-    let user = await AdminRepo.findAdminUser(filter);
-
-    // Convert the instance to a plain object
-    user = user.get({ plain: true });
-    // remove the password field
-    delete user.password;
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      DATA: user,
-    };
-  }
 };
+
 
 exports.getUser = async (req) => {
   const filter = {
@@ -721,49 +711,11 @@ exports.staffLogin = async (req) => {
 };
 
 exports.createApplication = async (req) => {
-  const {
-    save_as_draft,
-    category,
-    sub_category,
-    equipment_incidental,
-    type_of_facility,
-    code_of_construction,
-    year_of_manufacturer,
-    place_of_manufacture,
-    hydro_test_pressure,
-    date_of_hydro_test,
-    inspection_agency,
-    aia_authorization,
-    equipment_distinctive,
-    mawp_or_mdmt,
-    equipment_category,
-    equipment_type,
-    design_presure,
-    operating_medium,
-    equipment_line,
-    equipment_classification,
-    equipment_sub_category,
-    manufacturer,
-    new_or_used,
-    intended_use_of_equipment,
-    object_use,
-    installation_start_date,
-    installation_complete_date,
-    installer_name,
-    installer_physical_address,
-    quality_cert_of_installer_comppany,
-    installer_authorization,
-    installer_contact_person,
-    installer_telephone,
-    installer_email,
-    name_of_occupier_or_owner,
-    nature_of_manufacturing_process,
-    owner_factory_reg,
-    owner_quality_cert_of_company,
-    owner_email,
-    owner_telephone,
-    contact_person,
-  } = req.body;
+
+
+  const applications = req.body.applications;
+  const userId = req?.user?.id;
+  const save_as_draft = req.body.save_as_draft
 
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
@@ -779,61 +731,89 @@ exports.createApplication = async (req) => {
     };
   }
 
-  const appObject = {
-    userId: req.user?.id,
-    save_as_draft,
+  try{
 
-    categoryId: category,
-    subcategoryId: sub_category,
-    ///////////////////////
-    equipment_incidental,
-    type_of_facility,
-    code_of_construction,
-    year_of_manufacturer,
-    place_of_manufacture,
-    hydro_test_pressure,
-    date_of_hydro_test,
-    inspection_agency,
-    aia_authorization,
-    equipment_distinctive,
-    equipment_type,
-    mawp_or_mdmt,
-    equipment_category,
-    design_presure,
-    operating_medium,
-    equipment_line,
-    equipment_classification,
-    equipment_sub_category,
-    manufacturer,
-    new_or_used,
-    intended_use_of_equipment,
-    object_use,
-    installation_start_date,
-    installation_complete_date,
-    installer_name,
-    installer_physical_address,
-    quality_cert_of_installer_comppany,
-    installer_authorization,
-    installer_contact_person,
-    installer_telephone,
-    installer_email,
-    name_of_occupier_or_owner,
-    nature_of_manufacturing_process,
-    owner_factory_reg,
-    owner_quality_cert_of_company,
-    owner_email,
-    owner_telephone,
-    contact_person,
-  };
-  console.log({ appObject });
 
-  const createApp = await UserRepo.createApp(appObject);
+  const applicationPromises = applications.map((application) => {
+    const object = {
+      save_as_draft,
+      userId,
+      application_category: req.body.application_category,
+      application_type: req.body.application_type,
+      categoryId: req.body.category, 
+      subcategoryId: req.body.sub_category, 
+      classificationId: req.body.classificationId,
+
+      //for authorization
+      company_tin :  application.company_tin,
+      company_type :  application.company_type,
+      company_rc_number :  application.company_rc_number,
+      company_phone :  application.company_phone,
+      representative_name :  application.representative_name,
+      representative_phone :  application.representative_phone,
+      comapany_address :  application.comapany_address,
+      email :  application.email,
+      website :  application.website,
+
+      // for certification
+      company_name:application.company_name,
+      name:  application.name,
+      address:  application.address,
+      phone_number:  application.phone_number,
+    
+
+      // for registration
+      equipment_name: application.equipment_name,
+      construction_code: application.construction_code,
+      place_of_manufacture: application.place_of_manufacture,
+      year_of_manufacture: application.year_of_manufacture,
+      intended_use_of_equipment: application.intended_use_of_equipment,
+      new_or_used: application.new_or_used,
+      inspection_agency: application.inspection_agency,
+      aia_authorization: application.aia_authorization,
+      date_of_hydro_test: application.date_of_hydro_test,
+      hydro_test_pressure: application.hydro_test_pressure,
+      design_presure: application.design_presure,
+      mawp_or_mdmt: application.mawp_or_mdmt,
+      equipment_type: application.equipment_type,
+      equipment_distinctive: application.equipment_distinctive,
+      operating_medium: application.operating_medium,
+      equipment_category: application.equipment_category,
+      equipment_sub_category: application.equipment_sub_category,
+      equipment_classification: application.equipment_classification,
+      equipment_line: application.equipment_line,
+      equipment_incidental: application.equipment_incidental,
+      equipment_owner: application.equipment_owner,
+
+    };
+    console.log({object})
+    return UserRepo.createApp(object);
+  });
+
+  const createApps = await Promise.all(applicationPromises);
+
+  // console.log({ createApps });
+
+
+
   return {
     STATUS_CODE: StatusCodes.OK,
     STATUS: true,
     MESSAGE: "application created successfully",
-    DATA: createApp,
+    DATA: createApps,
   };
+
+}
+catch(error){
+
+  console.error("Error saving applications:", error);
+
+  return {
+    STATUS_CODE: StatusCodes.SERVER_ERROR,
+    STATUS: false,
+    MESSAGE: "an error occured while saving application",
+  };
+}
 };
 
 exports.getUsersApplication = async (req) => {

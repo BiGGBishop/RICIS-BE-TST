@@ -51,6 +51,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
 
+      application_category: DataTypes.STRING,
+      application_type: DataTypes.STRING,
       
 
       categoryId: {
@@ -102,15 +104,15 @@ module.exports = (sequelize, DataTypes) => {
       company_type: DataTypes.STRING,
       company_tin: DataTypes.STRING,
       company_rc_number: DataTypes.STRING,
-      company_phone: DataTypes.INTEGER,
+      company_phone: DataTypes.STRING,
       representative_name: DataTypes.STRING,
-      representative_phone: DataTypes.INTEGER,
+      representative_phone: DataTypes.STRING,
       comapany_address: DataTypes.STRING,
       address: DataTypes.STRING,
       email: DataTypes.STRING,
       website: DataTypes.STRING,
 
-      phone_number: DataTypes.INTEGER,
+      phone_number: DataTypes.STRING,
       equipment_name: DataTypes.STRING,
       equipment_owner: DataTypes.STRING,
 
@@ -129,7 +131,7 @@ module.exports = (sequelize, DataTypes) => {
       equipment_category: DataTypes.STRING,
       design_presure: DataTypes.STRING,
       operating_medium: DataTypes.STRING,
-      equipment_line: DataTypes.INTEGER,
+      equipment_line: DataTypes.STRING,
       equipment_classification: DataTypes.STRING,
       equipment_sub_category: DataTypes.STRING,
       manufacturer: DataTypes.STRING,
@@ -143,15 +145,18 @@ module.exports = (sequelize, DataTypes) => {
       quality_cert_of_installer_comppany: DataTypes.STRING,
       installer_authorization: DataTypes.STRING,
       installer_contact_person: DataTypes.STRING,
-      installer_telephone: DataTypes.INTEGER,
+      installer_telephone: DataTypes.STRING,
       installer_email: DataTypes.STRING,
       name_of_occupier_or_owner: DataTypes.STRING,
       nature_of_manufacturing_process: DataTypes.STRING,
       owner_factory_reg: DataTypes.STRING,
       owner_quality_cert_of_company: DataTypes.STRING,
       owner_email: DataTypes.STRING,
-      owner_telephone: DataTypes.INTEGER,
+      owner_telephone: DataTypes.STRING,
       contact_person: DataTypes.INTEGER,
+
+      feeId: DataTypes.INTEGER,
+
     },
     {
       sequelize,

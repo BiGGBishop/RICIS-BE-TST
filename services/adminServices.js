@@ -275,6 +275,9 @@ exports.addClassification = async (req) => {
     categoryId: req.body.category,
     subcategoryId: req.body.sub_category,
     classification_name: req.body.classification_name,
+    classification_number: req.body.classification_number,
+    is_incidental: req.body.is_incidental,
+    form_type: req.body.form_type,
     // fees: req.body.application_fees,
   };
 
@@ -344,6 +347,9 @@ exports.updateClassifications = async (req) => {
     categoryId: req.body.category,
     subcategoryId: req.body.sub_category,
     classification_name: req.body.classification_name,
+    classification_number: req.body.classification_number,
+    is_incidental: req.body.is_incidental,
+    form_type: req.body.form_type,
   };
 
   const classificationId = req.params.classId;
@@ -762,9 +768,7 @@ exports.addFees = async (req) => {
 
   const feeObj = {
     fee_type: req.body.fee_type,
-    application_category: req.body.application_category,
     account_type: req.body.account_type,
-    application_type: req.body.application_type,
   };
   const addFee = await AdminRepo.addFee(feeObj);
 
@@ -832,9 +836,7 @@ exports.updateFees = async (req) => {
 
   const feeObj = {
     fee_type: req.body.fee_type,
-    application_category: req.body.application_category,
     account_type: req.body.account_type,
-    application_type: req.body.application_type,
   };
 
   const fees = await AdminRepo.findAndUpdateFee(filter, feeObj);

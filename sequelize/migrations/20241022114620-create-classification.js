@@ -44,21 +44,21 @@ module.exports = {
         defaultValue:false,
         type: Sequelize.BOOLEAN 
       },
-      fees:[ 
-        {
-          feeId: {
-            type: Sequelize.INTEGER,
-            references: {
-              model: "fees", // Name of the fee table
-              key: "id",
-            },
-            onDelete: "SET NULL", // What to do if the referenced categories is deleted
-            allowNull: true,
-          },
-          amount: Sequelize.INTEGER,
+      // fees:[ 
+      //   {
+      //     feeId: {
+      //       type: Sequelize.INTEGER,
+      //       references: {
+      //         model: "fees", // Name of the fee table
+      //         key: "id",
+      //       },
+      //       onDelete: "SET NULL", // What to do if the referenced categories is deleted
+      //       allowNull: true,
+      //     },
+      //     amount: Sequelize.INTEGER,
 
-        }
-      ],
+      //   }
+      // ],
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

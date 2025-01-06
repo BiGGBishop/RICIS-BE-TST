@@ -9,13 +9,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      classification_number: {
+        type: Sequelize.INTEGER
+      },
       classification_name: {
         type: Sequelize.STRING
       },
       categoryId:  {
         type: Sequelize.INTEGER,
         references: {
-          model: 'categories', //naame of the category table
+          model: 'categories', //name of the category table
           key: 'id',
         },
         allowNull: true,
@@ -24,11 +27,18 @@ module.exports = {
       subcategoryId:  {
         type: Sequelize.INTEGER,
         references: {
-          model: 'subcategories', // naame of the subcategory table
+          model: 'subcategories', // name of the subcategory table
           key: 'id',
         },
         allowNull: true,
         onDelete: 'SET NULL',
+      },
+      is_incidental:  {
+        defaultValue:false,
+        type: Sequelize.BOOLEAN
+      },
+      form_type: {
+        type: Sequelize.STRING
       },
       restricted:  {
         defaultValue:false,

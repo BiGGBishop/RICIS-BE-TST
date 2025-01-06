@@ -11,7 +11,6 @@ exports.addCategories = async (req, res) => {
   for (const name of req.body.name) {
     const object = {
       name: name,
-      application_type: req.body.application_type
     };
     await Categories.create(object);
   }
@@ -133,7 +132,6 @@ exports.updateSubCategories = async (req, res) => {
 exports.updateCategories = async (req, res) => {
   const update = {
     name: req.body.category,
-    application_type: req.body.application_type
 
   };
 

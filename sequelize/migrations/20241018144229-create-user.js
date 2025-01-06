@@ -24,12 +24,6 @@ module.exports = {
       company_name: {
         type: Sequelize.STRING
       },
-      company_location: {
-        type: Sequelize.STRING
-      },
-      company_role: {
-        type: Sequelize.STRING
-      },
       company_email: {
         type: Sequelize.STRING
       },

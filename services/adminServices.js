@@ -473,6 +473,149 @@ exports.restrictClassifications = async (req) => {
   };
 };
 
+exports.addClassificationMerge = async (req) => {
+  const adminExist = await AdminRepo.findAdminUser({ id: req.user?.id });
+
+  if (!adminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
+
+  if (role?.name !== "admin") {
+    return {
+      STATUS_CODE: StatusCodes.FORBIDDEN,
+      STATUS: false,
+      MESSAGE: "Access denied, Strictly for Admin",
+    };
+  }
+
+  const { classificationId, classificationIncidentalId } = req.body;
+
+  if (!classificationId || !classificationIncidentalId) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "classificationId and classificationIncidentalId are required.",
+    };
+  }
+
+  const classificationMerge = await AdminRepo.addClassificationMerge({
+    classificationId,
+    classificationIncidentalId,
+  });
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    DATA: classificationMerge,
+  };
+};
+
+exports.updateClassificationMerge = async (req) => {
+  const adminExist = await AdminRepo.findAdminUser({ id: req.user?.id });
+
+  if (!adminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
+
+  if (role?.name !== "admin") {
+    return {
+      STATUS_CODE: StatusCodes.FORBIDDEN,
+      STATUS: false,
+      MESSAGE: "Access denied, Strictly for Admin",
+    };
+  }
+
+  const { id, classificationId, classificationIncidentalId } = req.body;
+
+  if (!id) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "id is required to update classification merge.",
+    };
+  }
+
+  const updated = await AdminRepo.updateClassificationMerge(id, {
+    classificationId,
+    classificationIncidentalId,
+  });
+
+  if (!updated) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Classification Merge entry not found.",
+    };
+  }
+
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Classification Merge updated successfully.",
+  };
+};
+
+exports.deleteClassificationMerge = async (req) => {
+  const adminExist = await AdminRepo.findAdminUser({ id: req.user?.id });
+
+  if (!adminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
+
+  if (role?.name !== "admin") {
+    return {
+      STATUS_CODE: StatusCodes.FORBIDDEN,
+      STATUS: false,
+      MESSAGE: "Access denied, Strictly for Admin",
+    };
+  }
+
+  const { id } = req.body;
+
+  if (!id) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "id is required to delete classification merge.",
+    };
+  }
+
+  const deleted = await AdminRepo.deleteClassificationMerge(id);
+
+  if (!deleted) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Classification Merge entry not found.",
+    };
+  }
+
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Classification Merge deleted successfully.",
+  };
+};
+
+
 exports.getAllApplications = async (req) => {
   const filter = {};
   const adminExist = await AdminRepo.findAdminUser({

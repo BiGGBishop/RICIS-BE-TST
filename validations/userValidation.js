@@ -117,6 +117,10 @@ exports.userSignUpValidation = (req, res, next) => {
 exports.classificationValidation = (req, res, next) => {
   const schema = Joi.object({
     classification_name: Joi.string().required(),
+    form_type: Joi.string().required(),
+    is_incidental: Joi.boolean().required(),
+    form_type: Joi.string().required(),
+    classification_number: Joi.number().integer().required(),
     category: Joi.number().integer().required(),  // Corrected to number().integer()
     sub_category: Joi.number().integer().required(),  // Corrected to number().integer()
     fees: Joi.array().required(),  // Corrected to number().integer()

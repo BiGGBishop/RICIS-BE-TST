@@ -93,6 +93,26 @@ exports.getClassifications = async (req, res) => {
   });
 };
 
+exports.getClassificationsNoIncidental = async (req, res) => {
+  const data = await AdminService.getClassificationsNoIncidental(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.getClassificationsYesIncidental = async (req, res) => {
+  const data = await AdminService.getClassificationsYesIncidental(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.updateClassifications = async (req, res) => {
   const data = await AdminService.updateClassifications(req, res);
 
@@ -115,6 +135,56 @@ exports.deleteClassifications = async (req, res) => {
 
 exports.restrictClassifications = async (req, res) => {
   const data = await AdminService.restrictClassifications(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.addClassificationMerge = async (req, res) => {
+  const data = await AdminService.addClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.updateClassificationMerge = async (req, res) => {
+  const data = await AdminService.updateClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.deleteClassificationMerge = async (req, res) => {
+  const data = await AdminService.deleteClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.updateClassificationMerge = async (req, res) => {
+  const data = await AdminService.updateClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.deleteClassificationMerge = async (req, res) => {
+  const data = await AdminService.deleteClassificationMerge(req, res);
 
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,

@@ -3,6 +3,7 @@ const { User } = require("../sequelize/models"); // Importing from the index fil
 const { UserRole } = require("../sequelize/models"); // Importing from the index file
 const { AdminStaff } = require("../sequelize/models"); // Importing from the index file
 const { Classification } = require("../sequelize/models"); // Importing from the index file
+const { ClassificationMerge } = require("../sequelize/models"); // Importing from the index file
 const { Categories } = require("../sequelize/models"); // Importing from the index file
 const { SubCategories } = require("../sequelize/models"); // Importing from the index file
 const { Conversation } = require("../sequelize/models"); // Importing from the index file
@@ -85,6 +86,16 @@ exports.addClassification = async (update) => {
   }
 };
 
+exports.addClassificationMerge = async (update) => {
+  try {
+    const response = await ClassificationMerge.create(update);
+    // console.log({response, update})
+    return response;
+  } catch (error) {
+    console.error("Error details:", error);
+  }
+};
+
 exports.addClassificationFees = async (update) => {
   try {
     const response = await ClassificationFees.bulkCreate(update);
@@ -125,6 +136,93 @@ exports.fetchAClassification = async (filter) => {
         ],
       },
     ],
+  });
+  // console.log({response, update})
+  return response;
+};
+
+exports.fetchClassificationsNoIncidental = async (filter) => {
+  const response = await Classification.findOne({
+    where: filter,
+    include: [
+      {
+        model: Categories, // Include the associated category
+        as: "category",
+        attributes: ["name"], // Specify which fields of the category to include
+        required: false,
+      },
+
+      {
+        model: SubCategories, // Include the associated category
+        as: "subcategory",
+        attributes: ["name"], // Specify which fields of the category to include
+        required: false,
+      },
+      {
+        model: ClassificationFees, // Include associated ClassificationFees
+        as: "classificationFees", // Alias should match the association alias if you set one
+        attributes: ["feeId", "amount"], // Specify fields of ClassificationFees
+        include: [
+          {
+            model: Fee, // Include Fee details within ClassificationFees
+            as: "fee",
+            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+          },
+        ],
+      },
+    ],
+  });
+  // console.log({response, update})
+  return response;
+};
+
+exports.fetchClassificationsYesIncidental = async (filter) => {
+  const response = await Classification.findOne({
+    where: filter,
+    include: [
+      {
+        model: Categories, // Include the associated category
+        as: "category",
+        attributes: ["name"], // Specify which fields of the category to include
+        required: false,
+      },
+
+      {
+        model: SubCategories, // Include the associated category
+        as: "subcategory",
+        attributes: ["name"], // Specify which fields of the category to include
+        required: false,
+      },
+      {
+        model: ClassificationFees, // Include associated ClassificationFees
+        as: "classificationFees", // Alias should match the association alias if you set one
+        attributes: ["feeId", "amount"], // Specify fields of ClassificationFees
+        include: [
+          {
+            model: Fee, // Include Fee details within ClassificationFees
+            as: "fee",
+            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+          },
+        ],
+      },
+    ],
+  });
+  // console.log({response, update})
+  return response;
+};
+
+exports.fetchAClassificationMerge = async (filter) => {
+  const response = await ClassificationMerge.findOne({
+    where: filter,
+    include: [
+      {
+        model: Classification,
+        as: 'classification',
+      },
+      {
+        model: Classification,
+        as: 'classificationIncidental',
+      },]
   });
   // console.log({response, update})
   return response;
@@ -182,8 +280,19 @@ exports.findAndUpdateClassification = async (filter, update) => {
   return response;
 };
 
+exports.findAndUpdateClassificationMerge = async (filter, update) => {
+  const response = await ClassificationMerge.update(update, { where: filter });
+  return response;
+};
+
 exports.deleteClassification = async (update) => {
   const response = await Classification.destroy({ where: update });
+  // console.log({response, update})
+  return response;
+};
+
+exports.deleteClassificationMerge = async (update) => {
+  const response = await ClassificationMerge.destroy({ where: update });
   // console.log({response, update})
   return response;
 };

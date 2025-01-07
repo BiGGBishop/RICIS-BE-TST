@@ -277,7 +277,7 @@ exports.addClassification = async (req) => {
     classification_name: req.body.classification_name,
     classification_number: req.body.classification_number,
     has_incidental: req.body.has_incidental,
-    form_type: req.body.form_type,
+    form_type: req.body.form_type || null,
     // fees: req.body.application_fees,
   };
 
@@ -370,6 +370,48 @@ exports.getClassifications = async (req) => {
   if (role.name == "admin" || role.name == "staff") {
     const filter = {};
     const user = await AdminRepo.fetchClassifications(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+};
+
+exports.getClassificationMerge = async (req) => {
+  const userOrAdminExist =
+    (await UserRepo.findUser({ id: req.user?.id })) ||
+    (await AdminRepo.findAdminUser({ id: req.user?.id }));
+
+  if (!userOrAdminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+  console.log({ userExist: role });
+
+  if (role?.name == "user") {
+    const filter = {
+      restricted: { [Op.ne]: true },
+    };
+
+    const user = await AdminRepo.fetchAClassificationMerge(filter);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: user,
+    };
+  }
+
+  if (role.name == "admin" || role.name == "staff") {
+    const filter = {};
+    const user = await AdminRepo.fetchAClassificationMerge(filter);
 
     return {
       STATUS_CODE: StatusCodes.OK,

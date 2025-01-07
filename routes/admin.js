@@ -28,6 +28,7 @@ router.get("/classification/noincidental", authToken, asyncHandler(adminControll
 router.get("/classification/yesincidental", authToken, asyncHandler(adminController.getClassificationsYesIncidental)); 
 router.patch("/classification/:classId", authToken, asyncHandler(adminController.updateClassifications)); 
 router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications));
+router.get("/classification/merge", authToken, asyncHandler(adminController.getClassificationMerge)); 
 router.post("/classificationMerge", authToken, asyncHandler(adminController.addClassificationMerge)); 
 router.patch("/updateclassificationMerge/:classId", authToken, asyncHandler(adminController.updateClassificationMerge)); 
 router.delete("/deleteclassificationMerge/:classId", authToken, asyncHandler(adminController.deleteClassificationMerge)); 

@@ -93,6 +93,16 @@ exports.getClassifications = async (req, res) => {
   });
 };
 
+exports.getClassificationMerge = async (req, res) => {
+  const data = await AdminService.getClassificationMerge(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.getClassificationsNoIncidental = async (req, res) => {
   const data = await AdminService.getClassificationsNoIncidental(req, res);
 

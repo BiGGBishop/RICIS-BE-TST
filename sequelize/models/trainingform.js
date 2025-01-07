@@ -84,6 +84,7 @@ module.exports = (sequelize, DataTypes) => {
 			training_approval_number_ngtan: DataTypes.STRING,
 			director_of_factories: DataTypes.TEXT,
 			date_sign_director_of_factories: DataTypes.DATE,
+			documents_uploaded: DataTypes.ARRAY(DataTypes.STRING),
 		},
 		{
 			sequelize,

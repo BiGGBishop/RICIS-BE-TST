@@ -325,8 +325,6 @@ exports.findFees = async (filter) => {
   }
 }
 
-
-
 exports.findAndUpdateFee = async (filter, update) => {
   const response = await Fee.update(update, { where: filter });
   return response;

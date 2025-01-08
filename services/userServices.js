@@ -893,3 +893,60 @@ exports.addMsgToApplication = async (req) => {
     DATA: addMsg,
   };
 };
+
+exports.getClassificationWithIncidental = async (req, res) => {
+  try {
+    const { classification_number } = req.params;
+
+    // Step 1: Fetch the classification by classification_number
+    const classification = await AdminRepo.fetchAClassification({
+      classification_number,
+    });
+
+    if (!classification) {
+      return res.status(404).json({
+        status: false,
+        message: "Classification not found",
+      });
+    }
+
+    // Step 2: Fetch the classification merge record
+    const classificationMerge = await AdminRepo.fetchAClassificationMerge({
+      classificationId: classification.id,
+    });
+
+    if (!classificationMerge) {
+      return res.status(404).json({
+        status: false,
+        message: "Classification merge not found for this classification",
+      });
+    }
+
+    // Step 3: Fetch the incidental classification details
+    const incidentalClassification = await AdminRepo.fetchAClassification({
+      id: classificationMerge.classificationIncidentalId,
+    });
+
+    if (!incidentalClassification) {
+      return res.status(404).json({
+        status: false,
+        message: "Incidental classification not found",
+      });
+    }
+
+    // Step 4: Return both classifications
+    return res.status(200).json({
+      status: true,
+      data: {
+        classification,
+        incidentalClassification,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching classification with incidental:", error);
+    return res.status(500).json({
+      status: false,
+      message: "An error occurred while fetching classification details",
+    });
+  }
+};

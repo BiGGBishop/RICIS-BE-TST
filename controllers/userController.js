@@ -207,3 +207,13 @@ exports.hello = async (req, res) => {
     test: "just a test!",
   });
 };
+
+exports.getClassificationWithIncidental = async (req, res) => {
+  const data = await UserService.getClassificationWithIncidental(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};

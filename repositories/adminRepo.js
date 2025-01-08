@@ -211,21 +211,26 @@ exports.fetchClassificationsYesIncidental = async (filter) => {
   return response;
 };
 
-exports.fetchAClassificationMerge = async (filter) => {
-  const response = await ClassificationMerge.findAll({
-    where: filter,
-    include: [
-      {
-        model: Classification,
-        as: 'classification',
-      },
-      {
-        model: Classification,
-        as: 'classificationIncidental',
-      },]
-  });
-  // console.log({response, update})
-  return response;
+exports.fetchClassificationMerge = async (filter) => {
+  try {
+    const response = await ClassificationMerge.findAll({
+      where: filter,
+      include: [
+        {
+          model: Classification,
+          as: "classification",
+        },
+        {
+          model: Classification,
+          as: "incidentalClassification",
+        },
+      ],
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching classification merge:", error);
+    throw error;
+  }
 };
 
 exports.findClassificationFees = async (filter) => {

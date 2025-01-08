@@ -14,6 +14,9 @@ router.post("/application",authToken, appValidation, asyncHandler(usersControlle
 router.get("/application",authToken, asyncHandler(usersController.getUsersApplication));
 router.get("/application/:appId",authToken, asyncHandler(usersController.getUsersSingleApplication));
 
+
+router.get("/classification-with-incidental/:classId",authToken, asyncHandler(usersController.getClassificationWithIncidental));
+
 // conversation
 router.put("/application/msg/add", authToken, asyncHandler(usersController.addMsgToApplication)); 
 

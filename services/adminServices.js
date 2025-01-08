@@ -324,8 +324,8 @@ exports.addClassificationMerge = async (req) => {
   }
 
   const classObject = {
-    classificationId: req.body.classification_id,
-    classificationIncidentalId: req.body.classification_incidental_id,
+    classificationId: req.body.classificationId,
+    classificationIncidentalId: req.body.classificationIncidentalId,
   };
 
   const classificationMerge = await AdminRepo.addClassificationMerge(classObject);
@@ -400,7 +400,7 @@ exports.getClassificationMerge = async (req) => {
       restricted: { [Op.ne]: true },
     };
 
-    const user = await AdminRepo.fetchAClassificationMerge(filter);
+    const user = await AdminRepo.fetchClassificationMerge(filter);
 
     return {
       STATUS_CODE: StatusCodes.OK,
@@ -411,7 +411,7 @@ exports.getClassificationMerge = async (req) => {
 
   if (role.name == "admin" || role.name == "staff") {
     const filter = {};
-    const user = await AdminRepo.fetchAClassificationMerge(filter);
+    const user = await AdminRepo.fetchClassificationMerge(filter);
 
     return {
       STATUS_CODE: StatusCodes.OK,

@@ -896,7 +896,7 @@ exports.addMsgToApplication = async (req) => {
 
 exports.getClassificationWithIncidental = async (req, res) => {
   try {
-    const { classification_number } = req.params;
+    const { classification_number } = req.body;
 
     // Step 1: Fetch the classification by classification_number
     const classification = await AdminRepo.fetchAClassification({

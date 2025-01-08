@@ -142,7 +142,7 @@ exports.fetchAClassification = async (filter) => {
 };
 
 exports.fetchClassificationsNoIncidental = async (filter) => {
-  const response = await Classification.findOne({
+  const response = await Classification.findAll({
     where: filter,
     include: [
       {
@@ -177,7 +177,7 @@ exports.fetchClassificationsNoIncidental = async (filter) => {
 };
 
 exports.fetchClassificationsYesIncidental = async (filter) => {
-  const response = await Classification.findOne({
+  const response = await Classification.findAll({
     where: filter,
     include: [
       {
@@ -212,7 +212,7 @@ exports.fetchClassificationsYesIncidental = async (filter) => {
 };
 
 exports.fetchAClassificationMerge = async (filter) => {
-  const response = await ClassificationMerge.findOne({
+  const response = await ClassificationMerge.findAll({
     where: filter,
     include: [
       {

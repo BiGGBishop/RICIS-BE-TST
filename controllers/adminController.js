@@ -292,3 +292,13 @@ exports.deleteFee = async (req, res) => {
     data: data.DATA,
   });
 };
+
+exports.getClassificationWithIncidental = async (req, res) => {
+  const data = await AdminService.getClassificationWithIncidental(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};

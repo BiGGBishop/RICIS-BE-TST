@@ -40,8 +40,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			installation_dates: {
 				type: DataTypes.JSON, // { start: "date", completion: "date" }
-      },
-      form_type: DataTypes.STRING,
+			},
+			form_type: DataTypes.STRING,
 			data_reports_available: {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false,
@@ -89,6 +89,10 @@ module.exports = (sequelize, DataTypes) => {
 			equipment_classification: DataTypes.STRING,
 			equipment_line_number: DataTypes.STRING,
 			equipment_incidental_number: DataTypes.STRING,
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

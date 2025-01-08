@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			},
 			date_received: DataTypes.DATE,
-      form_number: DataTypes.STRING,
-      form_type: DataTypes.STRING,
+			form_number: DataTypes.STRING,
+			form_type: DataTypes.STRING,
 			// Service Classification
 			equipment_registration: DataTypes.BOOLEAN,
 			certificate_of_competence: DataTypes.BOOLEAN,
@@ -70,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
 
 			// Uploaded Documents
 			uploaded_documents: DataTypes.ARRAY(DataTypes.STRING),
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

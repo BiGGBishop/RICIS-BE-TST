@@ -85,6 +85,10 @@ module.exports = (sequelize, DataTypes) => {
 			director_of_factories: DataTypes.TEXT,
 			date_sign_director_of_factories: DataTypes.DATE,
 			documents_uploaded: DataTypes.ARRAY(DataTypes.STRING),
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

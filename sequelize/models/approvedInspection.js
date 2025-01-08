@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			// Application Information
 			date_received: DataTypes.DATE,
-      form_number: DataTypes.STRING,
-      form_type: DataTypes.STRING,
+			form_number: DataTypes.STRING,
+			form_type: DataTypes.STRING,
 			boiler_pressure_vessel_category: DataTypes.STRING,
 			type_of_service: DataTypes.ENUM("Nuclear", "Non-Nuclear"),
 			service_classification: DataTypes.ARRAY(DataTypes.STRING),
@@ -87,6 +87,10 @@ module.exports = (sequelize, DataTypes) => {
 			approval_class: DataTypes.STRING,
 			// Documents Uploaded
 			documents_uploaded: DataTypes.ARRAY(DataTypes.STRING),
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

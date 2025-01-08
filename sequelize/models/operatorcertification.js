@@ -96,6 +96,10 @@ module.exports = (sequelize, DataTypes) => {
 
 			// Uploaded Documents
 			uploaded_documents: DataTypes.ARRAY(DataTypes.STRING), // ["Curriculum Vitae", "Education Certifications", ...]
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false,
+			},
 		},
 		{
 			sequelize,

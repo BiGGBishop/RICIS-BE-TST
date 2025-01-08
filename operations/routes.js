@@ -3,6 +3,9 @@ const usersRouter = require("../routes/users");
 const authRouter = require("../routes/auth");
 const startRouter = require("../routes/startup");
 const adminRouter = require("../routes/admin");
+const competencyRouter = require("../routes/competencyForm");
+const trainingRouter = require("../routes/trainingForm");
+const approvedAgencyRouter = require("../routes/approvedagency");
 
 
 const { VERSION } = require("../config/envConfig");
@@ -36,6 +39,9 @@ module.exports = (app) => {
   app.use(`${VERSION}/auth`, authRouter);
   app.use(`${VERSION}/startups`, startRouter);
   app.use(`${VERSION}/admin`, adminRouter);
+  app.use(`${VERSION}/forms`, competencyRouter);
+  app.use(`${VERSION}/forms`, trainingRouter);
+  app.use(`${VERSION}/forms`, approvedAgencyRouter);
 
   app.get("/", (req, res) => {
     res.json({ status: true, message: "RICIS-V1 health check passed ✅" });

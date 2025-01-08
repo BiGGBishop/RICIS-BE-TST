@@ -32,8 +32,8 @@ module.exports = (sequelize, DataTypes) => {
 			classC: DataTypes.BOOLEAN,
 			classD: DataTypes.BOOLEAN,
 			classE: DataTypes.BOOLEAN,
-			new_pplication: DataTypes.BOOLEAN,
-			re_pplication: DataTypes.BOOLEAN,
+			new_application: DataTypes.BOOLEAN,
+			re_application: DataTypes.BOOLEAN,
 			training_start_date: DataTypes.DATE,
 			training_completion_date: DataTypes.DATE,
 			documentation_available_for_review: DataTypes.BOOLEAN,
@@ -68,10 +68,14 @@ module.exports = (sequelize, DataTypes) => {
 			university: DataTypes.JSONB,
 			professional_qualification: DataTypes.JSONB,
 			experience: DataTypes.JSONB,
-			applicant_declarationname: DataTypes.STRING,
+			applicant_declaration_name: DataTypes.STRING,
 			applicant_declaration_date: DataTypes.DATE,
 			employer_responsible_charge_name: DataTypes.STRING,
 			employer_responsible_charge_date: DataTypes.DATE,
+			is_draft: {
+				type: DataTypes,
+				defaultValue: false
+			}
 		},
 		{
 			sequelize,

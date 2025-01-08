@@ -13,15 +13,8 @@ router.get("/details",authToken,  asyncHandler(usersController.getUserDetails));
 router.post("/application",authToken, appValidation, asyncHandler(usersController.createApplication));
 router.get("/application",authToken, asyncHandler(usersController.getUsersApplication));
 router.get("/application/:appId",authToken, asyncHandler(usersController.getUsersSingleApplication));
-
-
 router.get("/classification-with-incidental",authToken, asyncHandler(usersController.getClassificationWithIncidental));
-
-// conversation
 router.put("/application/msg/add", authToken, asyncHandler(usersController.addMsgToApplication)); 
-
-
-//payments
 router.get("/payment/token",authToken, asyncHandler(usersController.getPaymentToken));
 
 

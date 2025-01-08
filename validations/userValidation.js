@@ -112,8 +112,6 @@ exports.userSignUpValidation = (req, res, next) => {
   next();
 };
 
-
-
 exports.classificationValidation = (req, res, next) => {
   const schema = Joi.object({
     classification_name: Joi.string().required(),
@@ -144,9 +142,6 @@ exports.classificationValidation = (req, res, next) => {
     });
   next();
 };
-
-
-
 
 exports.appValidation = (req, res, next) => {
   const schema = Joi.object({

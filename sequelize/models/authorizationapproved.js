@@ -41,127 +41,127 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM('pending', 'approved', 'rejected', 'suspended'),
         allowNull: false,
       },
-      BoilerServiceClassification: {
+      boilerServiceClassification: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      TypeOfService: {
+      typeOfService: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      LiftingServiceClassification: {
+      liftingServiceClassification: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      ApplicationType: {
+      applicationType: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      certification_review: {
-        type: DataTypes.BOOLEAN,
+      certificationReview: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
       exemption: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-      },
-      company_name: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_address: {
+      companyName: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_cac: {
+      companyAddress: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_year: {
+      companyCac: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_employee: {
+      companyYear: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      companyEmployee: {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
-      company_membership: {
+      companyMembership: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_quality: {
+      companyQuality: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_competence: {
+      companyCompetence: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_competence_line: {
+      companyCompetenceLine: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_incidental_line: {
+      companyIncidentalLine: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_contact_person: {
+      companyContactPerson: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_telephone: {
+      companyTelephone: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_email: {
+      companyEmail: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_membership_nagobin: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-      },
-      nagobin_document: {
+      companyMembershipNagobin: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_membership_leia: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true,
-      },
-      leia_document: {
+      nagobinDocument: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      manager_name: {
+      companyMembershipLeia: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      manager_address: {
+      leiaDocument: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      manager_dob: {
+      managerName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      managerAddress: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      managerDob: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      manager_email: {
+      managerEmail: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      manager_telephone: {
+      managerTelephone: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      name_school: {
+      nameSchool: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      date_admitted: {
+      dateAdmitted: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      date_completed: {
+      dateCompleted: {
         type: DataTypes.DATE,
         allowNull: true,
       },
@@ -173,95 +173,95 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      date_issue: {
+      dateIssue: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      expiration_date: {
+      expirationDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      name_company: {
+      nameCompany: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      join_date: {
+      joinDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      exist_date: {
+      existDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      inspector_name: {
+      inspectorName: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      inspector_address: {
+      inspectorAddress: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      inspector_dob: {
+      inspectorDob: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      inspector_email: {
+      inspectorEmail: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      inspector_telephone: {
+      inspectorTelephone: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      professional_institution: {
+      professionalInstitution: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      professional_doi: {
+      professionalDoi: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      professional_expire_date: {
+      professionalExpireDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      experience_company_name: {
+      experienceCompanyName: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      experience_join_date: {
+      experienceJoinDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      experience_exist_date: {
+      experienceExistDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      company_responsible_charge: {
+      companyResponsibleCharge: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_responsible_charge_date: {
+      companyResponsibleChargeDate: {
         type: DataTypes.DATE,
         allowNull: true,
       },
-      company_quality_manuel: {
+      companyQualityManuel: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      operational_procedures: {
+      operationalProcedures: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      company_documentation: {
+      companyDocumentation: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      documentation_supervisor: {
+      documentationSupervisor: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      iso_certification: {
+      isoCertification: {
         type: DataTypes.STRING,
         allowNull: true,
       },

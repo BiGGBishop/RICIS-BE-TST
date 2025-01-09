@@ -1,0 +1,97 @@
+"use strict";
+
+const { Model } = require("sequelize");
+
+module.exports = (sequelize, DataTypes) => {
+  class AuthorizationManufacturer extends Model {
+    static associate(models) {
+      AuthorizationManufacturer.belongsTo(models.User, { foreignKey: "user_id" });
+    }
+  }
+
+  AuthorizationManufacturer.init(
+    {
+      user_id: { type: DataTypes.INTEGER, allowNull: false },
+      categoryId: DataTypes.INTEGER,
+      subcategoryId: DataTypes.INTEGER,
+      classificationId: DataTypes.INTEGER,
+      incidentalClassificationId: DataTypes.INTEGER,
+      paymentStatus: {
+        type: DataTypes.ENUM("unpaid", "paid"),
+        allowNull: false,
+        defaultValue: "unpaid",
+      },
+      appStatus: {
+        type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+        allowNull: false,
+        defaultValue: "pending",
+      },
+      boilerServiceClassification: DataTypes.STRING,
+      typeService: DataTypes.STRING,
+      liftingServiceClassification: DataTypes.STRING,
+      applicationType: DataTypes.STRING,
+      certificationReview: DataTypes.BOOLEAN,
+      exemption: DataTypes.BOOLEAN,
+      companyName: DataTypes.STRING,
+      companyAddress: DataTypes.STRING,
+      companyCac: DataTypes.STRING,
+      companyYear: DataTypes.STRING,
+      companyEmployee: DataTypes.INTEGER,
+      companyMembership: DataTypes.STRING,
+      companyQuality: DataTypes.STRING,
+      companyCompetence: DataTypes.STRING,
+      companyCompetenceLine: DataTypes.STRING,
+      companyIncidentalLine: DataTypes.STRING,
+      companyContactPerson: DataTypes.STRING,
+      companyTelephone: DataTypes.STRING,
+      companyEmail: DataTypes.STRING,
+      companyMembershipNagobin: DataTypes.BOOLEAN,
+      companyMembershipLeia: DataTypes.BOOLEAN,
+      managerName: DataTypes.STRING,
+      managerAddress: DataTypes.STRING,
+      managerDob: DataTypes.DATE,
+      managerEmail: DataTypes.STRING,
+      managerTelephone: DataTypes.STRING,
+      nameSchool: DataTypes.STRING,
+      dateAdmitted: DataTypes.DATE,
+      dateCompleted: DataTypes.DATE,
+      qualification: DataTypes.STRING,
+      institution: DataTypes.STRING,
+      dateIssue: DataTypes.DATE,
+      expirationDate: DataTypes.DATE,
+      nameCompany: DataTypes.STRING,
+      joinDate: DataTypes.DATE,
+      existDate: DataTypes.DATE,
+      inspectorName: DataTypes.STRING,
+      inspectorAddress: DataTypes.STRING,
+      inspectorDob: DataTypes.DATE,
+      inspectorEmail: DataTypes.STRING,
+      inspectorTelephone: DataTypes.STRING,
+      professionalInstitution: DataTypes.STRING,
+      professionalDoi: DataTypes.DATE,
+      professionalExpireDate: DataTypes.DATE,
+      experienceCompanyName: DataTypes.STRING,
+      experienceJoinDate: DataTypes.DATE,
+      experienceExistDate: DataTypes.DATE,
+      companyResponsibleCharge: DataTypes.STRING,
+      companyResponsibleChargeDate: DataTypes.DATE,
+      companyQualityManual: DataTypes.JSON,
+      operationalProcedures: DataTypes.JSON,
+      companyDocumentation: DataTypes.JSON,
+      documentationQuality: DataTypes.JSON,
+      designerDocumentation: DataTypes.JSON,
+      weldingDocumentation: DataTypes.JSON,
+      ndtDocumentation: DataTypes.JSON,
+      indtDocumentation: DataTypes.JSON,
+      isoCertification: DataTypes.JSON,
+      feeId: DataTypes.INTEGER,
+      status: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "AuthorizationManufacturer",
+    }
+  );
+
+  return AuthorizationManufacturer;
+};

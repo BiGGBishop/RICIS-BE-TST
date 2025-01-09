@@ -120,8 +120,16 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: true,
       },
+      nagobinDocument: {
+        type: Sequelize.JSON,
+        allowNull: true,
+      },
       companyMembershipLeia: {
         type: Sequelize.BOOLEAN,
+        allowNull: true,
+      },
+      leiaDocument: {
+        type: Sequelize.JSON,
         allowNull: true,
       },
       managerName: {

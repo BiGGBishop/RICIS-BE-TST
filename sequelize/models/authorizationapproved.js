@@ -121,8 +121,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: true,
       },
+      nagobin_document: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       company_membership_leia: {
         type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      leia_document: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
       manager_name: {

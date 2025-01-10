@@ -209,11 +209,28 @@ exports.hello = async (req, res) => {
 };
 
 exports.getClassificationWithIncidental = async (req, res) => {
-  const data = await UserService.getClassificationWithIncidental(req, res);
+  try {
+    const { classification_number } = req.query; // Get classification_number from query params
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+    if (!classification_number) {
+      return res.status(400).json({
+        status: false,
+        message: "classification_number is required",
+      });
+    }
+
+    const data = await UserService.getClassificationWithIncidental(classification_number);
+
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  } catch (error) {
+    console.error("Error in getClassificationWithIncidental:", error);
+    return res.status(500).json({
+      status: false,
+      message: "An error occurred while processing the request",
+    });
+  }
 };

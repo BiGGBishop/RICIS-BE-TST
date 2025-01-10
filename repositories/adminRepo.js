@@ -108,7 +108,7 @@ exports.addClassificationFees = async (update) => {
 
 exports.fetchAClassification = async (filter) => {
   const response = await Classification.findOne({
-    where: filter,
+    where: filter, // Use classification_number passed from the service
     include: [
       {
         model: Categories,

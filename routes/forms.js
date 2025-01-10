@@ -1,11 +1,41 @@
 const express = require("express");
+const { asyncHandler } = require("../middlewares/handler");
+const formsController = require("../controllers/formsController");
+const { authToken } = require("../utils/AunthenticateUser");
+
 const router = express.Router();
 
-const {asyncHandler} = require("../middlewares/handler")
-const usersController = require("../controllers/userController")
-const adminController = require("../controllers/adminController")
-const {authToken} =  require("../utils/AunthenticateUser")
+router.post(
+  "/authorization-approved",
+  authToken,
+  asyncHandler(formsController.createAuthorizationApproved)
+);
 
-router.post("/competency", authToken, asyncHandler(usersController.addCompetency)); 
+router.get(
+  "/all-authorization-approved",
+  authToken,
+  asyncHandler(formsController.getAllAuthorizationApproved)
+);
+
+router.get(
+  "/authorization-approved/:userId",
+  authToken,
+  asyncHandler(formsController.getAuthorizationApprovedByUserId)
+);
+
+router.post(
+  "/authorization-manufacturer",
+  asyncHandler(formsController.createAuthorizationManufacturer)
+);
+
+router.get(
+  "/all-authorization-manufacturer",
+  asyncHandler(formsController.getAllAuthorizationManufacturer)
+);
+
+router.get(
+  "/authorization-manufacturer/:userId",
+  asyncHandler(formsController.getAuthorizationManufacturerByUserId)
+);
 
 module.exports = router;

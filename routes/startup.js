@@ -13,6 +13,7 @@ router.post("/sub-cat", authToken,  (startUpController.addSubCategories));
  
 /**GET REQUESTS */
 router.get("/cat", authToken, asyncHandler(startUpController.getCategories)); 
+router.get("/cat/:catId", authToken, asyncHandler(startUpController.getCategories)); 
 router.get("/cat/incidental", authToken, asyncHandler(startUpController.getClassificationsNoIncidental)); 
 router.get("/cat/noincidental", authToken, asyncHandler(startUpController.getClassificationsYesIncidental)); 
 router.get("/sub-cat/:catId", authToken, asyncHandler(startUpController.getSubCategories)); 

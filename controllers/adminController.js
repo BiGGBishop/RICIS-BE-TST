@@ -93,6 +93,19 @@ exports.getClassifications = async (req, res) => {
   });
 };
 
+exports.getAClassifications = async (req, res) => {
+  const classificationNumber = req.params.classification_number; // The classification_number from the URL
+  const userId = req.user?.id;                                   // The user ID from the authenticated user
+
+  const data = await AdminService.getAClassifications(classificationNumber, userId); // Pass classificationNumber
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.getClassificationMerge = async (req, res) => {
   const data = await AdminService.getClassificationMerge(req, res);
   

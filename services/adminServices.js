@@ -379,6 +379,45 @@ exports.getClassifications = async (req) => {
   }
 };
 
+exports.getAClassifications = async (classificationNumber, userId) => {
+  const userOrAdminExist =
+    (await UserRepo.findUser({ id: userId })) ||
+    (await AdminRepo.findAdminUser({ id: userId }));
+
+  if (!userOrAdminExist) {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid Credentials",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+  console.log({ userExist: role });
+
+  // Filter based on the role of the user
+  const filter = { classification_number: classificationNumber }; // Use classification_number as the filter
+  if (role?.name === "user") {
+    filter.restricted = { [Op.ne]: true }; // Add condition for restricted classifications
+  }
+
+  const classification = await AdminRepo.fetchAClassification(filter);
+
+  if (!classification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Classification not found",
+    };
+  }
+
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    DATA: classification,
+  };
+};
+
 exports.getClassificationMerge = async (req) => {
   const userOrAdminExist =
     (await UserRepo.findUser({ id: req.user?.id })) ||
@@ -397,7 +436,6 @@ exports.getClassificationMerge = async (req) => {
 
   if (role?.name == "user") {
     const filter = {
-      restricted: { [Op.ne]: true },
     };
 
     const user = await AdminRepo.fetchClassificationMerge(filter);

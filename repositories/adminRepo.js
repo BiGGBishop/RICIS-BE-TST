@@ -108,36 +108,34 @@ exports.addClassificationFees = async (update) => {
 
 exports.fetchAClassification = async (filter) => {
   const response = await Classification.findOne({
-    where: filter,
+    where: filter, // Use classification_number passed from the service
     include: [
       {
-        model: Categories, // Include the associated category
+        model: Categories,
         as: "category",
-        attributes: ["name"], // Specify which fields of the category to include
+        attributes: ["name"],
         required: false,
       },
-
       {
-        model: SubCategories, // Include the associated category
+        model: SubCategories,
         as: "subcategory",
-        attributes: ["name"], // Specify which fields of the category to include
+        attributes: ["name"],
         required: false,
       },
       {
-        model: ClassificationFees, // Include associated ClassificationFees
-        as: "classificationFees", // Alias should match the association alias if you set one
-        attributes: ["feeId", "amount"], // Specify fields of ClassificationFees
+        model: ClassificationFees,
+        as: "classificationFees",
+        attributes: ["feeId", "amount"],
         include: [
           {
-            model: Fee, // Include Fee details within ClassificationFees
+            model: Fee,
             as: "fee",
-            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+            attributes: ["fee_type", "application_category"],
           },
         ],
       },
     ],
   });
-  // console.log({response, update})
   return response;
 };
 
@@ -335,7 +333,7 @@ exports.findAndUpdateFee = async (filter, update) => {
   return response;
 };
 
-  exports.deleteFee = async (update) => {
+exports.deleteFee = async (update) => {
     try {
       const response = await Fee.destroy({ where: update });
       console.log({response, update})
@@ -343,5 +341,5 @@ exports.findAndUpdateFee = async (filter, update) => {
     } catch (error) {
       console.error("Error details:", error);
     }
-  };
+};
 

@@ -139,6 +139,18 @@ exports.fetchAClassification = async (filter) => {
   return response;
 };
 
+exports.fetchClassificationMerge = async (filter) => {
+  try {
+    const response = await ClassificationMerge.findOne({
+      where: filter, // Ensure we only get one record
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching classification merge:", error);
+    throw error;
+  }
+};
+
 exports.fetchClassificationsNoIncidental = async (filter) => {
   const response = await Classification.findAll({
     where: filter,
@@ -207,28 +219,6 @@ exports.fetchClassificationsYesIncidental = async (filter) => {
   });
   // console.log({response, update})
   return response;
-};
-
-exports.fetchClassificationMerge = async (filter) => {
-  try {
-    const response = await ClassificationMerge.findAll({
-      where: filter,
-      include: [
-        {
-          model: Classification,
-          as: "classification",
-        },
-        {
-          model: Classification,
-          as: "incidentalClassification",
-        },
-      ],
-    });
-    return response;
-  } catch (error) {
-    console.error("Error fetching classification merge:", error);
-    throw error;
-  }
 };
 
 exports.findClassificationFees = async (filter) => {

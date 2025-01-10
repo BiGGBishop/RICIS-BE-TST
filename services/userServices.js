@@ -894,59 +894,69 @@ exports.addMsgToApplication = async (req) => {
   };
 };
 
-exports.getClassificationWithIncidental = async (req, res) => {
+exports.getClassificationWithIncidental = async (classification_number) => {
   try {
-    const { classification_number } = req.body;
-
     // Step 1: Fetch the classification by classification_number
     const classification = await AdminRepo.fetchAClassification({
       classification_number,
     });
 
     if (!classification) {
-      return res.status(404).json({
-        status: false,
-        message: "Classification not found",
-      });
+      return {
+        STATUS_CODE: 404,
+        STATUS: false,
+        MESSAGE: "Classification not found",
+        DATA: null,
+      };
     }
 
-    // Step 2: Fetch the classification merge record
-    const classificationMerge = await AdminRepo.fetchAClassificationMerge({
+    // Step 2: Fetch the classification merge record (use findOne to fetch a single record)
+    const classificationMerge = await AdminRepo.fetchClassificationMerge({
       classificationId: classification.id,
     });
 
-    if (!classificationMerge) {
-      return res.status(404).json({
-        status: false,
-        message: "Classification merge not found for this classification",
-      });
+    if (!classificationMerge || classificationMerge.length === 0) {
+      return {
+        STATUS_CODE: 404,
+        STATUS: false,
+        MESSAGE: "Classification merge not found for this classification",
+        DATA: null,
+      };
     }
+
+    const incidentalClassificationId = classificationMerge[0].classificationIncidentalId; // Get the first result
 
     // Step 3: Fetch the incidental classification details
     const incidentalClassification = await AdminRepo.fetchAClassification({
-      id: classificationMerge.classificationIncidentalId,
+      id: incidentalClassificationId,
     });
 
     if (!incidentalClassification) {
-      return res.status(404).json({
-        status: false,
-        message: "Incidental classification not found",
-      });
+      return {
+        STATUS_CODE: 404,
+        STATUS: false,
+        MESSAGE: "Incidental classification not found",
+        DATA: null,
+      };
     }
 
     // Step 4: Return both classifications
-    return res.status(200).json({
-      status: true,
-      data: {
+    return {
+      STATUS_CODE: 200,
+      STATUS: true,
+      MESSAGE: "Classification and incidental classification fetched successfully",
+      DATA: {
         classification,
         incidentalClassification,
       },
-    });
+    };
   } catch (error) {
-    console.error("Error fetching classification with incidental:", error);
-    return res.status(500).json({
-      status: false,
-      message: "An error occurred while fetching classification details",
-    });
+    console.error("Error in getClassificationWithIncidental service:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "An error occurred while fetching classification details",
+      DATA: null,
+    };
   }
 };

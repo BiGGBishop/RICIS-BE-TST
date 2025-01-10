@@ -21,9 +21,7 @@ exports.findAll = async () => {
           attributes: ['id', 'name'], // Adjust attributes as needed
         },
       ],
-      attributes: {
-        exclude: ['createdAt', 'updatedAt'], // Exclude timestamps if not needed
-      },
+      attributes: { exclude: [] },
       order: [['createdAt', 'DESC']], // Sort by most recent
     });
     return response;

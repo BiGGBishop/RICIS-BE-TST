@@ -1,7 +1,7 @@
 const app = require("./app");
 const { sequelize } = require("./sequelize/models");
 const { PORT } = require("./config/envConfig");
-const { default: job } = require("./cron/cron");
+const {job}  = require("./cron/cron");
 
 
 

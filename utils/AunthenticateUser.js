@@ -5,6 +5,7 @@ const StatusCodes  = require("../utils/statusCodes");
 
 
 exports.generateToken = async (user) => {
+  console.log(user)
   const token = jwt.sign(
     {
       id: user.user,

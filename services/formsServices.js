@@ -4,7 +4,7 @@ const AdminRepo = require("../repositories/adminRepo");
 const StatusCodes = require("../utils/statusCodes");
 
 exports.createAuthorizationApproved = async (req) => {
-  const userId = req?.user?.id;
+  const userId = req?.user?.id
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
@@ -85,7 +85,10 @@ exports.createAuthorizationApproved = async (req) => {
     status: req.body.status || "pending",
   };
 
+  console.log(data)
+
   const newAuthorizationSubmit = await FormsRepo.create(data);
+  console.log("new submit",newAuthorizationSubmit)
 
   return {
     STATUS_CODE: StatusCodes.CREATED,
@@ -150,10 +153,9 @@ exports.getAClassifications = async (classId, userId) => {
 };
 
 exports.createAuthorizationManufacturer = async (req) => {
-  const user = req?.user?.id;
+  const userId = req?.user?.id;
 
-  // Step 1: Validate user existence
-  if (!user) {
+  if (!userId) {
     return {
       STATUS_CODE: StatusCodes.UNAUTHORIZED,
       STATUS: false,
@@ -161,7 +163,16 @@ exports.createAuthorizationManufacturer = async (req) => {
     };
   }
 
-  // Step 2: Check the role of the user
+  const user = await UserRepo.findUser({ id: userId });
+
+  if (!user) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not found.",
+    };
+  }
+
   const role = await UserRepo.findRole({ id: user.userroleId });
 
   if (!role) {
@@ -180,76 +191,145 @@ exports.createAuthorizationManufacturer = async (req) => {
     };
   }
 
-  // Step 3: Save the AuthorizationApproved record
+  const {
+    categoryId,
+    subcategoryId,
+    classificationId,
+    incidentalClassificationId,
+    paymentStatus,
+    appStatus,
+    boilerServiceClassification,
+    typeService,
+    liftingServiceClassification,
+    applicationType,
+    certificationReview,
+    exemption,
+    companyName,
+    companyAddress,
+    companyCac,
+    companyYear,
+    companyEmployee,
+    companyMembership,
+    companyQuality,
+    companyCompetence,
+    companyCompetenceLine,
+    companyIncidentalLine,
+    companyContactPerson,
+    companyTelephone,
+    companyEmail,
+    companyMembershipNagobin,
+    companyMembershipLeia,
+    managerName,
+    managerAddress,
+    managerDob,
+    managerEmail,
+    managerTelephone,
+    nameSchool,
+    dateAdmitted,
+    dateCompleted,
+    qualification,
+    institution,
+    dateIssue,
+    expirationDate,
+    nameCompany,
+    joinDate,
+    existDate,
+    inspectorName,
+    inspectorAddress,
+    inspectorDob,
+    inspectorEmail,
+    inspectorTelephone,
+    professionalInstitution,
+    professionalDoi,
+    professionalExpireDate,
+    experienceCompanyName,
+    experienceJoinDate,
+    experienceExistDate,
+    companyResponsibleCharge,
+    companyResponsibleChargeDate,
+    companyQualityManual,
+    operationalProcedures,
+    companyDocumentation,
+    documentationQuality,
+    designerDocumentation,
+    weldingDocumentation,
+    ndtDocumentation,
+    indtDocumentation,
+    isoCertification,
+    feeId,
+    status,
+  } = req.body;
+
   const data = {
-    user,
-        categoryId: application.categoryId || null,
-        subcategoryId: application.subcategoryId || null,
-        classificationId: application.classificationId || null,
-        incidentalClassificationId: application.incidentalClassificationId || null,
-        paymentStatus: application.paymentStatus || "unpaid",
-        appStatus: application.appStatus || "pending",
-        boilerServiceClassification: application.boilerServiceClassification || null,
-        typeService: application.typeService || null,
-        liftingServiceClassification: application.liftingServiceClassification || null,
-        applicationType: application.applicationType || null,
-        certificationReview: application.certificationReview || false,
-        exemption: application.exemption || false,
-        companyName: application.companyName || null,
-        companyAddress: application.companyAddress || null,
-        companyCac: application.companyCac || null,
-        companyYear: application.companyYear || null,
-        companyEmployee: application.companyEmployee || null,
-        companyMembership: application.companyMembership || null,
-        companyQuality: application.companyQuality || null,
-        companyCompetence: application.companyCompetence || null,
-        companyCompetenceLine: application.companyCompetenceLine || null,
-        companyIncidentalLine: application.companyIncidentalLine || null,
-        companyContactPerson: application.companyContactPerson || null,
-        companyTelephone: application.companyTelephone || null,
-        companyEmail: application.companyEmail || null,
-        companyMembershipNagobin: application.companyMembershipNagobin || false,
-        companyMembershipLeia: application.companyMembershipLeia || false,
-        managerName: application.managerName || null,
-        managerAddress: application.managerAddress || null,
-        managerDob: application.managerDob || null,
-        managerEmail: application.managerEmail || null,
-        managerTelephone: application.managerTelephone || null,
-        nameSchool: application.nameSchool || null,
-        dateAdmitted: application.dateAdmitted || null,
-        dateCompleted: application.dateCompleted || null,
-        qualification: application.qualification || null,
-        institution: application.institution || null,
-        dateIssue: application.dateIssue || null,
-        expirationDate: application.expirationDate || null,
-        nameCompany: application.nameCompany || null,
-        joinDate: application.joinDate || null,
-        existDate: application.existDate || null,
-        inspectorName: application.inspectorName || null,
-        inspectorAddress: application.inspectorAddress || null,
-        inspectorDob: application.inspectorDob || null,
-        inspectorEmail: application.inspectorEmail || null,
-        inspectorTelephone: application.inspectorTelephone || null,
-        professionalInstitution: application.professionalInstitution || null,
-        professionalDoi: application.professionalDoi || null,
-        professionalExpireDate: application.professionalExpireDate || null,
-        experienceCompanyName: application.experienceCompanyName || null,
-        experienceJoinDate: application.experienceJoinDate || null,
-        experienceExistDate: application.experienceExistDate || null,
-        companyResponsibleCharge: application.companyResponsibleCharge || null,
-        companyResponsibleChargeDate: application.companyResponsibleChargeDate || null,
-        companyQualityManual: application.companyQualityManual || null,
-        operationalProcedures: application.operationalProcedures || null,
-        companyDocumentation: application.companyDocumentation || null,
-        documentationQuality: application.documentationQuality || null,
-        designerDocumentation: application.designerDocumentation || null,
-        weldingDocumentation: application.weldingDocumentation || null,
-        ndtDocumentation: application.ndtDocumentation || null,
-        indtDocumentation: application.indtDocumentation || null,
-        isoCertification: application.isoCertification || null,
-        feeId: application.feeId || null,
-        status: application.status || "pending",
+    user_id: userId,
+    categoryId: categoryId || null,
+    subcategoryId: subcategoryId || null,
+    classificationId: classificationId || null,
+    incidentalClassificationId: incidentalClassificationId || null,
+    paymentStatus: paymentStatus || "unpaid",
+    appStatus: appStatus || "pending",
+    boilerServiceClassification: boilerServiceClassification || null,
+    typeService: typeService || null,
+    liftingServiceClassification: liftingServiceClassification || null,
+    applicationType: applicationType || null,
+    certificationReview: certificationReview || false,
+    exemption: exemption || false,
+    companyName: companyName || null,
+    companyAddress: companyAddress || null,
+    companyCac: companyCac || null,
+    companyYear: companyYear || null,
+    companyEmployee: companyEmployee || null,
+    companyMembership: companyMembership || null,
+    companyQuality: companyQuality || null,
+    companyCompetence: companyCompetence || null,
+    companyCompetenceLine: companyCompetenceLine || null,
+    companyIncidentalLine: companyIncidentalLine || null,
+    companyContactPerson: companyContactPerson || null,
+    companyTelephone: companyTelephone || null,
+    companyEmail: companyEmail || null,
+    companyMembershipNagobin: companyMembershipNagobin || false,
+    companyMembershipLeia: companyMembershipLeia || false,
+    managerName: managerName || null,
+    managerAddress: managerAddress || null,
+    managerDob: managerDob || null,
+    managerEmail: managerEmail || null,
+    managerTelephone: managerTelephone || null,
+    nameSchool: nameSchool || null,
+    dateAdmitted: dateAdmitted || null,
+    dateCompleted: dateCompleted || null,
+    qualification: qualification || null,
+    institution: institution || null,
+    dateIssue: dateIssue || null,
+    expirationDate: expirationDate || null,
+    nameCompany: nameCompany || null,
+    joinDate: joinDate || null,
+    existDate: existDate || null,
+    inspectorName: inspectorName || null,
+    inspectorAddress: inspectorAddress || null,
+    inspectorDob: inspectorDob || null,
+    inspectorEmail: inspectorEmail || null,
+    inspectorTelephone: inspectorTelephone || null,
+    professionalInstitution: professionalInstitution || null,
+    professionalDoi: professionalDoi || null,
+    professionalExpireDate: professionalExpireDate || null,
+    experienceCompanyName: experienceCompanyName || null,
+    experienceJoinDate: experienceJoinDate || null,
+    experienceExistDate: experienceExistDate || null,
+    companyResponsibleCharge: companyResponsibleCharge || null,
+    companyResponsibleChargeDate: companyResponsibleChargeDate || null,
+    companyQualityManual: companyQualityManual || null,
+    operationalProcedures: operationalProcedures || null,
+    companyDocumentation: companyDocumentation || null,
+    documentationQuality: documentationQuality || null,
+    designerDocumentation: designerDocumentation || null,
+    weldingDocumentation: weldingDocumentation || null,
+    ndtDocumentation: ndtDocumentation || null,
+    indtDocumentation: indtDocumentation || null,
+    isoCertification: isoCertification || null,
+    feeId: feeId || null,
+    status: status || "pending",
   };
+
   const newAuthorizationManufacturer = await FormsRepo.createAuthorizationManufacturer(data);
 
   return {

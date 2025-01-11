@@ -121,7 +121,7 @@ module.exports = {
         allowNull: true,
       },
       nagobinDocument: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       companyMembershipLeia: {
@@ -129,7 +129,7 @@ module.exports = {
         allowNull: true,
       },
       leiaDocument: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       managerName: {
@@ -245,23 +245,23 @@ module.exports = {
         allowNull: true,
       },
       companyQualityManuel: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       operationalProcedures: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       companyDocumentation: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       documentationSupervisor: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       isoCertification: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: true,
       },
       feeId: {

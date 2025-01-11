@@ -17,6 +17,7 @@ router.get(
   asyncHandler(formsController.getAllAuthorizationApproved)
 );
 
+
 router.get(
   "/authorization-approved/:userId",
   authToken,
@@ -25,6 +26,7 @@ router.get(
 
 router.post(
   "/authorization-manufacturer",
+  authToken,
   asyncHandler(formsController.createAuthorizationManufacturer)
 );
 

@@ -122,7 +122,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       nagobinDocument: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       companyMembershipLeia: {
@@ -130,7 +130,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       leiaDocument: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       managerName: {
@@ -246,23 +246,23 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       companyQualityManuel: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       operationalProcedures: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       companyDocumentation: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       documentationSupervisor: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       isoCertification: {
-        type: DataTypes.STRING,
+        type: DataTypes.JSONB,
         allowNull: true,
       },
       feeId: {

@@ -12,7 +12,7 @@ const errorHandler = (err, req, res) => {
 
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   const message = "Internal Server Error";
-  // console.log({ Error: err.message })
+ 
 
   res.status(statusCode).json({
     status: "error",
@@ -25,7 +25,7 @@ const asyncHandler = (handler) => {
     try {
         await handler(req, res, next);
     } catch (error) {
-        // console.log({check:error.message})
+       
       next(error);
     }
   };

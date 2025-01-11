@@ -3,7 +3,7 @@ const FormsService = require("../services/formsServices");
 exports.createAuthorizationApproved = async (req, res) => {
   
     const data = await FormsService.createAuthorizationApproved(req, res);
-
+ console.log("the data",data.DATA)
     return res.status(data.STATUS_CODE).json({
       status: data.STATUS,
       message: data.MESSAGE,
@@ -34,7 +34,7 @@ exports.getAClassifications = async (req, res) => {
   const classId = req.params.classId;  // The classId from the URL
   const userId = req.user?.id;         // The user ID from the authenticated user (assuming it's set in the token)
 
-  const data = await AdminService.getAClassifications(classId, userId); // Pass only necessary data
+  const data = await FormsService.getAClassifications(classId, userId); // Pass only necessary data
 
   return res.status(200).json({
     status: data.STATUS,

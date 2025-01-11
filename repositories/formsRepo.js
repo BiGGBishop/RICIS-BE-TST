@@ -3,8 +3,8 @@ const { AuthorizationManufacturer } = require("../sequelize/models");
 
 exports.create = async (data) => {
   try {
-    const response = await AuthorizationApproved.create(update);
-    // console.log({response, update})
+    const response = await AuthorizationApproved.create(data);
+    console.log("the data ...",response)
     return response;
   } catch (error) {
     console.error("Error details:", error);

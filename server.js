@@ -1,6 +1,7 @@
 const app = require("./app");
 const { sequelize } = require("./sequelize/models");
 const { PORT } = require("./config/envConfig");
+const { default: job } = require("./cron/cron");
 
 
 
@@ -17,7 +18,7 @@ const connectDb = async () => {
 
 (async () => {
   await connectDb(); 
-
+  job.start();
   app.listen(PORT, () => {
     console.log(`listening on ${PORT}`);
   });

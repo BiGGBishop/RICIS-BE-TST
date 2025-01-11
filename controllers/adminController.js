@@ -154,13 +154,40 @@ exports.getClassificationsNoIncidental = async (req, res) => {
 };
 
 exports.getClassificationsYesIncidental = async (req, res) => {
-  const data = await AdminService.getClassificationsYesIncidental(req, res);
+  try {
+    const userOrAdminExist =
+      (await UserRepo.findUser({ id: req.user?.id })) ||
+      (await AdminRepo.findAdminUser({ id: req.user?.id }));
+      console.log(userOrAdminExist)
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+    if (!userOrAdminExist) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid Credentials",
+      });
+    }
+
+    const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+    console.log({ userExist: role });
+
+    let filter = { has_incidental: true };
+
+
+    const classifications = await AdminRepo.fetchClassificationsNoIncidental(
+      filter
+    );
+
+    return res.status(200).json({
+      status: true,
+      data: classifications,
+    });
+  } catch (error) {
+    console.error("Error fetching classifications:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 exports.updateClassifications = async (req, res) => {

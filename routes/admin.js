@@ -26,7 +26,9 @@ router.post("/classification", authToken, classificationValidation, asyncHandler
 router.get("/classification", authToken, asyncHandler(adminController.getClassifications)); 
 router.get("/classification/:classification_number", authToken, asyncHandler(adminController.getAClassifications));
 router.get("/classify/no_incidental", authToken, asyncHandler(adminController.getClassificationsNoIncidental)); 
-router.get("/classification/yesincidental", authToken, asyncHandler(adminController.getClassificationsYesIncidental)); 
+
+router.get("/classification/has_incidental", asyncHandler(adminController.getClassificationsYesIncidental)); 
+
 router.patch("/classification/:classId", authToken, asyncHandler(adminController.updateClassifications)); 
 router.delete("/classification/:classId", authToken, asyncHandler(adminController.deleteClassifications));
 router.get("/classify/merge", authToken, asyncHandler(adminController.getClassificationMerge)); 

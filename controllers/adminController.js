@@ -154,6 +154,7 @@ exports.getClassificationsNoIncidental = async (req, res) => {
 };
 
 exports.getClassificationsYesIncidental = async (req, res) => {
+  console.log("working...")
   try {
     const userOrAdminExist =
       (await UserRepo.findUser({ id: req.user?.id })) ||

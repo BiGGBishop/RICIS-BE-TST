@@ -77,7 +77,7 @@ module.exports = {
         allowNull: true,
       },
       companyYear: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
       companyEmployee: {

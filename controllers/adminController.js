@@ -1,6 +1,7 @@
 const AdminService = require("../services/adminServices");
 const UserService = require("../services/userServices");
-
+const UserRepo = require("../repositories/userRepo");
+const AdminRepo = require("../repositories/adminRepo")
 
 
 exports.getAdminDetails = async (req, res) => {
@@ -117,13 +118,39 @@ exports.getClassificationMerge = async (req, res) => {
 };
 
 exports.getClassificationsNoIncidental = async (req, res) => {
-  const data = await AdminService.getClassificationsNoIncidental(req, res);
+  try {
+    const userOrAdminExist =
+      (await UserRepo.findUser({ id: req.user?.id })) ||
+      (await AdminRepo.findAdminUser({ id: req.user?.id }));
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+    if (!userOrAdminExist) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid Credentials",
+      });
+    }
+
+    const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
+    console.log({ userExist: role });
+
+    let filter = { has_incidental: false };
+
+
+    const classifications = await AdminRepo.fetchClassificationsNoIncidental(
+      filter
+    );
+
+    return res.status(200).json({
+      status: true,
+      data: classifications,
+    });
+  } catch (error) {
+    console.error("Error fetching classifications:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 exports.getClassificationsYesIncidental = async (req, res) => {

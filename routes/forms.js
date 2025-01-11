@@ -2,12 +2,15 @@ const express = require("express");
 const { asyncHandler } = require("../middlewares/handler");
 const formsController = require("../controllers/formsController");
 const { authToken } = require("../utils/AunthenticateUser");
+const {validateReqBody} = require("../validations/reqValidator");
+const {authorizationApprovedSchema,authorizationManufacturerSchema} = require("../validations/formValidator")
 
 const router = express.Router();
 
 router.post(
   "/authorization-approved",
   authToken,
+  validateReqBody(authorizationApprovedSchema),
   asyncHandler(formsController.createAuthorizationApproved)
 );
 
@@ -27,6 +30,8 @@ router.get(
 router.post(
   "/authorization-manufacturer",
   authToken,
+  authToken,
+  validateReqBody(authorizationManufacturerSchema),
   asyncHandler(formsController.createAuthorizationManufacturer)
 );
 

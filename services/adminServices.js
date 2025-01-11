@@ -463,6 +463,7 @@ exports.getClassificationsNoIncidental = async (req) => {
   const userOrAdminExist =
     (await UserRepo.findUser({ id: req.user?.id })) ||
     (await AdminRepo.findAdminUser({ id: req.user?.id }));
+    console.log(userOrAdminExist)
 
   if (!userOrAdminExist) {
     return {
@@ -482,6 +483,7 @@ exports.getClassificationsNoIncidental = async (req) => {
     };
 
     const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+    console.log(user)
 
     return {
       STATUS_CODE: StatusCodes.OK,
@@ -539,7 +541,7 @@ exports.getClassificationsYesIncidental = async (req) => {
     const filter = {
       has_incidental: true,
     };
-    const user = await AdminRepo.fetchClassificationsNoIncidental(filter);
+    const user = await AdminRepo.fetchClassificationsYesIncidental(filter);
 
     return {
       STATUS_CODE: StatusCodes.OK,

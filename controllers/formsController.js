@@ -1,5 +1,6 @@
 const FormsService = require("../services/formsServices");
 
+
 exports.createAuthorizationApproved = async (req, res) => {
   
     const data = await FormsService.createAuthorizationApproved(req, res);
@@ -10,6 +11,7 @@ exports.createAuthorizationApproved = async (req, res) => {
       data: data.DATA
     });
 };
+
 
 exports.getAllAuthorizationApproved = async (req, res) => {
   try {

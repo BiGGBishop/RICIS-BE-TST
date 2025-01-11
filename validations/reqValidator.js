@@ -9,15 +9,7 @@ const validateReqBody = (schema) => async (req, res, next) => {
         };
 
         // Promisify the validation call if validateAsync is not available
-        const newReqBody = await new Promise((resolve, reject) => {
-            Joi.validate(req.body, schema, validateOptions, (err, value) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(value);
-                }
-            });
-        });
+        const newReqBody = await schema.validateAsync(req.body, validateOptions);
 
         req.body = newReqBody;
         next();

@@ -11,8 +11,8 @@ module.exports = {
 		 */
 		await queryInterface.renameColumn(
 			"classifications",
-			"is_incidental",
-			"has_incidental"
+			"has_incidental",
+
 		);
 	},
 
@@ -26,7 +26,7 @@ module.exports = {
 		await queryInterface.renameColumn(
 			"classifications",
 			"has_incidental",
-			"is_incidental"
+
 		);
 	},
 };

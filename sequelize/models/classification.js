@@ -66,8 +66,6 @@ module.exports = (sequelize, DataTypes) => {
       form_type: DataTypes.STRING,
 
       classification_number: DataTypes.INTEGER,
-
-
       restricted: {
         defaultValue: false,
         type: DataTypes.BOOLEAN,

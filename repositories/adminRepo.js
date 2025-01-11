@@ -154,6 +154,7 @@ exports.fetchClassificationMerge = async (filter) => {
 exports.fetchClassificationsNoIncidental = async (filter) => {
   const response = await Classification.findAll({
     where: filter,
+    has_incidental:false,
     include: [
       {
         model: Categories, // Include the associated category

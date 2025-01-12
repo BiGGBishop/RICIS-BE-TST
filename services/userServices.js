@@ -11,7 +11,7 @@ const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
 
-const { Classification, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models'); 
+const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models'); 
 
 
 exports.getOTP = async (req) => {
@@ -906,11 +906,11 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
   try {
     console.log("working..")
 
-const classification_merge = await ClassificationMerge.findOne({
+    const classification_merge = await ClassificationMerge.findOne({
       include: [
         {
           model: Classification,
-          as: 'classification',
+          as: "classification",
           where: {
             classification_number: classification_number,
           },
@@ -918,35 +918,59 @@ const classification_merge = await ClassificationMerge.findOne({
           include: [
             {
               model: Categories,
-              as: 'category',
-              attributes: ['name'],
+              as: "category",
+              attributes: ["name"],
             },
             {
               model: SubCategories,
-              as: 'subcategory',
-              attributes: ['name'],
+              as: "subcategory",
+              attributes: ["name"],
+            },
+            {
+              model: ClassificationFees,
+              as: "classificationFees",
+              attributes: ["amount"],
+              include: [
+                {
+                  model: Fee,
+                  as: "fee",
+                  attributes: ["fee_type", "application_category"],
+                },
+              ],
             },
           ],
         },
         {
           model: Classification,
-          as: 'incidentalClassification', 
+          as: "incidentalClassification",
           required: false,
           include: [
             {
               model: Categories,
-              as: 'category',
-              attributes: ['name'],
+              as: "category",
+              attributes: ["name"],
             },
             {
               model: SubCategories,
-              as: 'subcategory',
-              attributes: ['name'],
+              as: "subcategory",
+              attributes: ["name"],
             },
-          ],    
+            {
+              model: ClassificationFees,
+              as: "classificationFees",
+              attributes: ["amount"],
+              include: [
+                {
+                  model: Fee,
+                  as: "fee",
+                  attributes: ["fee_type", "application_category"],
+                },
+              ],
+            },
+          ],
         },
       ],
-      attributes: ['classificationId', 'classificationIncidentalId'], 
+      attributes: ["classificationId", "classificationIncidentalId"],
     });
   
 

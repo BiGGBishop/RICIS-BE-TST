@@ -11,7 +11,7 @@ const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
 
-const { Classification, ClassificationMerge } = require('../sequelize/models'); 
+const { Classification, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models'); 
 
 
 exports.getOTP = async (req) => {
@@ -915,11 +915,35 @@ const classification_merge = await ClassificationMerge.findOne({
             classification_number: classification_number,
           },
           required: true,
+          include: [
+            {
+              model: Categories,
+              as: 'category',
+              attributes: ['name'],
+            },
+            {
+              model: SubCategories,
+              as: 'subcategory',
+              attributes: ['name'],
+            },
+          ],
         },
         {
           model: Classification,
           as: 'incidentalClassification', 
-          required: false, 
+          required: false,
+          include: [
+            {
+              model: Categories,
+              as: 'category',
+              attributes: ['name'],
+            },
+            {
+              model: SubCategories,
+              as: 'subcategory',
+              attributes: ['name'],
+            },
+          ],    
         },
       ],
       attributes: ['classificationId', 'classificationIncidentalId'], 

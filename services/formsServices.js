@@ -474,7 +474,7 @@ exports.getAllAuthorizationTraining = async () => {
         ...req.body,
         user_id: userId,
       };
-      const newRegistration = await FormsRepo.BoilerRegistrationRepo.create(data);
+      const newRegistration = await FormsRepo.createBoilerRegistrationRepo(data);
       return {
         STATUS_CODE: StatusCodes.CREATED,
         STATUS: true,
@@ -493,7 +493,7 @@ exports.getAllAuthorizationTraining = async () => {
   
   exports.getAllBoilerRegistrations = async () => {
     try {
-      const allRegistrations = await FormsRepo.BoilerRegistrationRepo.findAll();
+      const allRegistrations = await FormsRepo.findAllBoilerRegistrationRepos();
       return {
         STATUS_CODE: StatusCodes.OK,
         STATUS: true,
@@ -510,9 +510,10 @@ exports.getAllAuthorizationTraining = async () => {
     }
   };
   
+  
   exports.getBoilerRegistrationsByUserId = async (userId) => {
       try {
-        const registrations = await FormsRepo.BoilerRegistrationRepo.findByUserId(userId);
+        const registrations = await FormsRepo.findBoilerRegistrationReposByUserId(userId);
         return {
           STATUS_CODE: StatusCodes.OK,
           STATUS: true,
@@ -529,80 +530,4 @@ exports.getAllAuthorizationTraining = async () => {
       }
     };
   
-    exports.getBoilerRegistrationById = async (id) => {
-      try {
-        const registration = await FormsRepo.BoilerRegistrationRepo.findById(id);
-        if (!registration) {
-          return {
-            STATUS_CODE: StatusCodes.NOT_FOUND,
-            STATUS: false,
-            MESSAGE: "Boiler registration not found.",
-          };
-        }
-        return {
-          STATUS_CODE: StatusCodes.OK,
-          STATUS: true,
-          MESSAGE: "Boiler registration fetched successfully.",
-          DATA: registration,
-        };
-      } catch (error) {
-        console.error("Error in getBoilerRegistrationById service:", error);
-        return {
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Failed to fetch boiler registration by ID.",
-        };
-      }
-    };
-  
-    exports.updateBoilerRegistration = async (req, id) => {
-      try {
-        const updatedRegistration = await FormsRepo.BoilerRegistrationRepo.update(id, req.body);
-        if (updatedRegistration[0] === 0) {
-          return {
-            STATUS_CODE: StatusCodes.NOT_FOUND,
-            STATUS: false,
-            MESSAGE: "Boiler registration not found.",
-          };
-        }
-        const registration = await FormsRepo.BoilerRegistrationRepo.findById(id);
-        return {
-          STATUS_CODE: StatusCodes.OK,
-          STATUS: true,
-          MESSAGE: "Boiler registration updated successfully.",
-          DATA: registration,
-        };
-      } catch (error) {
-        console.error("Error in updateBoilerRegistration service:", error);
-        return {
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Failed to update boiler registration.",
-        };
-      }
-    };
-  
-    exports.deleteBoilerRegistration = async (id) => {
-      try {
-        const deletedCount = await FormsRepo.BoilerRegistrationRepo.delete(id);
-        if (deletedCount === 0) {
-          return {
-            STATUS_CODE: StatusCodes.NOT_FOUND,
-            STATUS: false,
-            MESSAGE: "Boiler registration not found.",
-          };
-        }
-        return {
-          STATUS_CODE: StatusCodes.OK,
-          STATUS: true,
-          MESSAGE: "Boiler registration deleted successfully.",
-        };
-      } catch (error) {
-        console.error("Error in deleteBoilerRegistration service:", error);
-        return {
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Failed to delete boiler registration.",
-        };
-      }
-    };
+   

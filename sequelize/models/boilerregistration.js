@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	BoilerRegistration.init(
 		{
+			
 			// User Details
 			user_id: {
 				type: DataTypes.INTEGER,

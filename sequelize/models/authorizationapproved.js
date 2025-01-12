@@ -105,6 +105,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      
       companyContactPerson: {
         type: DataTypes.STRING,
         allowNull: true,

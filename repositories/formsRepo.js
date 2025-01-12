@@ -1,6 +1,7 @@
 const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
 const { TrainingOrganizationForm } = require("../sequelize/models");
+const {BoilerRegistration} = require("../sequelize/models")
 
 exports.create = async (data) => {
   try {
@@ -60,15 +61,14 @@ exports.findByUserIdTrainingAuthorization = async (userId) => {
     return await TrainingOrganizationForm.findAll({ where: { userId } });
   };
 
-
-  exports.createBoilerRegistrationRepo = async (data) => {
-    return BoilerRegistrationRepo.create(data);
+exports.createBoilerRegistrationRepo = async (data) => {
+    return  await BoilerRegistration.create(data);
   };
   
   exports.findAllBoilerRegistrationRepos = async () => {
-      return BoilerRegistrationRepo.findAll();
+      return await BoilerRegistration.findAll();
   };
   
   exports.findBoilerRegistrationReposByUserId = async (userId) => {
-      return BoilerRegistrationRepo.findAll({ where: { user_id: userId } });
+      return await BoilerRegistration.findAll({ where: { user_id: userId } });
   };

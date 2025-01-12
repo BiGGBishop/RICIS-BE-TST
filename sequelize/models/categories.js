@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       application_type: DataTypes.STRING,
     },
     {
+      
       sequelize,
       modelName: "Categories",
       tableName: "categories",

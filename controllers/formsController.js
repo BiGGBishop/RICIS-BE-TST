@@ -148,6 +148,6 @@ exports.getAllAuthorizationTraining = async (req, res) => {
   
   exports.getBoilerRegistrationByUserId = async (req, res) => {
       const { userId } = req.params;
-      const data = await FormsService.getBoilerRegistrationByUserId(userId);
+      const data = await FormsService.getBoilerRegistrationsByUserId(userId);
       return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };

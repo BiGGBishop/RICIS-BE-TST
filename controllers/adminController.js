@@ -109,7 +109,7 @@ exports.getAClassifications = async (req, res) => {
 
 exports.getClassificationMerge = async (req, res) => {
   const data = await AdminService.getClassificationMerge(req, res);
-  
+  console.log(data)
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,
     message: data.MESSAGE,

@@ -11,6 +11,9 @@ const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
 
+const { Classification, ClassificationMerge } = require('../sequelize/models'); 
+
+
 exports.getOTP = async (req) => {
   const { email } = req.body;
 
@@ -894,7 +897,69 @@ exports.addMsgToApplication = async (req) => {
   };
 };
 
+
+
+
+
+//getting merge clasification wit classification Number
+exports.getClassificationsWithMerge = async(classification_number)=>{
+  try {
+    console.log("working..")
+
+const classification_merge = await ClassificationMerge.findOne({
+      include: [
+        {
+          model: Classification,
+          as: 'classification',
+          where: {
+            classification_number: classification_number,
+          },
+          required: true,
+        },
+        {
+          model: Classification,
+          as: 'incidentalClassification', 
+          required: false, 
+        },
+      ],
+      attributes: ['classificationId', 'classificationIncidentalId'], 
+    });
+  
+
+    if (!classification_merge) {
+      return {
+        STATUS_CODE: 404,
+        STATUS: false,
+        MESSAGE: "Classification not found",
+        DATA: null,
+      };
+    }
+
+    //const dataIncidental = await Classification.findOne(classification_merge.classificationIncidentalId)
+    //console.log(dataIncidental)
+
+    return {
+      STATUS_CODE: 200,
+      STATUS: true,
+      MESSAGE: "Classification and incidental classification fetched successfully",
+      DATA:classification_merge,
+    };
+  } catch (error) {
+    console.error("Error in getClassificationWithIncidental service:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "An error occurred while fetching classification details",
+      DATA: null,
+    };
+  }
+}
+
+
+
 exports.getClassificationWithIncidental = async (classification_number) => {
+
+
   try {
     // Step 1: Fetch the classification by classification_number
     const classification = await AdminRepo.fetchAClassification({

@@ -1,5 +1,6 @@
-const UserService = require("../services/userServices");
+const { getClassificationsWithMerge,getClassificationWithIncidental } = require("../services/userServices");
 const axios = require('axios');
+
 
 exports.getOTP = async (req, res) => {
   const data = await UserService.getOTP(req, res);
@@ -219,7 +220,7 @@ exports.getClassificationWithIncidental = async (req, res) => {
       });
     }
 
-    const data = await UserService.getClassificationWithIncidental(classification_number);
+    const data = await getClassificationWithIncidental(classification_number);
 
     return res.status(data.STATUS_CODE).json({
       status: data.STATUS,
@@ -232,5 +233,27 @@ exports.getClassificationWithIncidental = async (req, res) => {
       status: false,
       message: "An error occurred while processing the request",
     });
+  }
+};
+
+
+exports.getClassificationMergeData = async (req, res) => {
+  const { classification_number } = req.body;
+  console.log(classification_number)
+  try{
+    const data = await getClassificationsWithMerge(classification_number)
+
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  }catch(error){
+    console.error("Error in getClassificatioWithMerge:", error);
+    return res.status(500).json({
+      status: false,
+      message: "An error occurred while processing the request",
+    });
+
   }
 };

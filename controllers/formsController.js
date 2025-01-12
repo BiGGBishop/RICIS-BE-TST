@@ -75,3 +75,4 @@ exports.getAuthorizationManufacturerByUserId = async (req, res) => {
   const data = await FormsService.getAuthorizationManufacturerByUserId(userId);
   return res.status(200).json({ status: true, message: "Fetched successfully", data });
 };
+

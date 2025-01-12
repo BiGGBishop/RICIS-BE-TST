@@ -323,11 +323,13 @@ exports.addClassificationMerge = async (req) => {
     };
   }
 
+
   const classObject = {
     classificationId: req.body.classificationId,
     classificationIncidentalId: req.body.classificationIncidentalId,
   };
 
+  
   const classificationMerge = await AdminRepo.addClassificationMerge(classObject);
 
   return {
@@ -439,6 +441,7 @@ exports.getClassificationMerge = async (req) => {
     };
 
     const user = await AdminRepo.fetchClassificationMerge(filter);
+
 
     return {
       STATUS_CODE: StatusCodes.OK,

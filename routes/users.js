@@ -6,7 +6,8 @@ const {
 } =  require("../validations/userValidation")
 const {asyncHandler} = require("../middlewares/handler")
 const usersController = require("../controllers/userController")
-const {authToken} =  require("../utils/AunthenticateUser")
+const {authToken} =  require("../utils/AunthenticateUser");
+const { getClassificationsWithMerge } = require("../services/userServices");
 
 router.get("/multi",authToken,  asyncHandler(usersController.getUsers));
 router.get("/details",authToken,  asyncHandler(usersController.getUserDetails));
@@ -14,6 +15,7 @@ router.post("/application",authToken, appValidation, asyncHandler(usersControlle
 router.get("/application",authToken, asyncHandler(usersController.getUsersApplication));
 router.get("/application/:appId",authToken, asyncHandler(usersController.getUsersSingleApplication));
 router.get("/classification-with-incidental",authToken, asyncHandler(usersController.getClassificationWithIncidental));
+router.post("/classification-with-merge",authToken,usersController.getClassificationMergeData);
 router.put("/application/msg/add", authToken, asyncHandler(usersController.addMsgToApplication)); 
 router.get("/payment/token",authToken, asyncHandler(usersController.getPaymentToken));
 

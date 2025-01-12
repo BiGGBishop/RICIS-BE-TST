@@ -57,11 +57,30 @@ router.get(
     asyncHandler(formsController.getAllAuthorizationTraining)
   );
 
-  
+
 router.get(
   "/authorization-training/:userId",
   authToken,
   asyncHandler(formsController.getAuthorizationTrainingByUserId)
 );
 
+
+
+router.post(
+  "/boiler-registration",
+  authToken,
+  asyncHandler(formsController.createBoilerRegistration)
+);
+
+router.get(
+    "/all-boiler-registrations",
+    authToken,
+    asyncHandler(formsController.getAllBoilerRegistrations)
+);
+
+router.get(
+    "/boiler-registration/:userId",
+    authToken,
+    asyncHandler(formsController.getBoilerRegistrationByUserId)
+);
 module.exports = router;

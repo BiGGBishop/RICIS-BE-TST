@@ -59,3 +59,16 @@ exports.findAllTrainingAuthorization = async () => {
 exports.findByUserIdTrainingAuthorization = async (userId) => {
     return await TrainingOrganizationForm.findAll({ where: { userId } });
   };
+
+
+  exports.createBoilerRegistrationRepo = async (data) => {
+    return BoilerRegistrationRepo.create(data);
+  };
+  
+  exports.findAllBoilerRegistrationRepos = async () => {
+      return BoilerRegistrationRepo.findAll();
+  };
+  
+  exports.findBoilerRegistrationReposByUserId = async (userId) => {
+      return BoilerRegistrationRepo.findAll({ where: { user_id: userId } });
+  };

@@ -116,3 +116,38 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     const data = await FormsService.getAuthorizationTrainingByUserId(userId);
     return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };
+
+
+  exports.createBoilerRegistration = async (req, res) => {
+    const data = await FormsService.createBoilerRegistration(req);
+  
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  };
+  
+  exports.getAllBoilerRegistrations = async (req, res) => {
+      try {
+          const allBoilerRegistrations = await FormsService.getAllBoilerRegistrations();
+  
+          return res.status(200).json({
+              status: true,
+              message: "Boiler registrations retrieved successfully",
+              data: allBoilerRegistrations,
+          });
+      } catch (error) {
+          console.error(error);
+          return res.status(500).json({
+              status: false,
+              message: "Internal Server Error",
+          });
+      }
+  };
+  
+  exports.getBoilerRegistrationByUserId = async (req, res) => {
+      const { userId } = req.params;
+      const data = await FormsService.getBoilerRegistrationByUserId(userId);
+      return res.status(200).json({ status: true, message: "Fetched successfully", data });
+  };

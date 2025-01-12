@@ -1,5 +1,6 @@
 const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
+const { TrainingOrganizationForm } = require("../sequelize/models");
 
 exports.create = async (data) => {
   try {
@@ -46,3 +47,15 @@ exports.findAllAuthorizationManufacturer = async () => {
 exports.findByUserIdAuthorizationManufacturer = async (user_id) => {
   return AuthorizationManufacturer.findAll({ where: { user_id } });
 };
+
+exports.createTrainingAuthorization = async (data) => {
+  return await TrainingOrganizationForm.create(data);
+};
+
+exports.findAllTrainingAuthorization = async () => {
+    return await TrainingOrganizationForm.findAll();
+  };
+
+exports.findByUserIdTrainingAuthorization = async (userId) => {
+    return await TrainingOrganizationForm.findAll({ where: { userId } });
+  };

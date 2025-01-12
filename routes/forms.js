@@ -45,4 +45,23 @@ router.get(
   asyncHandler(formsController.getAuthorizationManufacturerByUserId)
 );
 
+router.post(
+  "/authorization-training",
+  authToken,
+  asyncHandler(formsController.createAuthorizationTraining)
+);
+
+router.get(
+    "/all-authorization-training",
+    authToken,
+    asyncHandler(formsController.getAllAuthorizationTraining)
+  );
+
+  
+router.get(
+  "/authorization-training/:userId",
+  authToken,
+  asyncHandler(formsController.getAuthorizationTrainingByUserId)
+);
+
 module.exports = router;

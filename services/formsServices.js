@@ -354,3 +354,104 @@ exports.getAllAuthorizationManufacturer = async () => {
 exports.getAuthorizationManufacturerByUserId = async (userId) => {
   return FormsRepo.findByUserIdAuthorizationManufacturer(userId);
 };
+
+
+exports.createAuthorizationTraining = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: req.user?.id,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    userId: userId,
+    date_received: req.body.date_received,
+    authorized_inspector: req.body.authorized_inspector,
+    design_engineer: req.body.design_engineer,
+    power_engineer: req.body.power_engineer,
+    welding_engineer: req.body.welding_engineer,
+    refrigerator_engineer: req.body.refrigerator_engineer,
+    boiler_and_pressure_vessel_operator: req.body.boiler_and_pressure_vessel_operator,
+    pressure_welder: req.body.pressure_welder,
+    refrigeration_technician: req.body.refrigeration_technician,
+    approved_person: req.body.approved_person,
+    lift_technician: req.body.lift_technician,
+    crane_operator: req.body.crane_operator,
+    forklift_operator: req.body.forklift_operator,
+    work_equipment_operator: req.body.work_equipment_operator,
+    rigger: req.body.rigger,
+    scaffolding_technician: req.body.scaffolding_technician,
+    abseiling_technician: req.body.abseiling_technician,
+    new_application: req.body.new_application,
+    re_application: req.body.re_application,
+    available_for_documentation_review: req.body.available_for_documentation_review,
+    exemption_request: req.body.exemption_request,
+    company_name: req.body.company_name,
+    physical_address: req.body.physical_address,
+    year_of_commencing_business: req.body.year_of_commencing_business,
+    number_of_employee: req.body.number_of_employee,
+    member_nagobin: req.body.member_nagobin,
+    member_leia: req.body.member_leia,
+    member_indt: req.body.member_indt,
+    member_other_bodies: req.body.member_other_bodies,
+    quality_certification: req.body.quality_certification,
+    competence_category: req.body.competence_category,
+    competence_line: req.body.competence_line,
+    incidental_line: req.body.incidental_line,
+    contact_person: req.body.contact_person,
+    telephone: req.body.telephone,
+    email_address: req.body.email_address,
+    technical_supervisor_name: req.body.technical_supervisor_name,
+    technical_supervisor_address: req.body.technical_supervisor_address,
+    technical_supervisor_email: req.body.technical_supervisor_email,
+    technical_supervisor_date_of_birth: req.body.technical_supervisor_date_of_birth,
+    technical_supervisor_phonenumber: req.body.technical_supervisor_phonenumber,
+    high_school: req.body.high_school,
+    polytechnic: req.body.polytechnic,
+    university: req.body.university,
+    professional_qualification: req.body.professional_qualification,
+    professional_qualification_institution: req.body.professional_qualification_institution,
+    experience: req.body.experience,
+    name_of_user: req.body.name_of_user,
+    company_responsible_charge: req.body.company_responsible_charge,
+    date_sign: req.body.date_sign,
+    approval_category: req.body.approval_category,
+    approval_class: req.body.approval_class,
+    training_approval_number_ngtan: req.body.training_approval_number_ngtan,
+    director_of_factories: req.body.director_of_factories,
+    date_sign_director_of_factories: req.body.date_sign_director_of_factories,
+    documents_uploaded: req.body.documents_uploaded,
+    is_draft: req.body.is_draft,
+  };
+
+  const newTrainingAuthorization = await FormsRepo.createTrainingAuthorization(data);
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Training authorization created successfully.",
+    DATA: newTrainingAuthorization,
+  };
+};
+
+exports.getAllAuthorizationTraining = async () => {
+    const allAuthorizations = await FormsRepo.findAllTrainingAuthorization();
+  
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorizations fetched successfully.",
+      DATA: allAuthorizations,
+    };
+  };
+
+  exports.getAuthorizationTrainingByUserId = async (userId) => {
+    return FormsRepo.findByUserIdTrainingAuthorization(userId);
+  };

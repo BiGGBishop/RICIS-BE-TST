@@ -76,3 +76,43 @@ exports.getAuthorizationManufacturerByUserId = async (req, res) => {
   return res.status(200).json({ status: true, message: "Fetched successfully", data });
 };
 
+exports.createAuthorizationTraining = async (req, res) => {
+  try {
+    const data = await FormsService.createAuthorizationTraining(req);
+    return res.status(201).json({
+      status: true,
+      message: "Training authorization created successfully",
+      data: data,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.getAllAuthorizationTraining = async (req, res) => {
+    try {
+      const allAuthorizations = await FormsService.getAllAuthorizationTraining();
+  
+      return res.status(201).json({
+        status: true,
+        message: "Authorization Training records retrieved successfully",
+        data: allAuthorizations,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
+  exports.getAuthorizationTrainingByUserId = async (req, res) => {
+    const { userId } = req.params;
+    const data = await FormsService.getAuthorizationTrainingByUserId(userId);
+    return res.status(200).json({ status: true, message: "Fetched successfully", data });
+  };

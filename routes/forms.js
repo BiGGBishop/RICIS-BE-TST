@@ -83,4 +83,17 @@ router.get(
     authToken,
     asyncHandler(formsController.getBoilerRegistrationByUserId)
 );
+// Competency Certification Form Routes
+router.post('/competency-form', authToken, formsController.createCompetencyForm);
+router.get('/competency-form', authToken, formsController.getAllCompetencyForms);
+router.get('/competency-form/user/:userId', authToken, formsController.getCompetencyFormByUserId);
+router.get('/competency-form/:id', authToken, formsController.getCompetencyFormById);
+router.put('/competency-form/:id', authToken, formsController.updateCompetencyForm);
+router.delete('/competency-form/:id', authToken, formsController.deleteCompetencyForm);
 module.exports = router;
+
+
+//renewal
+router.post("/renewal-form", authToken, formsController.createRenewalForm);
+router.get("/renewal-form", authToken, formsController.getAllRenewalForms);
+router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUserId);

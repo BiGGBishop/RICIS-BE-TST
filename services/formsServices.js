@@ -529,5 +529,225 @@ exports.getAllAuthorizationTraining = async () => {
         };
       }
     };
+
+
+    //competency
+    exports.createCompetencyForm = async (req) => {
+      const userId = req?.user?.id;
+      const userExist = await UserRepo.findUser({
+        id: userId,
+      });
+  
+      if (!userExist) {
+        return {
+          STATUS_CODE: StatusCodes.UNAUTHORIZED,
+          STATUS: false,
+          MESSAGE: "User not authenticated.",
+        };
+      }
+  
+      const data = {
+          ...req.body,
+          userId: userId
+      };
+  
+      const newCompetencyForm = await FormsRepo.createCompetencyForm(data);
+  
+      return {
+          STATUS_CODE: StatusCodes.CREATED,
+          STATUS: true,
+          MESSAGE: "Competency form created successfully.",
+          DATA: newCompetencyForm,
+      };
+  };
+  
+  exports.getAllCompetencyForms = async () => {
+      const allCompetencyForms = await FormsRepo.findAllCompetencyForms();
+  
+      return {
+          STATUS_CODE: StatusCodes.OK,
+          STATUS: true,
+          MESSAGE: "Competency forms fetched successfully.",
+          DATA: allCompetencyForms,
+      };
+  };
+  
+  exports.getCompetencyFormByUserId = async (userId) => {
+      const competencyForms = await FormsRepo.findCompetencyFormByUserId(userId);
+      return {
+          STATUS_CODE: StatusCodes.OK,
+          STATUS: true,
+          MESSAGE: "Competency forms fetched successfully.",
+          DATA: competencyForms,
+      };
+  };
+  
+  exports.getCompetencyFormById = async (id) => {
+    const competencyForm = await FormsRepo.findCompetencyFormById(id);
+    if (!competencyForm) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Competency form not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency form fetched successfully.",
+      DATA: competencyForm,
+    };
+  };
+  
+  exports.updateCompetencyForm = async (req, id) => {
+    const userId = req?.user?.id;
+    const userExist = await UserRepo.findUser({
+      id: userId,
+    });
+  
+    if (!userExist) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+    const updatedCompetencyForm = await FormsRepo.updateCompetencyForm(id, req.body);
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency form updated successfully.",
+      DATA: updatedCompetencyForm,
+    };
+  };
+  
+  exports.deleteCompetencyForm = async (id) => {
+    const deletedCompetencyForm = await FormsRepo.deleteCompetencyForm(id);
+    if (deletedCompetencyForm === 0) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Competency form not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency form deleted successfully.",
+    };
+  };
   
    
+// New functions for RenewalForm
+exports.createRenewalForm = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: req.user?.id,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    userId: userId,
+    date_received: req.body.date_received,
+    form_number: req.body.form_number,
+    form_type: req.body.form_type,
+    equipment_registration: req.body.equipment_registration,
+    certificate_of_competence: req.body.certificate_of_competence,
+    certificate_of_authorization: req.body.certificate_of_authorization,
+    documentation_available: req.body.documentation_available,
+    exemption_requested: req.body.exemption_requested,
+    company_name: req.body.company_name,
+    company_address: req.body.company_address,
+    company_cac_registration_number: req.body.company_cac_registration_number,
+    year_of_commencement: req.body.year_of_commencement,
+    number_of_employees: req.body.number_of_employees,
+    nagobin_membership: req.body.nagobin_membership,
+    leia_membership: req.body.leia_membership,
+    other_memberships: req.body.other_memberships,
+    quality_certifications: req.body.quality_certifications,
+    previous_authorization_certificate_number:
+      req.body.previous_authorization_certificate_number,
+    previous_authorization_date_of_issue:
+      req.body.previous_authorization_date_of_issue,
+    previous_authorization_expiry_date:
+      req.body.previous_authorization_expiry_date,
+    renewal_reason: req.body.renewal_reason,
+    competence_category: req.body.competence_category,
+    competence_line_number: req.body.competence_line_number,
+    incidental_line_number: req.body.incidental_line_number,
+    contact_person_name: req.body.contact_person_name,
+    contact_person_email: req.body.contact_person_email,
+    contact_person_phone: req.body.contact_person_phone,
+    responsible_charge_name: req.body.responsible_charge_name,
+    declaration_date: req.body.declaration_date,
+    approval_category: req.body.approval_category,
+    approval_class: req.body.approval_class,
+    contractor_number: req.body.contractor_number,
+    director_of_factories: req.body.director_of_factories,
+    director_signature_date: req.body.director_signature_date,
+    uploaded_documents: req.body.uploaded_documents,
+    is_draft: req.body.is_draft,
+  };
+
+  try {
+    const newRenewalForm = await FormsRepo.createRenewalForm(data);
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Renewal form successfully created.",
+      DATA: newRenewalForm,
+    };
+  } catch (error) {
+    console.error("Error creating renewal form:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating renewal form",
+    };
+  }
+};
+
+exports.getAllRenewalForms = async () => {
+  try {
+    const allRenewalForms = await FormsRepo.findAllRenewalForms();
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Renewal forms fetched successfully.",
+      DATA: allRenewalForms,
+    };
+  } catch (error) {
+    console.error("Error fetching renewal forms:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error fetching renewal forms",
+    };
+  }
+};
+
+exports.getRenewalFormByUserId = async (userId) => {
+  try {
+    const renewalForms = await FormsRepo.findRenewalFormByUserId(userId);
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Renewal forms fetched successfully.",
+      DATA: renewalForms,
+    };
+  } catch (error) {
+    console.error("Error fetching renewal forms by user ID:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error fetching renewal forms by user ID",
+    };
+  }
+};

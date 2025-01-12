@@ -2,6 +2,9 @@ const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
 const { TrainingOrganizationForm } = require("../sequelize/models");
 const {BoilerRegistration} = require("../sequelize/models")
+const { CompetencyCertificationForm } = require("../sequelize/models");
+const {RenewalForm} = require("../sequelize/models");
+const {User} = require("../sequelize/models")
 
 exports.create = async (data) => {
   try {
@@ -36,6 +39,7 @@ exports.findByUserId = async (userId) => {
   return await AuthorizationApproved.findAll({ where: { user_id: userId } });
 };
 
+//crate authorization manufacturer
 
 exports.createAuthorizationManufacturer = async (data) => {
   return AuthorizationManufacturer.create(data);
@@ -49,6 +53,8 @@ exports.findByUserIdAuthorizationManufacturer = async (user_id) => {
   return AuthorizationManufacturer.findAll({ where: { user_id } });
 };
 
+
+//createTraining authorization
 exports.createTrainingAuthorization = async (data) => {
   return await TrainingOrganizationForm.create(data);
 };
@@ -61,6 +67,7 @@ exports.findByUserIdTrainingAuthorization = async (userId) => {
     return await TrainingOrganizationForm.findAll({ where: { userId } });
   };
 
+  //Boier registration
 exports.createBoilerRegistrationRepo = async (data) => {
     return  await BoilerRegistration.create(data);
   };
@@ -72,3 +79,79 @@ exports.createBoilerRegistrationRepo = async (data) => {
   exports.findBoilerRegistrationReposByUserId = async (userId) => {
       return await BoilerRegistration.findAll({ where: { user_id: userId } });
   };
+
+
+  //competencyForm
+  exports.createCompetencyForm = async (data) => {
+    return CompetencyCertificationForm.create(data);
+  };
+  
+  exports.findAllCompetencyForms = async () => {
+    return CompetencyCertificationForm.findAll();
+  };
+  
+  exports.findCompetencyFormByUserId = async (userId) => {
+      return CompetencyCertificationForm.findAll({ where: { userId } });
+  };
+  
+  exports.findCompetencyFormById = async (id) => {
+    return CompetencyCertificationForm.findByPk(id);
+  };
+  
+  exports.updateCompetencyForm = async (id, update) => {
+    return CompetencyCertificationForm.update(update, { where: { id } });
+  };
+  
+  exports.deleteCompetencyForm = async (id) => {
+    return CompetencyCertificationForm.destroy({ where: { id } });
+  };
+
+  // New functions for RenewalForm
+exports.createRenewalForm = async (data) => {
+  try {
+    const response = await RenewalForm.create(data);
+    return response;
+  } catch (error) {
+    console.error("Error creating renewal form:", error);
+    throw error; // Re-throw the error to be caught by the service
+  }
+};
+
+exports.findAllRenewalForms = async () => {
+  try {
+    const response = await RenewalForm.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'email', 'first_name', 'last_name'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching renewal forms:", error);
+    throw error;
+  }
+};
+
+exports.findRenewalFormByUserId = async (userId) => {
+  try {
+    const response = await RenewalForm.findAll({
+      where: { userId: userId },
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'email', 'first_name', 'last_name'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+    return response;
+  } catch (error) {
+    console.error("Error fetching renewal forms by user ID:", error);
+    throw error;
+  }
+};

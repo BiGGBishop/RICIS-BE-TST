@@ -151,3 +151,112 @@ exports.getAllAuthorizationTraining = async (req, res) => {
       const data = await FormsService.getBoilerRegistrationsByUserId(userId);
       return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };
+
+
+  // New functions for CompetencyCertificationForm
+exports.createCompetencyForm = async (req, res) => {
+  const data = await FormsService.createCompetencyForm(req);
+  return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+  });
+};
+
+exports.getAllCompetencyForms = async (req, res) => {
+  const data = await FormsService.getAllCompetencyForms();
+  return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+  });
+};
+
+exports.getCompetencyFormByUserId = async (req, res) => {
+  const { userId } = req.params;
+  const data = await FormsService.getCompetencyFormByUserId(userId);
+  return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+  });
+};
+
+exports.getCompetencyFormById = async (req, res) => {
+const { id } = req.params;
+const data = await FormsService.getCompetencyFormById(id);
+return res.status(data.STATUS_CODE).json({
+  status: data.STATUS,
+  message: data.MESSAGE,
+  data: data.DATA,
+});
+};
+
+exports.updateCompetencyForm = async (req, res) => {
+const { id } = req.params;
+const data = await FormsService.updateCompetencyForm(req, id);
+return res.status(data.STATUS_CODE).json({
+  status: data.STATUS,
+  message: data.MESSAGE,
+  data: data.DATA,
+});
+};
+
+exports.deleteCompetencyForm = async (req, res) => {
+const { id } = req.params;
+const data = await FormsService.deleteCompetencyForm(id);
+return res.status(data.STATUS_CODE).json({
+  status: data.STATUS,
+  message: data.MESSAGE,
+});
+};
+
+
+exports.createRenewalForm = async (req, res) => {
+  try {
+    const response = await FormsService.createRenewalForm(req);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error creating renewal form:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error creating renewal form",
+      });
+  }
+};
+
+exports.getAllRenewalForms = async (req, res) => {
+  try {
+    const response = await FormsService.getAllRenewalForms();
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching renewal forms:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching renewal forms",
+      });
+  }
+};
+
+exports.getRenewalFormByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const response = await FormsService.getRenewalFormByUserId(userId);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching renewal forms by user ID:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching renewal forms by user ID",
+      });
+  }
+};

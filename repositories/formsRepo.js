@@ -5,6 +5,7 @@ const {BoilerRegistration} = require("../sequelize/models")
 const { CompetencyCertificationForm } = require("../sequelize/models");
 const {RenewalForm} = require("../sequelize/models");
 const {User} = require("../sequelize/models")
+const {Classification} = require("../sequelize/models")
 
 exports.create = async (data) => {
   try {
@@ -23,7 +24,7 @@ exports.findAll = async () => {
         {
           model: Classification,
           as: 'classification',
-          attributes: ['id', 'name'], // Adjust attributes as needed
+          attributes: ['id', 'classification_name'], // Adjust attributes as needed
         },
       ],
       attributes: { exclude: [] },

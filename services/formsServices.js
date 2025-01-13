@@ -2,6 +2,7 @@ const FormsRepo = require("../repositories/formsRepo");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const StatusCodes = require("../utils/statusCodes");
+const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
 
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
@@ -45,9 +46,9 @@ exports.createAuthorizationApproved = async (req) => {
     companyContactPerson: req.body.companyContactPerson || null,
     companyTelephone: req.body.companyTelephone || null,
     companyEmail: req.body.companyEmail || null,
-    nagobinDocument: req.body.nagobinDocument || false,
+    nagobinDocument: await uploadSingleFile(req.files.nagobinDocument[0]) || false,
     companyMembershipLeia: req.body.companyMembershipLeia || false,
-    leiaDocument: req.body.leiaDocument || null,
+    leiaDocument: await uploadSingleFile(req.files.leiaDocument[0]) || null,
     managerName: req.body.managerName || null,
     managerAddress: req.body.managerAddress || null,
     managerDOB: req.body.managerDOB || null,
@@ -76,11 +77,11 @@ exports.createAuthorizationApproved = async (req) => {
     experienceExistDate: req.body.experienceExistDate || null,
     companyResponsibleCharge: req.body.companyResponsibleCharge || null,
     companyResponsibleChargeDate: req.body.companyResponsibleChargeDate || null,
-    companyQualityManuel: req.body.companyQualityManuel || null,
-    operationalProcedures: req.body.operationalProcedures || null,
-    companyDocumentation: req.body.companyDocumentation || null,
-    documentationSupervisor: req.body.documentationSupervisor || null,
-    isoCertification: req.body.isoCertification || null,
+    companyQualityManual: await  uploadSingleFile(req.files.companyQualityManual[0])|| null,
+    operationalProcedures: await uploadSingleFile(req.files.operationalProcedures[0]) || null,
+    companyDocumentation: await uploadSingleFile(req.files.companyDocumentation[0]) || null,
+    documentationSupervisor: await uploadSingleFile(req.files.documentationSupervisor[0]) || null,
+    isoCertification: await uploadSingleFile(req.files.isoCertification[0]) || null,
     feeId: req.body.feeId || null,
     status: req.body.status || "pending",
   };
@@ -325,7 +326,7 @@ exports.createAuthorizationManufacturer = async (req) => {
     weldingDocumentation: weldingDocumentation || null,
     ndtDocumentation: ndtDocumentation || null,
     indtDocumentation: indtDocumentation || null,
-    isoCertification: isoCertification || null,
+    isoCertification: await uploadSingleFile(isoCertification) || null,
     feeId: feeId || null,
     status: status || "pending",
   };
@@ -427,7 +428,7 @@ exports.createAuthorizationTraining = async (req) => {
     training_approval_number_ngtan: req.body.training_approval_number_ngtan,
     director_of_factories: req.body.director_of_factories,
     date_sign_director_of_factories: req.body.date_sign_director_of_factories,
-    documents_uploaded: req.body.documents_uploaded,
+    documents_uploaded: await uploadMultiple(req.files.documents_uploaded),
     is_draft: req.body.is_draft,
   };
 
@@ -692,7 +693,7 @@ exports.createRenewalForm = async (req) => {
     contractor_number: req.body.contractor_number,
     director_of_factories: req.body.director_of_factories,
     director_signature_date: req.body.director_signature_date,
-    uploaded_documents: req.body.uploaded_documents,
+    uploaded_documents: await uploadMultiple(req.files.uploaded_documents),
     is_draft: req.body.is_draft,
   };
 

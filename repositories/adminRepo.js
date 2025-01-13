@@ -142,7 +142,7 @@ exports.fetchAClassification = async (filter) => {
 exports.fetchClassificationMerge = async (filter) => {
   try {
     const response = await ClassificationMerge.findOne({
-      where: filter, // Ensure we only get one record
+      filter, // Ensure we only get one record
     });
     return response;
   } catch (error) {

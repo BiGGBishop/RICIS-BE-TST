@@ -929,7 +929,7 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
             {
               model: ClassificationFees,
               as: "classificationFees",
-              attributes: ["amount"],
+              attributes: ["amount","feeId"],
               include: [
                 {
                   model: Fee,
@@ -958,7 +958,7 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
             {
               model: ClassificationFees,
               as: "classificationFees",
-              attributes: ["amount"],
+              attributes: ["amount","feeId"],
               include: [
                 {
                   model: Fee,

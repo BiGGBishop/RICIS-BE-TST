@@ -2,6 +2,7 @@ const AdminService = require("../services/adminServices");
 const UserService = require("../services/userServices");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo")
+const { ClassificationMerge, Classification } = require("../sequelize/models");
 
 
 exports.getAdminDetails = async (req, res) => {
@@ -107,15 +108,35 @@ exports.getAClassifications = async (req, res) => {
   });
 };
 
-exports.getClassificationMerge = async (req, res) => {
-  const data = await AdminService.getClassificationMerge(req, res);
-  console.log(data)
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
-};
+
+  exports.getClassificationMerge = async (req, res) => {
+    try {
+      const merges = await ClassificationMerge.findAll({
+        include: [
+          {
+            model: Classification,
+            as: "classification",
+          },
+          {
+            model: Classification,
+            as: "incidentalClassification",
+          },
+        ],
+      });
+  
+      return res.status(200).json({
+        status: true,
+        message: "Classification merges retrieved successfully",
+        data: merges,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
 
 exports.getClassificationsNoIncidental = async (req, res) => {
   try {

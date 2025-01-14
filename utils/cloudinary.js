@@ -7,6 +7,7 @@ cloudinary.config({
 });
 
 async function uploadSingleFile(file) {
+    console.log(file)
     try {
       const result = await cloudinary.uploader.upload(file,{ resource_type: 'auto'});
       return result.secure_url;

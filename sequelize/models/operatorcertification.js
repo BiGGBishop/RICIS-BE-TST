@@ -24,8 +24,11 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			// Application Information
 			date_received: DataTypes.DATE,
-			form_number: DataTypes.STRING,
-			form_type: DataTypes.STRING,
+			date_received: DataTypes.DATE,
+            form_number: {
+              type: DataTypes.STRING,
+              defaultValue: "RICS-A-07"
+            },
 			certification_type: DataTypes.ENUM(
 				"Lifting Equipment Operator",
 				"Lifting Equipment Operator Assistance",

@@ -6,7 +6,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-async function uploadSingleFile  (file) {
+async function uploadSingleFile(file) {
     try {
       const result = await cloudinary.uploader.upload(file,{ resource_type: 'auto'});
       return result.secure_url;

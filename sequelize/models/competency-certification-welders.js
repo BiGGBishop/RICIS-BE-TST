@@ -86,5 +86,5 @@ module.exports = (sequelize, DataTypes) => {
 		}
 	);
 
-	return ComptencyCertificationWelders;
+	return CompetencyCertificationWelder;
 };

@@ -8,7 +8,7 @@ cloudinary.config({
 
 async function uploadSingleFile  (file) {
     try {
-      const result = await cloudinary.uploader.upload(file.path);
+      const result = await cloudinary.uploader.upload(file,{ resource_type: 'auto'});
       return result.secure_url;
     } catch (error) {
       console.error("Error uploading file to Cloudinary:", error);
@@ -21,7 +21,7 @@ async function uploadMultiple(files) {
     }
     const uploadPromises = files.map(file => {
         return new Promise((resolve, reject) => {
-            cloudinary.uploader.upload(file.path, { resource_type: 'auto' }, (error, result) => {
+            cloudinary.uploader.upload(file, { resource_type: 'auto' }, (error, result) => {
                 if (error) {
                     console.error("Cloudinary upload error:", error);
                     reject(error);

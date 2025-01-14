@@ -262,7 +262,7 @@ const renewalFormSchema = Joi.object({
     company_name: Joi.string().allow(null),
     company_address: Joi.string().allow(null),
     company_cac_registration_number: Joi.string().allow(null),
-    year_of_commencement: Joi.number().integer().allow(null),
+    year_of_commencement: Joi.string().allow(null),
     number_of_employees: Joi.number().integer().allow(null),
     nagobin_membership: Joi.boolean().allow(null),
     leia_membership: Joi.boolean().allow(null),

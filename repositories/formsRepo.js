@@ -6,6 +6,8 @@ const { CompetencyCertificationForm } = require("../sequelize/models");
 const {RenewalForm} = require("../sequelize/models");
 const {User} = require("../sequelize/models")
 const {Classification} = require("../sequelize/models")
+const {OperatorCertification} = require("../sequelize/models")
+const {CompetencyCertificationLifting} = require("../sequelize/models")
 
 exports.create = async (data) => {
   try {
@@ -155,4 +157,57 @@ exports.findRenewalFormByUserId = async (userId) => {
     console.error("Error fetching renewal forms by user ID:", error);
     throw error;
   }
+};
+
+
+// New functions for OperatorCertification07
+exports.createOperatorCertification = async (data) => {
+  return OperatorCertification.create(data);
+};
+
+exports.findAllOperatorCertifications = async () => {
+  return OperatorCertification.findAll();
+};
+
+exports.findOperatorCertificationsByUserId = async (userId) => {
+    return OperatorCertification.findAll({ where: { userId } });
+};
+
+exports.findOperatorCertificationById = async (id) => {
+    return OperatorCertification.findByPk(id);
+};
+
+exports.updateOperatorCertification = async (id, data) => {
+    return OperatorCertification.update(data, { where: { id } });
+};
+
+exports.deleteOperatorCertification = async (id) => {
+    return OperatorCertification.destroy({ where: { id } });
+};
+
+
+
+// New functions for LifingOperatorCertification08
+exports.createCompetencyCertificationLifting = async (data) => {
+  return CompetencyCertificationLifting.create(data);
+};
+
+exports.findAllCompetencyCertificationLifting  = async () => {
+  return CompetencyCertificationLifting.findAll();
+};
+
+exports.findCompetencyCertificationLiftingByUserId  = async (userId) => {
+    return CompetencyCertificationLifting.findAll({ where: { userId } });
+};
+
+exports.findCompetencyCertificationLiftingById  = async (id) => {
+    return CompetencyCertificationLifting.findByPk(id);
+};
+
+exports.CompetencyCertificationLifting  = async (id, data) => {
+    return CompetencyCertificationLifting.update(data, { where: { id } });
+};
+
+exports.CompetencyCertificationLifting  = async (id) => {
+    return CompetencyCertificationLifting.destroy({ where: { id } });
 };

@@ -259,3 +259,64 @@ exports.getRenewalFormByUserId = async (req, res) => {
       });
   }
 };
+
+exports.createOperatorCertification = async (req, res) => {
+  const response = await FormsService.createOperatorCertification(req);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllOperatorCertifications = async (req, res) => {
+  const response = await FormsService.getAllOperatorCertifications();
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getOperatorCertificationsByUserId = async (req, res) => {
+  const userId = req?.user?.id;
+  const response = await FormsService.getOperatorCertificationsByUserId(userId);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getOperatorCertificationById = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.getOperatorCertificationById(id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.updateOperatorCertification = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.updateOperatorCertification(req, id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.deleteOperatorCertification = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.deleteOperatorCertification(id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+
+
+
+// CompetencyCertificationLifting Controller Functions
+exports.createCompetencyCertificationLifting = async (req, res) => {
+  const response = await FormsService.createCompetencyCertificationLifting(req);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationLifting = async (req, res) => {
+  const response = await FormsService.getAllCompetencyCertificationLiftings();
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getCompetencyCertificationLiftingByUserId = async (req, res) => {
+  const userId = req?.user?.id;
+  const response = await FormsService.getCompetencyCertificationLiftingByUserId(userId);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getCompetencyCertificationLiftingById = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.getCompetencyCertificationLiftingById(id);
+  res.status(response.STATUS_CODE).json(response);
+};
+

@@ -16,7 +16,7 @@ const authorizationApprovedSchema = Joi.object({
     companyName: Joi.string().allow(null),
     companyAddress: Joi.string().allow(null),
     companyCAC: Joi.string().allow(null),
-    companyYear: Joi.number().allow(null),
+    companyYear: Joi.date().allow(null),
     companyEmployee: Joi.number().allow(null),
     companyMembership: Joi.string().allow(null),
     companyQuality: Joi.string().allow(null),

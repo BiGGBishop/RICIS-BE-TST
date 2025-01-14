@@ -40,6 +40,7 @@ const authorizationApprovedSchema = Joi.object({
     qualification: Joi.string().allow(null),
     institution: Joi.string().allow(null),
     dateIssue: Joi.date().allow(null),
+    companyCAC: Joi.string().allow(null),
     expirationDate: Joi.date().allow(null),
     nameCompany: Joi.string().allow(null),
     joinDate: Joi.date().allow(null),

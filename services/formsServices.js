@@ -77,11 +77,11 @@ exports.createAuthorizationApproved = async (req) => {
     experienceExistDate: req.body.experienceExistDate || null,
     companyResponsibleCharge: req.body.companyResponsibleCharge || null,
     companyResponsibleChargeDate: req.body.companyResponsibleChargeDate || null,
-    companyQualityManual: await  uploadSingleFile(req?.files?.companyQualityManual[0])|| null,
-    operationalProcedures: await uploadSingleFile(req?.files?.operationalProcedures[0]) || null,
-    companyDocumentation: await uploadSingleFile(req?.files?.companyDocumentation[0]) || null,
-    documentationSupervisor: await uploadSingleFile(req?.files?.documentationSupervisor[0]) || null,
-    isoCertification: await uploadSingleFile(req?.files?.isoCertification[0]) || null,
+    companyQualityManual: await  uploadSingleFile(req.body.companyQualityManual) || null,
+    operationalProcedures: await uploadSingleFile(req?.body?.operationalProcedures) || null,
+    companyDocumentation: await uploadSingleFile(req?.body?.companyDocumentation) || null,
+    documentationSupervisor: await uploadSingleFile(req?.body?.documentationSupervisor) || null,
+    isoCertification: await uploadSingleFile(req?.body?.isoCertification) || null,
     feeId: req.body.feeId || null,
     status: req.body.status || "pending",
   };
@@ -428,7 +428,7 @@ exports.createAuthorizationTraining = async (req) => {
     training_approval_number_ngtan: req.body.training_approval_number_ngtan,
     director_of_factories: req.body.director_of_factories,
     date_sign_director_of_factories: req.body.date_sign_director_of_factories,
-    documents_uploaded: await uploadMultiple(req.files.documents_uploaded),
+    documents_uploaded: await uploadMultiple(req.body.documents_uploaded),
     is_draft: req.body.is_draft,
   };
 
@@ -693,7 +693,7 @@ exports.createRenewalForm = async (req) => {
     contractor_number: req.body.contractor_number,
     director_of_factories: req.body.director_of_factories,
     director_signature_date: req.body.director_signature_date,
-    uploaded_documents: await uploadMultiple(req.files.uploaded_documents),
+    uploaded_documents: await uploadMultiple(req.body.uploaded_documents),
     is_draft: req.body.is_draft,
   };
 

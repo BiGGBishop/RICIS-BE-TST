@@ -15,7 +15,7 @@ module.exports = {
 
   development: {
     // url: SQLDB_URL,
-    url: 'postgresql://ricis_v3_user:bksTFv5kmHJvjLHo6j8fcfk0ZYwtkXGo@dpg-ctglqualqhvc739mmc80-a.oregon-postgres.render.com/ricis_v3',
+    url: 'postgresql://ricisdatabase_user:xdiQecXhYXdQ3Dy8HAnRI8NZpt42VhAb@dpg-cu4g42jtq21c73cqmrog-a.oregon-postgres.render.com/ricisdatabase',
     dialect: "postgres",
     dialectOptions:
       // ENVIRONMENT === "production" || ENVIRONMENT === "staging"

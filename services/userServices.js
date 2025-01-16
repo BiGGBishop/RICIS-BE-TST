@@ -153,7 +153,7 @@ exports.signUpUsers = async (req) => {
   const role = await UserRepo.findRole({ name: "user" });
 
   const userObject = {
-    userroleId: role.id,
+    userroleId: role?.id,
     completion_percent: 100,
     ...req.body,
   };

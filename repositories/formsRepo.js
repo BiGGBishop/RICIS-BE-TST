@@ -7,7 +7,10 @@ const {RenewalForm} = require("../sequelize/models");
 const {User} = require("../sequelize/models")
 const {Classification} = require("../sequelize/models")
 const {OperatorCertification} = require("../sequelize/models")
-const {CompetencyCertificationLifting} = require("../sequelize/models")
+const {CompetencyCertificationLifting} = require("../sequelize/models");
+const {AuthorizedInspectorCertification} = require("../sequelize/models");
+const {CompetencyCertificationWelder} = require("../sequelize/models");
+const {LiftingEquipmentRegistration} = require("../sequelize/models")
 
 exports.create = async (data) => {
   try {
@@ -210,4 +213,53 @@ exports.CompetencyCertificationLifting  = async (id, data) => {
 
 exports.CompetencyCertificationLifting  = async (id) => {
     return CompetencyCertificationLifting.destroy({ where: { id } });
+};
+
+
+// New functions for competency Certification
+exports.createCompetencyCertificationInspection = async (data) => {
+  return AuthorizedInspectorCertification.create(data);
+};
+
+exports.findAllCompetencyCertificationInspection = async () => {
+  return AuthorizedInspectorCertification.findAll();
+};
+
+exports.findCompetencyCertificationInspectionByUserId  = async (userId) => {
+    return AuthorizedInspectorCertification.findAll({ where: { userId } });
+};
+
+exports.findCompetencyCertificationInspectionById  = async (id) => {
+    return AuthorizedInspectorCertification.findByPk(id);
+};
+
+
+
+
+// New functions for LifingOperatorCertification08
+exports.createCompetencyCertificationWelder = async (data) => {
+  return CompetencyCertificationWelder.create(data);
+};
+
+exports.findAllCompetencyCertificationWelder = async () => {
+  return CompetencyCertificationWelder.findAll();
+};
+
+exports.findCompetencyCertificationWelderByUserId  = async (userId) => {
+    return CompetencyCertificationWelder.findAll({ where: { userId } });
+};
+
+
+
+// LiftingEquipmentRegistration
+exports.createLiftingEquipmentRegistration = async (data) => {
+  return LiftingEquipmentRegistration.create(data);
+};
+
+exports.findLiftingEquipmentRegistrationByUserId = async (userId) => {
+  return LiftingEquipmentRegistration.findAll({ where: { userId: userId } });
+};
+
+exports.findAllLiftingEquipmentRegistration = async () => {
+  return LiftingEquipmentRegistration.findAll();
 };

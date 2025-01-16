@@ -105,12 +105,32 @@ router.delete("/competency-certification-lifing-08/:id", authToken, formsControl
 // Competency Certification Lifting Operator routes
 router.post("/competency-certification-lifting-07", authToken, asyncHandler(formsController.createCompetencyCertificationLifting));
 router.get("/competency-certification-lifting-07", authToken, asyncHandler(formsController.getAllCompetencyCertificationLifting));
-router.get("/competency-certification-lifting-07/user", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingByUserId));
+router.get("/competency-certification-lifting-07/userId", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingByUserId));
 router.get("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingById));
 router.put("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.updateCompetencyCertificationLifting));
 router.delete("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.deleteCompetencyCertificationLifting));
+
+
+// Competency Certification Lifting Operator routes
+router.post("/competency-certification-inspection", authToken, asyncHandler(formsController.createCompetencyCertificationInspection));
+router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspection));
+router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getCompetencyCertificationInspectionByUserId));
+
+
+// Competency Certification Welder routes
+router.post("/competency-certification-welder", authToken, asyncHandler(formsController.createCompetencyCertificationwelder));
+router.get("/competency-certification-welder", authToken, asyncHandler(formsController.getAllCompetencyCertificationWelder));
+router.get("/competency-certification-welder/userId", authToken, asyncHandler(formsController.getAllCompetencyCertificationWelderByUserId));
+
+
 
 //renewal
 router.post("/renewal-form", authToken, formsController.createRenewalForm);
 router.get("/renewal-form", authToken, formsController.getAllRenewalForms);
 router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUserId);
+
+
+//lfting equpment reg
+router.post("/lifting-equipment-registration", authToken, formsController.createLiftingEquipmentRegistration);
+router.get("/lifting-equipment-registration", authToken, formsController.getAllLiftingEquipmentRegistration);
+router.get("/lifting-equipment-registration/user", authToken, formsController.getLiftingEquipmentRegistrationByUserId);

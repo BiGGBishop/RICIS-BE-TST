@@ -1,4 +1,5 @@
 const FormsService = require("../services/formsServices");
+const StatusCodes = require("../utils/statusCodes");
 
 exports.createAuthorizationApproved = async (req, res) => {
   
@@ -10,6 +11,7 @@ exports.createAuthorizationApproved = async (req, res) => {
       data: data.DATA
     });
 };
+
 
 
 exports.getAllAuthorizationApproved = async (req, res) => {
@@ -320,3 +322,109 @@ exports.getCompetencyCertificationLiftingById = async (req, res) => {
   res.status(response.STATUS_CODE).json(response);
 };
 
+
+// CompetencyCertificationInspection Controller Functions
+exports.createCompetencyCertificationInspection = async (req, res) => {
+  const response = await FormsService.createCompetencyCertificationInspection
+(req);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationInspection = async (req, res) => {
+  const response = await FormsService.getAllCompetencyCertificationInspection()
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const response = await FormsService.getAllCompetencyCertificationInspectionByUserId(userId);
+      res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+      console.error("Error fetching renewal forms by user ID:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+          STATUS: false,
+          MESSAGE: "Error fetching renewal forms by user ID",
+        });
+    }
+};
+
+
+// CompetencyCertificationwelder Controller Functions
+exports.createCompetencyCertificationwelder = async (req, res) => {
+  const response = await FormsService.createCompetencyCertificationWelder(req);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationWelder = async (req, res) => {
+  const response = await FormsService.getAllCompetencyCertificationWelder()
+  res.status(response.STATUS_CODE).json(response);
+};
+
+
+exports.getAllCompetencyCertificationWelderByUserId = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const response = await FormsService.getCompetencyCertificationWelderByUserId(userId);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching renewal forms by user ID:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching renewal forms by user ID",
+      });
+  }
+};
+
+
+
+exports.createLiftingEquipmentRegistration = async (req, res) => {
+  try {
+    const response = await FormsService.createLiftingEquipmentRegistration(req);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error creating lifting equipment registration:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error creating lifting equipment registration.",
+      });
+  }
+};
+
+exports.getLiftingEquipmentRegistrationByUserId = async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getLiftingEquipmentRegistrationByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching lifting equipment registrations:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching lifting equipment registrations.",
+        });
+    }
+};
+
+exports.getAllLiftingEquipmentRegistration = async (req, res) => {
+    try {
+        const response = await FormsService.getAllLiftingEquipmentRegistration();
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching all lifting equipment registrations:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching all lifting equipment registrations.",
+        });
+    }
+};

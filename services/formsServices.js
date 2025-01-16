@@ -979,3 +979,299 @@ exports.getCompetencyCertificationLiftingById = async (id) => {
       DATA: certification,
   };
 };
+
+
+
+exports.createCompetencyCertificationInspection = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    userId: userId,
+    date_received: req.body.date_received,
+    form_number: req.body.form_number,
+    certification_type: req.body.certification_type,
+    certification_class: req.body.certification_class,
+    endorsement: req.body.endorsement,
+    application_type: req.body.application_type,
+    training_start_date: req.body.training_start_date,
+    training_completion_date: req.body.training_completion_date,
+    documentation_available: req.body.documentation_available,
+    exemption_requested: req.body.exemption_requested,
+    employer_name: req.body.employer_name,
+    employer_physical_address: req.body.employer_physical_address,
+    employer_authorization_number: req.body.employer_authorization_number,
+    employer_quality_certifications: req.body.employer_quality_certifications,
+    employer_contact_person: req.body.employer_contact_person,
+    employer_contact_telephone: req.body.employer_contact_telephone,
+    employer_contact_email_address: req.body.employer_contact_email_address,
+    training_organization_name: req.body.training_organization_name,
+    training_method: req.body.training_method,
+    training_organization_registration_number: req.body.training_organization_registration_number,
+    training_facility_location: req.body.training_facility_location,
+    training_organization_quality_certifications: req.body.training_organization_quality_certifications,
+    training_organization_contact_person: req.body.training_organization_contact_person,
+    training_organization_telephone: req.body.training_organization_telephone,
+    training_organization_email: req.body.training_organization_email,
+    applicant_name: req.body.applicant_name,
+    applicant_address: req.body.applicant_address,
+    applicant_date_of_birth: req.body.applicant_date_of_birth,
+    applicant_email_address: req.body.applicant_email_address,
+    applicant_telephone_number: req.body.applicant_telephone_number,
+    competence_category: req.body.competence_category,
+    competence_line_number: req.body.competence_line_number,
+    incidental_line_number: req.body.incidental_line_number,
+    high_school: req.body.high_school,
+    polytechnic: req.body.polytechnic,
+    university: req.body.university,
+    professional_qualification: req.body.professional_qualification,
+    experience: req.body.experience,
+    applicant_declaration_name: req.body.applicant_declaration_name,
+    applicant_declaration_date: req.body.applicant_declaration_date,
+    employer_responsible_charge_name: req.body.employer_responsible_charge_name,
+    employer_responsible_charge_date: req.body.employer_responsible_charge_date,
+    exam_registration_number: req.body.exam_registration_number,
+    director_of_factories: req.body.director_of_factories,
+    director_signature_date: req.body.director_signature_date,
+    uploaded_documents: req.body.uploaded_documents,
+    is_draft: req.body.is_draft || false,
+  };
+
+  const newCertification = await FormsRepo.createCompetencyCertificationInspection(data);
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Authorized inspector certification created successfully.",
+    DATA: newCertification,
+  };
+};
+
+exports.getCompetencyCertificationInspection = async (userId) => {
+  const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certifications lifting fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+exports.getAllCompetencyCertificationInspection = async () => {
+  const certifications = await FormsRepo.findAllCompetencyCertificationInspection();
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "certifications fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+
+
+
+exports.createCompetencyCertificationWelder = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    userId: userId,
+    date_received: req.body.date_received,
+    form_type: req.body.form_type,
+    class_mw: req.body.class_mw,
+    class_sw: req.body.class_sw,
+    new_application: req.body.new_application,
+    re_application: req.body.re_application,
+    training_start_date: req.body.training_start_date,
+    training_completion_date: req.body.training_completion_date,
+    documentation_available_for_review: req.body.documentation_available_for_review,
+    exemption_requested: req.body.exemption_requested,
+    employer_name: req.body.employer_name,
+    employer_physical_address: req.body.employer_physical_address,
+    employer_authorization_number: req.body.employer_authorization_number,
+    employer_quality_certifications: req.body.employer_quality_certifications,
+    employer_contact_person: req.body.employer_contact_person,
+    employer_contact_telephone: req.body.employer_contact_telephone,
+    employer_contact_email_address: req.body.employer_contact_email_address,
+    training_organization_name: req.body.training_organization_name,
+    training_method: req.body.training_method,
+    training_organization_reg_number: req.body.training_organization_reg_number,
+    training_facility_location: req.body.training_facility_location,
+    training_organization_quality_certifications: req.body.training_organization_quality_certifications,
+    training_organization_contact_person: req.body.training_organization_contact_person,
+    training_organization_telephone: req.body.training_organization_telephone,
+    training_organization_email: req.body.training_organization_email,
+    applicant_name: req.body.applicant_name,
+    applicant_address: req.body.applicant_address,
+    applicant_date_of_birth: req.body.applicant_date_of_birth,
+    applicant_email_address: req.body.applicant_email_address,
+    applicant_telephone_number: req.body.applicant_telephone_number,
+    competence_category: req.body.competence_category,
+    competence_line_number: req.body.competence_line_number,
+    incidental_line_number: req.body.incidental_line_number,
+    high_school: req.body.high_school,
+    polytechnic: req.body.polytechnic,
+    university: req.body.university,
+    professional_qualification: req.body.professional_qualification,
+    experience: req.body.experience,
+    applicant_declaration_name: req.body.applicant_declaration_name,
+    applicant_declaration_date: req.body.applicant_declaration_date,
+    employer_responsible_charge: req.body.employer_responsible_charge,
+    employer_responsible_charge_date: req.body.employer_responsible_charge_date,
+    exam_registration_number: req.body.exam_registration_number,
+    certification_class_accepted: req.body.certification_class_accepted,
+    director_of_factories: req.body.director_of_factories,
+    director_signature_date: req.body.director_signature_date,
+    uploaded_documents: req.body.uploaded_documents,
+    is_draft: req.body.is_draft || false,
+  };
+
+  const newCertification = await FormsRepo.createCompetencyCertificationWelder(data);
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Competency certification welder created successfully.",
+    DATA: newCertification,
+  };
+};
+
+exports.getCompetencyCertificationWelderByUserId= async (userId) => {
+  const certifications = await FormsRepo.findCompetencyCertificationWelderByUserId(userId);
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certifications lifting fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+exports.getAllCompetencyCertificationWelder = async () => {
+  const certifications = await FormsRepo.findAllCompetencyCertificationWelder();
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "certifications fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+
+  
+//lifiting registration
+exports.createLiftingEquipmentRegistration = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    userId: userId,
+    date_received: req.body.date_received,
+    form_number: req.body.form_number,
+    type_of_installation: req.body.type_of_installation,
+    type_of_facility: req.body.type_of_facility,
+    object_use: req.body.object_use,
+    object_use_other: req.body.object_use_other,
+    installation_type: req.body.installation_type,
+    installation_start_date: req.body.installation_start_date,
+    installation_completion_date: req.body.installation_completion_date,
+    data_reports_available: req.body.data_reports_available,
+    variance_requested: req.body.variance_requested,
+    installer_name: req.body.installer_name,
+    installer_address: req.body.installer_address,
+    installer_authorization_number: req.body.installer_authorization_number,
+    installer_quality_certifications: req.body.installer_quality_certifications,
+    installer_contact_person: req.body.installer_contact_person,
+    installer_contact_telephone: req.body.installer_contact_telephone,
+    installer_contact_email: req.body.installer_contact_email,
+    owner_name: req.body.owner_name,
+    nature_of_facility: req.body.nature_of_facility,
+    factory_registration_number: req.body.factory_registration_number,
+    owner_location: req.body.owner_location,
+    owner_quality_certifications: req.body.owner_quality_certifications,
+    owner_contact_person: req.body.owner_contact_person,
+    owner_contact_telephone: req.body.owner_contact_telephone,
+    owner_contact_email: req.body.owner_contact_email,
+    manufacturer: req.body.manufacturer,
+    manufacture_year_and_place: req.body.manufacture_year_and_place,
+    code_of_construction: req.body.code_of_construction,
+    intended_use: req.body.intended_use,
+    equipment_condition: req.body.equipment_condition,
+    inspection_agency: req.body.inspection_agency,
+    inspection_authorization_number: req.body.inspection_authorization_number,
+    date_of_test: req.body.date_of_test,
+    tested_capacity: req.body.tested_capacity,
+    design_capacity: req.body.design_capacity,
+    swl: req.body.swl,
+    equipment_type: req.body.equipment_type,
+    equipment_distinctive_number: req.body.equipment_distinctive_number,
+    operating_environment: req.body.operating_environment,
+    equipment_category: req.body.equipment_category,
+    equipment_sub_category: req.body.equipment_sub_category,
+    equipment_classification: req.body.equipment_classification,
+    equipment_line_number: req.body.equipment_line_number,
+    equipment_incidental_number: req.body.equipment_incidental_number,
+    equipment_owner: req.body.equipment_owner,
+    responsible_charge_name: req.body.responsible_charge_name,
+    declaration_date: req.body.declaration_date,
+    application_category: req.body.application_category,
+    registered_number: req.body.registered_number,
+    director_of_factories: req.body.director_of_factories,
+    director_signature_date: req.body.director_signature_date,
+    uploaded_documents: req.body.uploaded_documents,
+    is_draft: req.body.is_draft || false,
+  };
+
+  const newRegistration = await FormsRepo.createLiftingEquipmentRegistration(data);
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Lifting equipment registration created successfully.",
+    DATA: newRegistration,
+  };
+};
+
+
+exports.getLiftingEquipmentRegistrationByUserId = async (userId) => {
+  const registrations = await FormsRepo.findLiftingEquipmentRegistrationByUserId(userId);
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Lifting equipment registrations fetched successfully.",
+      DATA: registrations,
+  };
+};
+
+exports.getAllLiftingEquipmentRegistration = async () => {
+  const registrations = await FormsRepo.findAllLiftingEquipmentRegistration();
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Lifting equipment registrations fetched successfully.",
+      DATA: registrations,
+  };
+};

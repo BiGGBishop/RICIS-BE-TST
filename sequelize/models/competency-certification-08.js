@@ -100,15 +100,11 @@ module.exports = (sequelize, DataTypes) => {
 
             // Uploaded Documents
             uploaded_documents: DataTypes.ARRAY(DataTypes.STRING),
-            is_draft: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-            },
         },
         {
             sequelize,
-            modelName: "CompetencyCertificationLifing",
-            tableName: "CompetencyCertificationLifings",
+            modelName: "CompetencyCertificationLifting",
+            tableName: "CompetencyCertificationLiftings",
             timestamps: true,
         }
     );

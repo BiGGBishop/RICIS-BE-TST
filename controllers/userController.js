@@ -45,6 +45,7 @@ exports.signUpUsers = async (req, res) => {
 
 exports.signIn = async (req, res) => {
   const data = await UserService.signIn(req, res);
+  console.log("console.lof wokring..")
 
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,

@@ -98,11 +98,12 @@ exports.validateOTP = async (req) => {
   /* delete OTP after verifying */
   await UserRepo.deleteOneOTP({ code: otp });
 
+  const role = await UserRepo.findRole({ name: "user" });
+
   const userObject = {
     completion_percent: 50,
     email: req.body.email,
   };
-
   // console.log({ userObject });
 
   const createdUser = await UserRepo.createUser(userObject);

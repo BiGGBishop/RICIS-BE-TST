@@ -15,7 +15,7 @@ module.exports = {
 
   development: {
     // url: SQLDB_URL,
-    url: 'postgresql://ricisdatabase_user:xdiQecXhYXdQ3Dy8HAnRI8NZpt42VhAb@dpg-cu4g42jtq21c73cqmrog-a.oregon-postgres.render.com/ricisdatabase',
+    url: 'postgresql://neondb_owner:N7JjrKpB9swo@ep-round-base-a8cgesqx.eastus2.azure.neon.tech/neondb?sslmode=require',
     dialect: "postgres",
     dialectOptions:
       // ENVIRONMENT === "production" || ENVIRONMENT === "staging"

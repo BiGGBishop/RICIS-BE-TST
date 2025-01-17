@@ -72,5 +72,6 @@ exports.generateRefNumber =  async() =>{
       upperCaseAlphabets: false,
       specialChars: false,
     });
+    console.log(refno)
     return refno
 }

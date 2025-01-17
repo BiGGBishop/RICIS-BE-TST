@@ -3,7 +3,35 @@ const UserService = require("../services/userServices");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo")
 const { ClassificationMerge, Classification } = require("../sequelize/models");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken'); // Assuming you are using JWT
 
+
+//Super admin Login do not touch
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+exports.superLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  const admin = await AdminRepo.findAdminUser({email:email, userroleId: 1 });
+
+  if (!admin) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  const passwordMatch = await bcrypt.compare(password, admin.password);
+  console.log(passwordMatch)
+
+  if (!passwordMatch) {
+    return res.status(400).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign({ id: admin.id, email: admin.email, role: 'admin' }, 'your-secret-key', { expiresIn: '10h' }); // Replace 'your-secret-key' with a secure secret
+
+  res.status(200).json({ token });
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 exports.getAdminDetails = async (req, res) => {
   const data = await AdminService.getAdminDetails(req, res);

@@ -8,8 +8,12 @@ const {
 } = require("../validations/userValidation");
 const { asyncHandler } = require("../middlewares/handler");
 const usersController = require("../controllers/userController");
+const adminController = require("../controllers/adminController")
 const { authToken } = require("../utils/AunthenticateUser");
 
+
+
+router.post("/super-login", asyncHandler(adminController.superLogin));
 router.post("/otp", getOtpValidation, asyncHandler(usersController.getOTP));
 router.post(
   "/otp/resend",

@@ -66,7 +66,7 @@ exports.findAdminUsers = async (filter) => {
 
 exports.createAdminUser = async (update) => {
   const response = await AdminStaff.create(update);
-  // console.log({response, update})
+  console.log({response, update})
   return response;
 };
 

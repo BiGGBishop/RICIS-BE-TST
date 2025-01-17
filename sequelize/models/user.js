@@ -7,12 +7,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
     //  */
-    static associate(models) {
+    static associate(models) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
       // define association here
-      User.belongsTo(models.UserRole, {
-        foreignKey: "userroleId", // This will create the foreign key in the 'User' table
+      User.belongsTo(models.UserRole, {             
+        foreignKey: "userroleId", // This will create the foreign key in the 'User' table               
         as: "userrole", // Alias for the association
-      });
+      });                       
       User.hasMany(models.Application, {
         foreignKey: "userId", // Foreign key in the Application model
         as: "applications", // Alias for the association

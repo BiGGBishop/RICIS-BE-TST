@@ -326,7 +326,7 @@ exports.createAuthorizationManufacturer = async (req) => {
     weldingDocumentation: weldingDocumentation || null,
     ndtDocumentation: ndtDocumentation || null,
     indtDocumentation: indtDocumentation || null,
-    isoCertification: await uploadSingleFile(isoCertification) || null,
+    isoCertification: isoCertification||null,
     feeId: feeId || null,
     status: status || "pending",
   };

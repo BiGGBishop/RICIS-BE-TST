@@ -21,11 +21,51 @@ module.exports = (sequelize, DataTypes) => {
                 onDelete: "SET NULL",
                 allowNull: true,
             },
-            date_received: DataTypes.DATE,
-            form_number: {
-              type: DataTypes.STRING,
-              defaultValue: "RICS-A-07"
+            categoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  DataTypes.DATE,
+              allowNull: true
             },
+			form_number:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			} ,
             // Type of Certification (Multiple Select)
             approved_lift_installer: DataTypes.BOOLEAN,
             work_equipment_operator: DataTypes.BOOLEAN,
@@ -34,10 +74,8 @@ module.exports = (sequelize, DataTypes) => {
             abseiling_technician: DataTypes.BOOLEAN,
 
             // Class of Certification (Multiple Select)
-            class_a: DataTypes.BOOLEAN,
-            class_b: DataTypes.BOOLEAN,
-            class_1: DataTypes.BOOLEAN,
-            class_2: DataTypes.BOOLEAN,
+            class_of_classification: DataTypes.ENUM("Class a","Class b", "Class 1", "Class 2"),
+            
 
             application_type: DataTypes.ENUM("New Application", "Re-Application"),
             training_start_date: DataTypes.DATE,

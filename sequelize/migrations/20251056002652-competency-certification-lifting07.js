@@ -19,7 +19,47 @@ module.exports = {
                 onDelete: "SET NULL",
                 allowNull: true,
             },
-            date_received: Sequelize.DATE,
+            categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  Sequelize.DATE,
+              allowNull: true
+            },
             form_number: {
               type: Sequelize.STRING,
               defaultValue: "RICS-A-07"
@@ -41,18 +81,11 @@ module.exports = {
                 type: Sequelize.BOOLEAN,
             },
 
-            // Class of Certification (Multiple Select)
-            class_a: {
-                type: Sequelize.BOOLEAN,
-            },
-            class_b: {
-                type: Sequelize.BOOLEAN,
-            },
-            class_1: {
-                type: Sequelize.BOOLEAN,
-            },
-            class_2: {
-                type: Sequelize.BOOLEAN,
+
+
+            //class of certification
+            Class_of_Certification:{
+            type: Sequelize.ENUM("class a","class b","class 1","class 2")
             },
             application_type: {
                 type: Sequelize.ENUM("New Application", "Re-Application"),

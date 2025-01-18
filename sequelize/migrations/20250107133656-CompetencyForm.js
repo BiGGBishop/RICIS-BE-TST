@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		await queryInterface.createTable("CompetencyCertificationWelders", {
+		await queryInterface.createTable("CompetencyCertificationForm", {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -13,7 +13,7 @@ module.exports = {
 			userId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: "users",
+					model: "users", // Name of the users table
 					key: "id",
 				},
 				onDelete: "SET NULL",
@@ -22,16 +22,28 @@ module.exports = {
 			date_received: {
 				type: Sequelize.DATE,
 			},
-            form_type: {
-                type: Sequelize.STRING,
-                defaultValue: "RICS-A-05"
-            },
-			class_mw: {
+			form_type: {
+				type: Sequelize.STRING,
+			},
+			technical_authority: {
 				type: Sequelize.BOOLEAN,
 			},
-			class_sw: {
+			appointed_person: {
 				type: Sequelize.BOOLEAN,
 			},
+			approved_person: {
+				type: Sequelize.BOOLEAN,
+			},
+			category_of_class:{
+				type: Sequelize.ENUM(
+					"Class A",
+					"Class B",
+					"Class C",
+					"Class D",
+					"Class E"
+				)
+			}
+			,
 			new_application: {
 				type: Sequelize.BOOLEAN,
 			},
@@ -59,9 +71,6 @@ module.exports = {
 			employer_authorization_number: {
 				type: Sequelize.STRING,
 			},
-			employer_quality_certifications: {
-				type: Sequelize.ARRAY(Sequelize.STRING),
-			},
 			employer_contact_person: {
 				type: Sequelize.STRING,
 			},
@@ -71,13 +80,16 @@ module.exports = {
 			employer_contact_email_address: {
 				type: Sequelize.STRING,
 			},
+			employer_quality_certifications: {
+				type: Sequelize.ARRAY(Sequelize.STRING),
+			},
 			training_organization_name: {
 				type: Sequelize.STRING,
 			},
 			training_method: {
-				type: Sequelize.ENUM("Online", "Class Room", "Field / Workshop"),
+				type: Sequelize.STRING,
 			},
-			training_organization_reg_number: {
+			training_organization_approval_number: {
 				type: Sequelize.STRING,
 			},
 			training_facility_location: {
@@ -140,27 +152,12 @@ module.exports = {
 			applicant_declaration_date: {
 				type: Sequelize.DATE,
 			},
-			employer_responsible_charge: {
+			employer_responsible_charge_name: {
 				type: Sequelize.STRING,
 			},
 			employer_responsible_charge_date: {
 				type: Sequelize.DATE,
 			},
-            exam_registration_number: {
-                type: Sequelize.STRING,
-            },
-            certification_class_accepted: {
-                type: Sequelize.STRING,
-            },
-            director_of_factories: {
-                type: Sequelize.STRING,
-            },
-            director_signature_date: {
-                type: Sequelize.DATE,
-            },
-            uploaded_documents: {
-                type: Sequelize.ARRAY(Sequelize.STRING),
-            },
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
@@ -171,14 +168,10 @@ module.exports = {
 				type: Sequelize.DATE,
 				defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
 			},
-            is_draft: {
-                type: Sequelize.BOOLEAN,
-                defaultValue: false,
-            }
 		});
 	},
 
 	down: async (queryInterface, Sequelize) => {
-		await queryInterface.dropTable("CompetencyCertificationWelders");
+		await queryInterface.dropTable("CompetencyCertificationForm");
 	},
 };

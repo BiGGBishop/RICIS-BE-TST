@@ -160,28 +160,11 @@ module.exports = {
 			experience: {
 				type: Sequelize.JSONB,
 			},
-			name_of_user: {
-				type: Sequelize.STRING,
-			},
+		
 			company_responsible_charge: {
 				type: Sequelize.STRING,
 			},
 			date_sign: {
-				type: Sequelize.DATE,
-			},
-			approval_category: {
-				type: Sequelize.STRING,
-			},
-			approval_class: {
-				type: Sequelize.STRING,
-			},
-			training_approval_number_ngtan: {
-				type: Sequelize.STRING,
-			},
-			director_of_factories: {
-				type: Sequelize.TEXT,
-			},
-			date_sign_director_of_factories: {
 				type: Sequelize.DATE,
 			},
 		});

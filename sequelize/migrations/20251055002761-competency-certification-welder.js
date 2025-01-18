@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
-		await queryInterface.createTable("CompetencyCertificationForm", {
+		await queryInterface.createTable("CompetencyCertificationWelders", {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -13,40 +13,66 @@ module.exports = {
 			userId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: "users", // Name of the users table
+					model: "users",
 					key: "id",
 				},
 				onDelete: "SET NULL",
 				allowNull: true,
 			},
-			date_received: {
-				type: Sequelize.DATE,
+			categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
 			},
-			form_type: {
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  Sequelize.DATE,
+              allowNull: true
+            },
+			form_number:{
 				type: Sequelize.STRING,
-			},
-			technical_authority: {
+				allowNull: true,
+			} ,
+            form_type: {
+                type: Sequelize.STRING,
+                defaultValue: "RICS-A-05",
+				allowNull: true
+            },
+			class_mw: {
 				type: Sequelize.BOOLEAN,
 			},
-			appointed_person: {
-				type: Sequelize.BOOLEAN,
-			},
-			approved_person: {
-				type: Sequelize.BOOLEAN,
-			},
-			classA: {
-				type: Sequelize.BOOLEAN,
-			},
-			classB: {
-				type: Sequelize.BOOLEAN,
-			},
-			classC: {
-				type: Sequelize.BOOLEAN,
-			},
-			classD: {
-				type: Sequelize.BOOLEAN,
-			},
-			classE: {
+			class_sw: {
 				type: Sequelize.BOOLEAN,
 			},
 			new_application: {
@@ -76,6 +102,9 @@ module.exports = {
 			employer_authorization_number: {
 				type: Sequelize.STRING,
 			},
+			employer_quality_certifications: {
+				type: Sequelize.ARRAY(Sequelize.STRING),
+			},
 			employer_contact_person: {
 				type: Sequelize.STRING,
 			},
@@ -85,16 +114,13 @@ module.exports = {
 			employer_contact_email_address: {
 				type: Sequelize.STRING,
 			},
-			employer_quality_certifications: {
-				type: Sequelize.ARRAY(Sequelize.STRING),
-			},
 			training_organization_name: {
 				type: Sequelize.STRING,
 			},
 			training_method: {
-				type: Sequelize.STRING,
+				type: Sequelize.ENUM("Online", "Class Room", "Field / Workshop"),
 			},
-			training_organization_approval_number: {
+			training_organization_reg_number: {
 				type: Sequelize.STRING,
 			},
 			training_facility_location: {
@@ -157,12 +183,27 @@ module.exports = {
 			applicant_declaration_date: {
 				type: Sequelize.DATE,
 			},
-			employer_responsible_charge_name: {
+			employer_responsible_charge: {
 				type: Sequelize.STRING,
 			},
 			employer_responsible_charge_date: {
 				type: Sequelize.DATE,
 			},
+            exam_registration_number: {
+                type: Sequelize.STRING,
+            },
+            certification_class_accepted: {
+                type: Sequelize.STRING,
+            },
+            director_of_factories: {
+                type: Sequelize.STRING,
+            },
+            director_signature_date: {
+                type: Sequelize.DATE,
+            },
+            uploaded_documents: {
+                type: Sequelize.ARRAY(Sequelize.STRING),
+            },
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
@@ -173,10 +214,14 @@ module.exports = {
 				type: Sequelize.DATE,
 				defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
 			},
+            is_draft: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: false,
+            }
 		});
 	},
 
 	down: async (queryInterface, Sequelize) => {
-		await queryInterface.dropTable("CompetencyCertificationForm");
+		await queryInterface.dropTable("CompetencyCertificationWelders");
 	},
 };

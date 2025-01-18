@@ -22,8 +22,51 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			},
 			// Application Information
-			date_received: DataTypes.DATE,
-			form_number: DataTypes.STRING,
+			categoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  DataTypes.DATE,
+              allowNull: true
+            },
+			form_number:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			} ,
 			form_type: DataTypes.STRING,
 			boiler_pressure_vessel_category: DataTypes.STRING,
 			type_of_service: DataTypes.ENUM("Nuclear", "Non-Nuclear"),

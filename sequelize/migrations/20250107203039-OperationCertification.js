@@ -19,9 +19,51 @@ module.exports = {
 				onDelete: "SET NULL",
 				allowNull: true,
 			},
-			// Application Information
-			date_received: Sequelize.DATE,
-			form_number: Sequelize.STRING,
+			categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  Sequelize.DATE,
+              allowNull: true
+            },
+			form_number:{
+				type: Sequelize.STRING,
+				allowNull: true,
+			} ,
 			form_type: Sequelize.STRING,
 			certification_type: {
 				type: Sequelize.ENUM(
@@ -90,10 +132,23 @@ module.exports = {
 			experience_details: Sequelize.ARRAY(Sequelize.JSONB),
 
 			// Declaration
-			applicant_declaration_name: Sequelize.STRING,
-			applicant_declaration_date: Sequelize.DATE,
-			responsible_charge: Sequelize.STRING,
-			declaration_date: Sequelize.DATE,
+			
+			applicant_declaration_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+			applicant_declaration_date: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+			responsible_charge: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+			declaration_date: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
 
 			// Official Use
 			exam_registration_number: Sequelize.STRING,

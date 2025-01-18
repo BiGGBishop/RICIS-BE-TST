@@ -19,8 +19,46 @@ module.exports = {
 				onDelete: "SET NULL",
 				allowNull: true,
 			},
+			categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
 			date_received: {
 				type: Sequelize.DATE,
+				allowNull:true,
 			},
 			form_type: {
 				type: Sequelize.STRING,
@@ -51,20 +89,14 @@ module.exports = {
 			approved_person: {
 				type: Sequelize.BOOLEAN,
 			},
-			classA: {
-				type: Sequelize.BOOLEAN,
-			},
-			classB: {
-				type: Sequelize.BOOLEAN,
-			},
-			classC: {
-				type: Sequelize.BOOLEAN,
-			},
-			classD: {
-				type: Sequelize.BOOLEAN,
-			},
-			classE: {
-				type: Sequelize.BOOLEAN,
+			category_of_class:{
+				type: Sequelize.ENUM(
+					"Class A",
+					"Class B",
+					"Class C",
+					"Class D",
+					"Class E",
+				)
 			},
 			new_application: {
 				type: Sequelize.BOOLEAN,

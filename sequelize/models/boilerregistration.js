@@ -24,14 +24,51 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			},
 			// Form Details
-			date_received: {
-				type: DataTypes.DATE,
-				allowNull: false,
+			categoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
 			},
-			form_number: {
+			subcategoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  DataTypes.DATE,
+              allowNull: true
+            },
+			form_number:{
 				type: DataTypes.STRING,
-				allowNull: false,
-			},
+				allowNull: true,
+			} ,
 			type_of_installation: {
 				type: DataTypes.STRING, // e.g., "Boiler" or "Pressure Vessel"
 				allowNull: false,

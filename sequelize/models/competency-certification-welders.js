@@ -21,11 +21,51 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "SET NULL",
 				allowNull: true,
 			},
-			date_received: DataTypes.DATE,
-            form_type: {
-                type: DataTypes.STRING,
-                defaultValue: "RICS-A-05"
+			categoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  DataTypes.DATE,
+              allowNull: true
             },
+			form_number:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			} ,
 			class_mw: DataTypes.BOOLEAN,
 			class_sw: DataTypes.BOOLEAN,
 			new_application: DataTypes.BOOLEAN,

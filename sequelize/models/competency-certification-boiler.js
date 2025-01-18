@@ -22,7 +22,51 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "SET NULL", // What to do if the referenced users is deleted
 				allowNull: true,
 			},
-			date_received: DataTypes.DATE,
+			categoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  DataTypes.DATE,
+              allowNull: true
+            },
+			form_number:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			} ,
 			form_type: DataTypes.STRING,
       certification_type: DataTypes.ENUM(
 				"Power Engineer",
@@ -33,9 +77,11 @@ module.exports = (sequelize, DataTypes) => {
         "Welding Engineer"
 			),
       certification_class: DataTypes.ENUM(
-				"Class 1",
-				"Class 2",
-				"Class 3"
+				"Class A",
+				"Class B",
+				"Class C",
+				"Class D",
+				"Class E"
 			),
 			technical_authority: DataTypes.BOOLEAN,
 			appointed_person: DataTypes.BOOLEAN,

@@ -20,8 +20,51 @@ module.exports = {
         allowNull: true,
       },
       // Application Details
-      date_received: Sequelize.DATE,
-      form_number: Sequelize.STRING,
+      categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  Sequelize.DATE,
+              allowNull: true
+            },
+			form_number:{
+				type: Sequelize.STRING,
+				allowNull: true,
+			} ,
       type_of_installation: {
         type: Sequelize.ENUM("Lifts", "Escalator", "Hoist"),
       },

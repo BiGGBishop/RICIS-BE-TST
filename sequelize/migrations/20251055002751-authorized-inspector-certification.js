@@ -19,13 +19,54 @@ module.exports = {
         onDelete: "SET NULL",
         allowNull: true,
       },
-      date_received: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
+      categoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false, 
+				references: {
+				  model: 'categories',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',	
+			},
+			subcategoryId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'subcategories',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+				
+			},
+			classificationId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+			feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
+            date_received: {
+              type:  Sequelize.DATE,
+              allowNull: true
+            },
+			form_number:{
+				type: Sequelize.STRING,
+				allowNull: true,
+			} ,
       form_number: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         defaultValue: "RICS-A-03"
       },
       certification_type: {

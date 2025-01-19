@@ -31,7 +31,7 @@ router.post(
   "/authorization-manufacturer",
   authToken,
   authToken,
-  validateReqBody(authorizationManufacturerSchema),
+  //validateReqBody(authorizationManufacturerSchema),
   asyncHandler(formsController.createAuthorizationManufacturer)
 );
 

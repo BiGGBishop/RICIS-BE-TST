@@ -70,16 +70,28 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			} ,
 			type_of_installation: {
-				type: DataTypes.STRING, // e.g., "Boiler" or "Pressure Vessel"
-				allowNull: false,
+				type: DataTypes.ENUM(
+					"Boiler",
+					"Pressure Vessel",
+					"Heating",
+					"Other"
+				)
 			},
-			object_use: {
-				type: DataTypes.STRING, // e.g., "Power", "Process", "Heating", "Other"
+			
+		
+			installation_type:{
+				type:DataTypes.ENUM(
+					"New Installation",
+					"Existing Installation"
+				)
 			},
-			installation_dates: {
-				type: DataTypes.JSON, // { start: "date", completion: "date" }
+
+
+
+			form_type: {
+				type:DataTypes.STRING,
+				allowNull:true,
 			},
-			form_type: DataTypes.STRING,
 			data_reports_available: {
 				type: DataTypes.BOOLEAN,
 				defaultValue: false,
@@ -93,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
 			installer_name: DataTypes.STRING,
 			installer_address: DataTypes.TEXT,
 			installer_authorization_number: DataTypes.STRING,
-			installer_quality_certifications: DataTypes.ARRAY(DataTypes.STRING),
+			installer_quality_certifications: DataTypes.STRING,
 			installer_contact_person: DataTypes.STRING,
 			installer_contact_telephone: DataTypes.STRING,
 			installer_contact_email: DataTypes.STRING,
@@ -103,14 +115,15 @@ module.exports = (sequelize, DataTypes) => {
 			manufacturing_process: DataTypes.STRING,
 			factory_registration_number: DataTypes.STRING,
 			owner_location: DataTypes.TEXT,
-			owner_quality_certifications: DataTypes.ARRAY(DataTypes.STRING),
+			owner_quality_certifications: DataTypes.STRING,
 			owner_contact_person: DataTypes.STRING,
 			owner_contact_telephone: DataTypes.STRING,
 			owner_contact_email: DataTypes.STRING,
 
 			// Equipment Information
 			manufacturer: DataTypes.STRING,
-			manufacture_year_and_place: DataTypes.STRING, // Year and Place
+			manufacture_year:DataTypes.DATE,
+			place_of_manufacture: DataTypes.STRING, 
 			code_of_construction: DataTypes.STRING,
 			intended_use: DataTypes.STRING, // "New" or "Used"
 			inspection_agency: DataTypes.STRING,
@@ -127,6 +140,34 @@ module.exports = (sequelize, DataTypes) => {
 			equipment_classification: DataTypes.STRING,
 			equipment_line_number: DataTypes.STRING,
 			equipment_incidental_number: DataTypes.STRING,
+			manufacturers_data_report: {
+                type: DataTypes.TEXT,
+                allowNull: true, 
+            },
+            construction_drawings: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            design_calculation: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            test_parameters_data: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            accreditation_documents: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            installation_plan: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            quality_assurance_program: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
 			is_draft: {
 				type: DataTypes,
 				defaultValue: false,

@@ -71,82 +71,215 @@ module.exports = (sequelize, DataTypes) => {
       certification_type: DataTypes.ENUM(
 				"Power Engineer",
 				"Refrigeration Engineer",
-        "Power Technician",
-        "Refrigeration Technician",
-        "Design Engineer",
-        "Welding Engineer"
+        		"Power Technician",
+        		"Refrigeration Technician",
+        		"Design Engineer",
+        		"Welding Engineer"
 			),
       certification_class: DataTypes.ENUM(
-				"Class A",
-				"Class B",
-				"Class C",
-				"Class D",
-				"Class E"
+				"Class 1",
+				"Class 2",
+				"Class 3",
 			),
-			technical_authority: DataTypes.BOOLEAN,
-			appointed_person: DataTypes.BOOLEAN,
-			approved_person: DataTypes.BOOLEAN,
-			classA: DataTypes.BOOLEAN,
-			classB: DataTypes.BOOLEAN,
-			classC: DataTypes.BOOLEAN,
-			classD: DataTypes.BOOLEAN,
-			classE: DataTypes.BOOLEAN,
-			new_application: DataTypes.BOOLEAN,
-			re_application: DataTypes.BOOLEAN,
-			training_start_date: DataTypes.DATE,
-			training_completion_date: DataTypes.DATE,
-			documentation_available_for_review: DataTypes.BOOLEAN,
-			exemption_requested: DataTypes.BOOLEAN,
-			employer_name: DataTypes.STRING,
-			employer_physical_address: DataTypes.TEXT,
-			employer_authorization_number: DataTypes.STRING,
-			employer_contact_person: DataTypes.STRING,
-			employer_contact_telephone: DataTypes.STRING,
-			employer_contact_email_address: DataTypes.STRING,
-			employer_quality_certifications: DataTypes.ARRAY(DataTypes.STRING),
-			training_organization_name: DataTypes.STRING,
-      training_method: DataTypes.ENUM("Online", "Classroom", "Field"),
-			training_organization_approval_number: DataTypes.STRING,
-			training_facility_location: DataTypes.STRING,
-			training_organization_quality_certifications: DataTypes.ARRAY(
-				DataTypes.STRING
-			),
-			training_organization_contact_person: DataTypes.STRING,
-			training_organization_telephone: DataTypes.STRING,
-			training_organization_email: DataTypes.STRING,
-			applicant_name: DataTypes.STRING,
-			applicant_address: DataTypes.TEXT,
-			applicant_date_of_birth: DataTypes.DATE,
-			applicant_email_address: DataTypes.STRING,
-			applicant_telephone_number: DataTypes.STRING,
-			competence_category: DataTypes.STRING,
-			competence_line_number: DataTypes.STRING,
-			incidental_line_number: DataTypes.STRING,
-			high_school: DataTypes.JSONB,
-			polytechnic: DataTypes.JSONB,
-			university: DataTypes.JSONB,
-			professional_qualification: DataTypes.JSONB,
-			experience: DataTypes.JSONB,
-			applicant_declaration_name: DataTypes.STRING,
-			applicant_declaration_date: DataTypes.DATE,
-			employer_responsible_charge_name: DataTypes.STRING,
-			employer_responsible_charge_date: DataTypes.DATE,
-      exam_registration_number: DataTypes.STRING,
-      director_of_factories: DataTypes.STRING,
-      director_signature_date: DataTypes.DATE,
-      uploaded_documents: DataTypes.ARRAY(DataTypes.STRING),
-			is_draft: {
-				type: DataTypes,
-				defaultValue: false
+			application_type: {
+				type: DataTypes.ENUM("New Application", "Re-application"),
+				allowNull: false,
+			  },
+			  training_start_date: {
+				type: DataTypes.DATE,
+			  },
+			  training_completion_date: {
+				type: DataTypes.DATE,
+			  },
+			  documentation_available: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			  },
+			  exemption_requested: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			  },
+			  employer_name: {
+				type: DataTypes.STRING,
+			  },
+			  employer_physical_address: {
+				type: DataTypes.TEXT,
+			  },
+			  employer_authorization_number: {
+				type: DataTypes.STRING,
+			  },
+			  employer_quality_certifications: {
+				type: DataTypes.STRING,
+			  },
+			  employer_contact_person: {
+				type: DataTypes.STRING,
+			  },
+			  employer_contact_telephone: {
+				type: DataTypes.STRING,
+			  },
+			  employer_contact_email_address: {
+				type: DataTypes.STRING,
+			  },
+			  training_organization_name: {
+				type: DataTypes.STRING,
+			  },
+			  training_method: {
+				type: DataTypes.ENUM("Online", "Class Room", "Field"),
+			  },
+			  training_organization_registration_number: {
+				type: DataTypes.STRING,
+			  },
+			  training_facility_location: {
+				type: DataTypes.STRING,
+			  },
+			  training_organization_quality_certifications: {
+				type: DataTypes.STRING,
+			  },
+			  training_organization_contact_person: {
+				type: DataTypes.STRING,
+			  },
+			  training_organization_telephone: {
+				type: DataTypes.STRING,
+			  },
+			  training_organization_email: {
+				type: DataTypes.STRING,
+			  },
+			  applicant_name: {
+				type: DataTypes.STRING,
+			  },
+			  applicant_address: {
+				type: DataTypes.TEXT,
+			  },
+			  applicant_date_of_birth: {
+				type: DataTypes.DATE,
+			  },
+			  applicant_email_address: {
+				type: DataTypes.STRING,
+			  },
+			  applicant_telephone_number: {
+				type: DataTypes.STRING,
+			  },
+			  competence_category: {
+				type: DataTypes.STRING,
+			  },
+			  competence_line_number: {
+				type: DataTypes.STRING,
+			  },
+			  incidental_line_number: {
+				type: DataTypes.STRING,
+			  },
+			  High_school: {
+				type: DataTypes.JSONB
+			/*	name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			polytechnic: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			university: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+		
+			professional_qualification_institution: DataTypes.STRING,
+			date_of_issue: DataTypes.DATE
+			,
+			
+			experience_name_of_company:DataTypes.STRING,
+			joining_date: DataTypes.STRING,
+			exit_date: DataTypes.DATE
+			,
+			  applicant_declaration_name: {
+				type: DataTypes.STRING,
+			  },
+			  applicant_declaration_date: {
+				type: DataTypes.DATE,
+			  },
+			  employer_responsible_charge_name: {
+				type: DataTypes.STRING,
+			  },
+			  employer_responsible_charge_date: {
+				type: DataTypes.DATE,
+			  },
+			  director_of_factories: {
+				type: DataTypes.STRING,
+				allowNull:true
+			  },
+			  director_signature_date: {
+				type: DataTypes.DATE,
+				allowNull: true
+			  },
+			  applicant_cv: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			higher_education_certifications: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			
+			training_certificate: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			employment_letter: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			},
+			{
+			  sequelize,
+			  modelName: "CompetencyCertificationFormBoiler",
+			  tableName: "CompetencyCertificationFormBoiler",
+			  timestamps: true,
 			}
-		},
-		{
-			sequelize,
-			modelName: "CompetencyCertificationFormBoiler",
-			tableName: "CompetencyCertificationFormBoilers",
-			timestamps: true,
-		}
-  );
+		  );
   
 
 	return CompetencyCertificationFormBoiler;

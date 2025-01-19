@@ -79,32 +79,35 @@ module.exports = (sequelize, DataTypes) => {
 					"Welding Engineer",
 					"Refrigerator Engineer",
 					"Boiler & Pressure Vessel Operator",
+					"Pressure Welder",
+					"Refrigeration Technician"
 				)
 			},
 
+			//Lifting equipment category
+			lifting_equipment_category: DataTypes.ENUM(
+				"Approved Person",
+				"Lift Technician",
+				"Crane Operator",
+				"Forklift Operator",
+				"Work Equipment Operator",
+				"Rigger",
+				"Scaffolding Technician",
+				"Abseiling Technician"
+			),
 			
-			authorized_inspector: DataTypes.BOOLEAN,
-			design_engineer: DataTypes.BOOLEAN,
-			power_engineer: DataTypes.BOOLEAN,
-			welding_engineer: DataTypes.BOOLEAN,
-			refrigerator_engineer: DataTypes.BOOLEAN,
-			boiler_and_pressure_vessel_operator: DataTypes.BOOLEAN,
-			pressure_welder: DataTypes.BOOLEAN,
-			refrigeration_technician: DataTypes.BOOLEAN,
+			
 
 			//lifting equipemnt categories
-			approved_person: DataTypes.BOOLEAN,
-			lift_technician: DataTypes.BOOLEAN,
-			crane_operator: DataTypes.BOOLEAN,
-			forklift_operator: DataTypes.BOOLEAN,
-			work_equipment_operator: DataTypes.BOOLEAN,
-			rigger: DataTypes.BOOLEAN,
-			scaffolding_technician: DataTypes.BOOLEAN,
-			abseiling_technician: DataTypes.BOOLEAN,
+			
 
-			//application_type
-			new_application: DataTypes.BOOLEAN,
-			re_application: DataTypes.BOOLEAN,
+			application_type:{
+				type:DataTypes.ENUM(
+					"New Application",
+					"Re-Application"
+				)
+			},
+			
 
 			//document fo review
 			available_for_documentation_review: DataTypes.BOOLEAN,
@@ -118,15 +121,15 @@ module.exports = (sequelize, DataTypes) => {
 
 
 			member_nagobin:{
-				type:DataTypes.STRING,
+				type:DataTypes.TEXT,
 				allowNull: true
 			},
 			member_leia:{
-				type:DataTypes.STRING,
+				type:DataTypes.TEXT,
 				allowNull: true
 			},
 			member_indt:{
-				type:DataTypes.STRING,
+				type:DataTypes.TEXT,
 				allowNull: true
 			},
 
@@ -146,16 +149,72 @@ module.exports = (sequelize, DataTypes) => {
 			technical_supervisor_phonenumber: DataTypes.STRING,
 
 			//Education
-			high_school: DataTypes.STRING,
-			polytechnic: DataTypes.STRING,
-			university: DataTypes.STRING,
-			// professional_qualification: DataTypes.ARRAY(DataTypes.STRING),
-			professional_qualification: DataTypes.JSONB,
-			// professional_qualification_institution: DataTypes.ARRAY(DataTypes.STRING),
-			professional_qualification_institution: DataTypes.JSONB,
-			// experience: DataTypes.ARRAY(DataTypes.TEXT),
-			experience: DataTypes.JSONB,
-			//name_of_user: DataTypes.STRING,
+			High_school: {
+				type: DataTypes.JSONB
+			/*	name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			polytechnic: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			university: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+		
+			professional_qualification_institution: DataTypes.STRING,
+			date_of_issue: DataTypes.DATE
+			,
+			
+			experience_name_of_company:DataTypes.STRING,
+			joining_date: DataTypes.STRING,
+			exit_date: DataTypes.DATE,
 			company_responsible_charge: DataTypes.STRING,
 			date_sign: DataTypes.DATE,
 			//approval_category: DataTypes.STRING,
@@ -163,9 +222,17 @@ module.exports = (sequelize, DataTypes) => {
 			//training_approval_number_ngtan: DataTypes.STRING,
 			//director_of_factories: DataTypes.TEXT,
 			//date_sign_director_of_factories: DataTypes.DATE,
-			documents_uploaded: DataTypes.ARRAY(DataTypes.STRING),
+			companyQualityManual: DataTypes.TEXT,
+			operationalProcedures: DataTypes.TEXT,
+			companyDocumentation: DataTypes.TEXT,
+			documentationQuality: DataTypes.TEXT,
+			designerDocumentation: DataTypes.TEXT,
+			weldingDocumentation: DataTypes.TEXT,
+			ndtDocumentation: DataTypes.TEXT,
+			indtDocumentation: DataTypes.TEXT,
+			isoCertification: DataTypes.TEXT,
 			is_draft: {
-				type: DataTypes,
+				type: DataTypes.BOOLEAN,
 				defaultValue: false,
 			},
 		},

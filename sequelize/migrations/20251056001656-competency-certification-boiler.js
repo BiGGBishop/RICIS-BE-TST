@@ -13,96 +13,75 @@ module.exports = {
 			userId: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: "users", // Name of the users table
+					model: "users",
 					key: "id",
 				},
 				onDelete: "SET NULL",
 				allowNull: true,
 			},
-			categoryId:{
-				type: Sequelize.INTEGER,
-				allowNull: false, 
-				references: {
-				  model: 'categories',
-				  key: 'id',
-				},
-				onDelete: 'SET NULL',	
-			},
-			subcategoryId:{
+			categoryId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: 'subcategories',
-					key: 'id',
+					model: "categories",
+					key: "id",
 				},
-				onDelete: 'SET NULL',
-				
+				onDelete: "SET NULL",
 			},
-			classificationId:{
+			subcategoryId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-				  model: 'classifications',
-				  key: 'id',
+					model: "subcategories",
+					key: "id",
 				},
-				onDelete: 'SET NULL',
+				onDelete: "SET NULL",
 			},
-			feeId:{
+			classificationId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: 'fees',
-					key: 'id',
+					model: "classifications",
+					key: "id",
 				},
-				onDelete: 'SET NULL',
+				onDelete: "SET NULL",
+			},
+			feeId: {
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: "fees",
+					key: "id",
+				},
+				onDelete: "SET NULL",
 			},
 			date_received: {
 				type: Sequelize.DATE,
-				allowNull:true,
+				allowNull: true,
+			},
+			form_number: {
+				type: Sequelize.STRING,
+				allowNull: true,
 			},
 			form_type: {
 				type: Sequelize.STRING,
 			},
-      certification_type: {
+			certification_type: {
 				type: Sequelize.ENUM(
 					"Power Engineer",
 					"Refrigeration Engineer",
-          "Power Technician",
-          "Refrigeration Technician",
-          "Design Engineer",
-          "Welding Engineer"
+					"Power Technician",
+					"Refrigeration Technician",
+					"Design Engineer",
+					"Welding Engineer"
 				),
 			},
-      certification_class: {
-				type: Sequelize.ENUM(
-					"Class 1",
-					"Class 2",
-					"Class 3"
-				),
+			certification_class: {
+				type: Sequelize.ENUM("Class 1", "Class 2", "Class 3"),
 			},
-			technical_authority: {
-				type: Sequelize.BOOLEAN,
-			},
-			appointed_person: {
-				type: Sequelize.BOOLEAN,
-			},
-			approved_person: {
-				type: Sequelize.BOOLEAN,
-			},
-			category_of_class:{
-				type: Sequelize.ENUM(
-					"Class A",
-					"Class B",
-					"Class C",
-					"Class D",
-					"Class E",
-				)
-			},
-			new_application: {
-				type: Sequelize.BOOLEAN,
-			},
-			re_application: {
-				type: Sequelize.BOOLEAN,
+			application_type: {
+				type: Sequelize.ENUM("New Application", "Re-application"),
+
 			},
 			training_start_date: {
 				type: Sequelize.DATE,
@@ -110,11 +89,13 @@ module.exports = {
 			training_completion_date: {
 				type: Sequelize.DATE,
 			},
-			documentation_available_for_review: {
+			documentation_available: {
 				type: Sequelize.BOOLEAN,
+				defaultValue: false,
 			},
 			exemption_requested: {
 				type: Sequelize.BOOLEAN,
+				defaultValue: false,
 			},
 			employer_name: {
 				type: Sequelize.STRING,
@@ -123,6 +104,9 @@ module.exports = {
 				type: Sequelize.TEXT,
 			},
 			employer_authorization_number: {
+				type: Sequelize.STRING,
+			},
+			employer_quality_certifications: {
 				type: Sequelize.STRING,
 			},
 			employer_contact_person: {
@@ -134,23 +118,20 @@ module.exports = {
 			employer_contact_email_address: {
 				type: Sequelize.STRING,
 			},
-			employer_quality_certifications: {
-				type: Sequelize.ARRAY(Sequelize.STRING),
-			},
 			training_organization_name: {
 				type: Sequelize.STRING,
 			},
-      training_method: {
-				type: Sequelize.ENUM("Online", "Classroom", "Field"),
+			training_method: {
+				type: Sequelize.ENUM("Online", "Class Room", "Field"),
 			},
-			training_organization_approval_number: {
+			training_organization_registration_number: {
 				type: Sequelize.STRING,
 			},
 			training_facility_location: {
 				type: Sequelize.STRING,
 			},
 			training_organization_quality_certifications: {
-				type: Sequelize.ARRAY(Sequelize.STRING),
+				type: Sequelize.STRING,
 			},
 			training_organization_contact_person: {
 				type: Sequelize.STRING,
@@ -185,7 +166,7 @@ module.exports = {
 			incidental_line_number: {
 				type: Sequelize.STRING,
 			},
-			high_school: {
+			High_school: {
 				type: Sequelize.JSONB,
 			},
 			polytechnic: {
@@ -212,17 +193,29 @@ module.exports = {
 			employer_responsible_charge_date: {
 				type: Sequelize.DATE,
 			},
-      exam_registration_number: {
+			director_of_factories: {
 				type: Sequelize.STRING,
+				allowNull: true,
 			},
-      director_of_factories: {
-				type: Sequelize.STRING,
-			},
-      director_signature_date: {
+			director_signature_date: {
 				type: Sequelize.DATE,
+				allowNull: true,
 			},
-      uploaded_documents: {
-				type: Sequelize.ARRAY(Sequelize.STRING),
+			applicant_cv: {
+				type: Sequelize.TEXT,
+				allowNull: true,
+			},
+			higher_education_certifications: {
+				type: Sequelize.TEXT,
+				allowNull: true,
+			},
+			training_certificate: {
+				type: Sequelize.TEXT,
+				allowNull: true,
+			},
+			employment_letter: {
+				type: Sequelize.TEXT,
+				allowNull: true,
 			},
 			createdAt: {
 				allowNull: false,

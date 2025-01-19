@@ -106,7 +106,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       employer_quality_certifications: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.STRING,
       },
       employer_contact_person: {
         type: DataTypes.STRING,
@@ -130,7 +130,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       training_organization_quality_certifications: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.STRING,
       },
       training_organization_contact_person: {
         type: DataTypes.STRING,
@@ -165,21 +165,73 @@ module.exports = (sequelize, DataTypes) => {
       incidental_line_number: {
         type: DataTypes.STRING,
       },
-      high_school: {
-        type: DataTypes.JSONB,
-      },
-      polytechnic: {
-        type: DataTypes.JSONB,
-      },
-      university: {
-        type: DataTypes.JSONB,
-      },
-      professional_qualification: {
-        type: DataTypes.JSONB,
-      },
-      experience: {
-        type: DataTypes.JSONB,
-      },
+      High_school: {
+				type: DataTypes.JSONB
+			/*	name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			polytechnic: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			university: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+		
+			professional_qualification_institution: DataTypes.STRING,
+			date_of_issue: DataTypes.DATE
+			,
+			
+			experience_name_of_company:DataTypes.STRING,
+			joining_date: DataTypes.STRING,
+			exit_date: DataTypes.DATE,
+     
       applicant_declaration_name: {
         type: DataTypes.STRING,
       },
@@ -201,9 +253,30 @@ module.exports = (sequelize, DataTypes) => {
       director_signature_date: {
         type: DataTypes.DATE,
       },
-      uploaded_documents: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-      },
+      applicant_cv: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    higher_education_certifications: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    nagobin_experience_certificate: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    training_certificate: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    other_certifications: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    employment_letter: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
     },
     {
       sequelize,

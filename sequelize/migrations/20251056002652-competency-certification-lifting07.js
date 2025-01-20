@@ -1,7 +1,8 @@
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
+      module.exports={    
+                            
     up: async (queryInterface, Sequelize) => {
         await queryInterface.createTable("CompetencyCertificationLiftings", {
             id: {
@@ -13,8 +14,8 @@ module.exports = {
             userId: {
                 type: Sequelize.INTEGER,
                 references: {
-                    model: "users",
-                    key: "id",
+                    model: "users",                 
+                                                            
                 },
                 onDelete: "SET NULL",
                 allowNull: true,
@@ -27,10 +28,10 @@ module.exports = {
 				  key: 'id',
 				},
 				onDelete: 'SET NULL',	
-			},
+			},                                                                                                                                                          
 			subcategoryId:{
 				type: Sequelize.INTEGER,
-				allowNull: false,
+				allowNull: false,                                                                                                                                                                                                                                                                                                                          
 				references: {
 					model: 'subcategories',
 					key: 'id',
@@ -54,7 +55,7 @@ module.exports = {
 					model: 'fees',
 					key: 'id',
 				},
-				onDelete: 'SET NULL',
+				onDelete: 'SET NULL',            
 			},
             date_received: {
               type:  Sequelize.DATE,
@@ -140,17 +141,16 @@ module.exports = {
                 type: Sequelize.JSONB,
             },
 
-            // Professional Qualification
+            // Professional Qualification                                              
             professional_qualifications: {
                 type: Sequelize.ARRAY(Sequelize.JSONB),
-            },
+            },                            
 
             // Experience
             experience_details: {
                 type: Sequelize.ARRAY(Sequelize.JSONB),
             },
-
-            // Declaration
+                                // Declaration
             applicant_declaration_name: Sequelize.STRING,
             applicant_declaration_date: Sequelize.DATE,
             responsible_charge: Sequelize.STRING,
@@ -164,20 +164,20 @@ module.exports = {
 
             // Uploaded Documents
             uploaded_documents: {
-                type: Sequelize.ARRAY(Sequelize.STRING),
+                type: Sequelize.ARRAY(Sequelize.STRING), 
             },
             createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
-            updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE,
-            },
-        });
-    },
-
+                    allowNull: false,
+                    type: Sequelize.DATE,
+                },
+                updatedAt: {
+                    allowNull: false,
+                    type: Sequelize.DATE,
+                },
+            });
+        },
     down: async (queryInterface, Sequelize) => {
         await queryInterface.dropTable("CompetencyCertificationLiftings");
-    },
-}
+        },
+    
+    }             

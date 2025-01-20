@@ -3,6 +3,11 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
 	up: async (queryInterface, Sequelize) => {
+	
+	  
+	  
+			
+	  
 		await queryInterface.createTable("CompetencyCertificationFormBoiler", {
 			id: {
 				allowNull: false,
@@ -175,12 +180,25 @@ module.exports = {
 			university: {
 				type: Sequelize.JSONB,
 			},
-			professional_qualification: {
-				type: Sequelize.JSONB,
-			},
-			experience: {
-				type: Sequelize.JSONB,
-			},
+			professional_qualification_institution:{
+				type:Sequelize.STRING
+			  } ,
+					date_of_issue: {
+				type:Sequelize.DATE
+			  }
+					,
+					experience_name_of_company:{
+				type:Sequelize.STRING,
+			  },
+					joining_date:{ 
+				type:Sequelize.STRING,
+			  },
+					exit_date: {
+				type:Sequelize.DATE,
+			  },
+			  companyQualityManual: {
+				type: Sequelize.TEXT,
+			  },
 			applicant_declaration_name: {
 				type: Sequelize.STRING,
 			},
@@ -232,5 +250,7 @@ module.exports = {
 
 	down: async (queryInterface, Sequelize) => {
 		await queryInterface.dropTable("CompetencyCertificationFormBoiler");
+		
+		await queryInterface.sequelize.query('DROP TYPE "enum_CompetencyCertificationFormBoiler_application_type";');
 	},
 };

@@ -101,6 +101,9 @@ module.exports = {
       company_name: {
         type: Sequelize.STRING,
       },
+      cac_registration_number:{
+        type:Sequelize.STRING,
+      },
       physical_address: {
         type: Sequelize.TEXT,
       },
@@ -170,17 +173,21 @@ module.exports = {
       university: {
         type: Sequelize.JSONB,
       },
-      professional_qualification: {
-        type: Sequelize.JSONB,
+      professional_qualification_institution:{
+        type:Sequelize.STRING
+      } ,
+			date_of_issue: {
+        type:Sequelize.DATE
+      }
+			,
+			experience_name_of_company:{
+        type:Sequelize.STRING,
       },
-      experience: {
-        type: Sequelize.JSONB,
+			joining_date:{ 
+        type:Sequelize.STRING,
       },
-      company_responsible_charge: {
-        type: Sequelize.STRING,
-      },
-      date_sign: {
-        type: Sequelize.DATE,
+			exit_date: {
+        type:Sequelize.DATE,
       },
       companyQualityManual: {
         type: Sequelize.TEXT,
@@ -213,6 +220,14 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+    },
+    updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+    },
     });
   },
 

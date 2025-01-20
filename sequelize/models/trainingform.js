@@ -115,6 +115,7 @@ module.exports = (sequelize, DataTypes) => {
 
 			//company information
 			company_name: DataTypes.STRING,
+			cac_registration_number:DataTypes.STRING,
 			physical_address: DataTypes.TEXT,
 			year_of_commencing_business: DataTypes.STRING,
 			number_of_employee: DataTypes.INTEGER,
@@ -207,7 +208,7 @@ module.exports = (sequelize, DataTypes) => {
 					allowNull: true,
 				}*/
 			},
-		
+		                              
 			professional_qualification_institution: DataTypes.STRING,
 			date_of_issue: DataTypes.DATE
 			,
@@ -215,8 +216,8 @@ module.exports = (sequelize, DataTypes) => {
 			experience_name_of_company:DataTypes.STRING,
 			joining_date: DataTypes.STRING,
 			exit_date: DataTypes.DATE,
-			company_responsible_charge: DataTypes.STRING,
-			date_sign: DataTypes.DATE,
+			
+			//date_sign: DataTypes.DATE,
 			//approval_category: DataTypes.STRING,
 			//approval_class: DataTypes.STRING,
 			//training_approval_number_ngtan: DataTypes.STRING,

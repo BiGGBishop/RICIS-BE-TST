@@ -2,7 +2,7 @@ const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
 const { TrainingOrganizationForm } = require("../sequelize/models");
 const {BoilerRegistration} = require("../sequelize/models")
-const { CompetencyCertificationForm } = require("../sequelize/models");
+const { CompetencyCertificationFormBoiler } = require("../sequelize/models");
 const {RenewalForm} = require("../sequelize/models");
 const {User} = require("../sequelize/models")
 const {Classification} = require("../sequelize/models")
@@ -89,27 +89,27 @@ exports.createBoilerRegistrationRepo = async (data) => {
 
   //competencyForm
   exports.createCompetencyForm = async (data) => {
-    return CompetencyCertificationForm.create(data);
+    return CompetencyCertificationFormBoiler.create(data);
   };
   
   exports.findAllCompetencyForms = async () => {
-    return CompetencyCertificationForm.findAll();
+    return CompetencyCertificationFormBoiler.findAll();
   };
   
   exports.findCompetencyFormByUserId = async (userId) => {
-      return CompetencyCertificationForm.findAll({ where: { userId } });
+      return CompetencyCertificationFormBoiler.findAll({ where: { userId } });
   };
   
   exports.findCompetencyFormById = async (id) => {
-    return CompetencyCertificationForm.findByPk(id);
+    return CompetencyCertificationFormBoiler.findByPk(id);
   };
   
   exports.updateCompetencyForm = async (id, update) => {
-    return CompetencyCertificationForm.update(update, { where: { id } });
+    return CompetencyCertificationFormBoiler.update(update, { where: { id } });
   };
   
   exports.deleteCompetencyForm = async (id) => {
-    return CompetencyCertificationForm.destroy({ where: { id } });
+    return CompetencyCertificationFormBoiler.destroy({ where: { id } });
   };
 
   // New functions for RenewalForm

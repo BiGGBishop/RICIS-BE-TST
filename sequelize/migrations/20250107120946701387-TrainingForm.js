@@ -70,7 +70,7 @@ module.exports = {
 					"Power Engineer",
 					"Welding Engineer",
 					"Refrigerator Engineer",
-					"Boiler & Pressure Vessel Operator",
+					"Boiler & Pressure Vessel Operator", 
 					"Pressure Welder",
 					"Refrigeration Technician"),
       },

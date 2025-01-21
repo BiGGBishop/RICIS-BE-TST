@@ -824,8 +824,17 @@ exports.getUsersApplication = async (req) => {
   const filter = {
     userId: req.user?.id,
   };
-  // console.log({filter})
+  console.log({filter})
   const user = await UserRepo.findAllApplication(filter);
+  console.log(user)
+  if (!user || user.length === 0) {
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "No applications found for this user.",
+      DATA: [],
+    };
+  }
 
   return {
     STATUS_CODE: StatusCodes.OK,

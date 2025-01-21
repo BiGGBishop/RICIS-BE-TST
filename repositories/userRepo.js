@@ -83,8 +83,8 @@ exports.createApp = async (update) => {
 exports.findAllApplication = async (filter) => {
   try {
     const response = await Application.findAll({
-      where: filter,
-      include: [
+      where: filter
+      /*include: [
         {
           model: Categories, // Include the associated category
           as: "category",
@@ -123,7 +123,7 @@ exports.findAllApplication = async (filter) => {
             },
           ],
         },
-      ],
+      ]*/
     });
     // console.log({response, update})
     return response;

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 					key: "id",
 				},
 				onDelete: "SET NULL", // What to do if the referenced users is deleted
-				allowNull: true,
+				allowNull: false,
 			},
 			
 			categoryId:{

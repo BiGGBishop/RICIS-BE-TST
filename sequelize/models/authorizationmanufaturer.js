@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
 
   AuthorizationManufacturer.init(
     {
-			userId: {
+			user_id:{
 				type: DataTypes.INTEGER,
 				references: {
 					model: "users", // Name of the users table

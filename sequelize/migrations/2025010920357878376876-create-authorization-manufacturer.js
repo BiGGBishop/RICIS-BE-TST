@@ -1,7 +1,13 @@
 "use strict";
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
+
+  
   up: async (queryInterface, Sequelize) => {
+
+   
+  
     await queryInterface.createTable("AuthorizationManufacturers", {
       id: {
         type: Sequelize.INTEGER,
@@ -17,47 +23,54 @@ module.exports = {
       subcategoryId: Sequelize.INTEGER,
       classificationId: Sequelize.INTEGER,
       incidentalClassificationId: Sequelize.INTEGER,
+      feeId:{
+				type: Sequelize.INTEGER,
+				allowNull: false,
+				references: {
+					model: 'fees',
+					key: 'id',
+				},
+				onDelete: 'SET NULL',            
+			},
       paymentStatus: {
         type: Sequelize.ENUM("unpaid", "paid"),
-        allowNull: false,
-        defaultValue: "unpaid",
+       
       },
       appStatus: {
         type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
-        allowNull: false,
-        defaultValue: "pending",
+       
       },
       boiler_service_classification: {
         type: Sequelize.ENUM(
-          'Class A',
-          'Class B',
-          'Class C',
-          'Class D',
-          'Class E',
-          'Class F',
-          'Class G'
+          "Class A",
+          "Class B",
+          "Class C",
+          "Class D",
+         "Class E",
+          "Class F",
+          "Class G"
         ),
-        allowNull: true,
+       
       },
       type_of_service: {
-        type: Sequelize.ENUM('Nuclear', 'Non-Nuclear'),
-        allowNull: true,
+        type: Sequelize.ENUM("Nuclear", "Non-Nuclear"),
+       
       },
       lifting_service_classification: {
         type: Sequelize.ENUM(
-          'Manufacture Crane',
-          'Manufacturer Lifting Accessory ',
-          'Manufacturer Lift & Escalator',
-          'Repairer',
-          'Installer Crane',
-          'Installer Class A',
-          'Installer Class B'
+         "Manufacture Crane",
+    "Manufacturer Lifting Accessory",
+    "Manufacturer Lift & Escalator",
+    "Repairer",
+    "Installer Crane",
+    "Installer Class A",
+    "Installer Class B"
         ),
-        allowNull: true,
+        
       },
       application_type: {
-        type: Sequelize.ENUM('New Application', 'Re-application'),
-        allowNull: true,
+        type: Sequelize.ENUM("New Application","Re-application"),
+       
       },
       available_for_documentation_review: {
         type: Sequelize.BOOLEAN,
@@ -248,5 +261,6 @@ module.exports = {
 
   down: async (queryInterface) => {
     await queryInterface.dropTable("AuthorizationManufacturers");
+   
   },
 };

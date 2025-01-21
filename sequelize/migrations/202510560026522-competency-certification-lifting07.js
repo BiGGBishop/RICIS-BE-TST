@@ -31,7 +31,7 @@
 			},                                                                                                                                                          
 			subcategoryId:{
 				type: Sequelize.INTEGER,
-				allowNull: false,                                                                                                                                                                                                                                                                                                                          
+				allowNull: false,                                      
 				references: {
 					model: 'subcategories',
 					key: 'id',

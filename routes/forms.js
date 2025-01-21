@@ -3,7 +3,7 @@ const { asyncHandler } = require("../middlewares/handler");
 const formsController = require("../controllers/formsController");
 const { authToken } = require("../utils/AunthenticateUser");
 const {validateReqBody} = require("../validations/reqValidator");
-const {authorizationApprovedSchema,authorizationManufacturerSchema} = require("../validations/formValidator")
+const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator")
 
 const router = express.Router();
 
@@ -64,8 +64,6 @@ router.get(
   asyncHandler(formsController.getAuthorizationTrainingByUserId)
 );
 
-
-
 router.post(
   "/boiler-registration",
   authToken,
@@ -84,7 +82,7 @@ router.get(
     asyncHandler(formsController.getBoilerRegistrationByUserId)
 );
 // Competency Certification Form Routes
-router.post('/competency-form-lifting', authToken, formsController.createCompetencyCertificationLiftOperator);
+router.post('/competency-form-lifting', authToken,validateReqBody(competencyCertificationFormLiftOperatorSchema), formsController.createCompetencyCertificationLiftOperator);
 router.get('/competency-form-lifting-operator', authToken, formsController.getAllCompetencyCertificationLiftOperator);
 router.get('/competency-form/user/:userId', authToken, formsController.getCompetencyFormByUserId);
 router.get('/competency-form/:id', authToken, formsController.getCompetencyFormById);

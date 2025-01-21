@@ -181,13 +181,13 @@ module.exports = {
       }
 			,
       professional_expiration_date:{
-        type:Sequelize.STRING,
+        type:Sequelize.DATE
       },
 			experience_name_of_company:{
         type:Sequelize.STRING,
       },
       company_declaration_date:{
-        type:Sequelize.STRING,
+        type:Sequelize.DATE
       },
       company_responsible_charge:{
         type:Sequelize.STRING,

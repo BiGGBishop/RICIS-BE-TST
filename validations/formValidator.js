@@ -224,7 +224,6 @@ const renewalFormSchema = Joi.object({
 
 module.exports = {
     authorizationApprovedSchema,
-    authorizationManufacturerSchema,
     competencyCertificationFormSchema,
     trainingOrganizationFormSchema,
     renewalFormSchema

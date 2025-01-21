@@ -195,9 +195,6 @@ exports.createAuthorizationManufacturer = async (req) => {
     ...req.body,
     user_id: userId,
   }
-  
-
-  
 
   const newAuthorizationManufacturer = await FormsRepo.createAuthorizationManufacturer(data);
 

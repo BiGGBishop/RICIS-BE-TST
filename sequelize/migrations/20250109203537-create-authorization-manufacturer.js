@@ -212,7 +212,7 @@ module.exports = {
         allowNull: true,
       },
       designerDocumentation: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT,                                 
         allowNull: true,
       },
       weldingDocumentation: {
@@ -232,7 +232,7 @@ module.exports = {
         allowNull: true,
       },
       is_draft: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.BOOLEAN,                  
         defaultValue: false,
       },
       createdAt: {
@@ -242,7 +242,7 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-      },                                                                                          
+      },                                                                                                                                                  
     });
   },
 

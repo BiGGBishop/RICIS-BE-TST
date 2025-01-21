@@ -48,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				onDelete: 'SET NULL',
 			},
+			incidentalClassificationId:{
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				references: {
+				  model: 'classifications',
+				  key: 'id',
+				},
+				onDelete: 'SET NULL',
+			},
 			feeId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,
@@ -67,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: false,
 				defaultValue: "pending",
 			  },
-			form_type: DataTypes.STRING,
+			
       boiler_service_classification:DataTypes.ENUM(
 				"Class A",
 				"Class B",

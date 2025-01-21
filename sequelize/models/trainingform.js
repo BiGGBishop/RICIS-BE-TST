@@ -210,10 +210,10 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		                              
 			professional_qualification_institution: DataTypes.STRING,
-			date_of_issue: DataTypes.DATE,
-			
-			
+			date_of_issue: DataTypes.STRING,
 			experience_name_of_company:DataTypes.STRING,
+			  company_declaration_date:DataTypes.STRING,
+			  company_responsible_charge:DataTypes.STRING,
 			joining_date: DataTypes.STRING,
 			exit_date: DataTypes.DATE,
 			

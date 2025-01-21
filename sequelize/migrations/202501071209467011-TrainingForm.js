@@ -180,7 +180,16 @@ module.exports = {
         type:Sequelize.DATE
       }
 			,
+      professional_expiration_date:{
+        type:Sequelize.STRING,
+      },
 			experience_name_of_company:{
+        type:Sequelize.STRING,
+      },
+      company_declaration_date:{
+        type:Sequelize.STRING,
+      },
+      company_responsible_charge:{
         type:Sequelize.STRING,
       },
 			joining_date:{ 

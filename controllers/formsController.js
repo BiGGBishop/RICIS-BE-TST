@@ -1,5 +1,7 @@
 const FormsService = require("../services/formsServices");
 const StatusCodes = require("../utils/statusCodes");
+const{createCompetencyFormLiftOperator} = require("../services/formsServices")
+
 
 exports.createAuthorizationApproved = async (req, res) => {
   
@@ -155,17 +157,21 @@ exports.getAllAuthorizationTraining = async (req, res) => {
 
 
   // New functions for CompetencyCertificationForm
-exports.createCompetencyForm = async (req, res) => {
-  const data = await FormsService.createCompetencyForm(req);
+exports.createCompetencyCertificationLiftOperator = async (req, res) => {
+  try{
+  const data = await createCompetencyFormLiftOperator(req);
   return res.status(data.STATUS_CODE).json({
       status: data.STATUS,
       message: data.MESSAGE,
       data: data.DATA,
   });
+}catch(error){
+  console.log(error)
+  }
 };
 
-exports.getAllCompetencyForms = async (req, res) => {
-  const data = await FormsService.getAllCompetencyForms();
+exports.getAllCompetencyCertificationLiftOperator = async (req, res) => {
+  const data = await FormsService.getAllCompetencyCertificationLiftOperator();
   return res.status(data.STATUS_CODE).json({
       status: data.STATUS,
       message: data.MESSAGE,

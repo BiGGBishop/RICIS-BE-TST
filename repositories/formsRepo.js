@@ -1,3 +1,4 @@
+
 const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
 const { TrainingOrganizationForm } = require("../sequelize/models");
@@ -10,7 +11,9 @@ const {OperatorCertification} = require("../sequelize/models")
 const {CompetencyCertificationLifting} = require("../sequelize/models");
 const {AuthorizedInspectorCertification} = require("../sequelize/models");
 const {CompetencyCertificationWelder} = require("../sequelize/models");
-const {LiftingEquipmentRegistration} = require("../sequelize/models")
+const {LiftingEquipmentRegistration} = require("../sequelize/models");
+const {CompetencyCertificationFormLiftOperator}= require("../sequelize/models/");
+
 
 exports.create = async (data) => {
   try {
@@ -87,12 +90,23 @@ exports.createBoilerRegistrationRepo = async (data) => {
   };
 
 
-  //competencyForm
+  //competencyFormLiftOperationCertification
+  exports.createCompetencyCertificationLiftOperator= async(data)=>{
+    return CompetencyCertificationFormLiftOperator.create(data);
+  };
+
+  exports.findAllCompetencyCertificationLiftOperator= async()=>{
+    return CompetencyCertificationFormLiftOperator.findAll();
+  };
+
+
+  //certififcation form boiler
+
   exports.createCompetencyForm = async (data) => {
     return CompetencyCertificationFormBoiler.create(data);
   };
   
-  exports.findAllCompetencyForms = async () => {
+  exports.findAllCompetencyCertificationLiftOperator = async () => {
     return CompetencyCertificationFormBoiler.findAll();
   };
   

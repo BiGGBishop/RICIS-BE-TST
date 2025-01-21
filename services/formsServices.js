@@ -341,8 +341,8 @@ exports.getAllAuthorizationTraining = async () => {
     };
 
 
-    //competency
-    exports.createCompetencyForm = async (req) => {
+ exports.createCompetencyFormLiftOperator = async (req) => {
+  console.log("working..")
       const userId = req?.user?.id;
       const userExist = await UserRepo.findUser({
         id: userId,
@@ -360,8 +360,8 @@ exports.getAllAuthorizationTraining = async () => {
           ...req.body,
           userId: userId
       };
-  
-      const newCompetencyForm = await FormsRepo.createCompetencyForm(data);
+
+      const newCompetencyForm = await FormsRepo.createCompetencyCertificationLiftOperator(data);
   
       return {
           STATUS_CODE: StatusCodes.CREATED,
@@ -371,14 +371,14 @@ exports.getAllAuthorizationTraining = async () => {
       };
   };
   
-  exports.getAllCompetencyForms = async () => {
-      const allCompetencyForms = await FormsRepo.findAllCompetencyForms();
+  exports.getAllCompetencyCertificationLiftOperator = async () => {
+      const allCompetencyCertificationLiftOperator = await FormsRepo.findAllCompetencyCertificationLiftOperator();
   
       return {
           STATUS_CODE: StatusCodes.OK,
           STATUS: true,
           MESSAGE: "Competency forms fetched successfully.",
-          DATA: allCompetencyForms,
+          DATA: allCompetencyCertificationLiftOperator,
       };
   };
   

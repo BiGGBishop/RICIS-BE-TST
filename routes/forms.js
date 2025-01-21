@@ -84,13 +84,13 @@ router.get(
     asyncHandler(formsController.getBoilerRegistrationByUserId)
 );
 // Competency Certification Form Routes
-router.post('/competency-form', authToken, formsController.createCompetencyForm);
-router.get('/competency-form', authToken, formsController.getAllCompetencyForms);
+router.post('/competency-form-lifting', authToken, formsController.createCompetencyCertificationLiftOperator);
+router.get('/competency-form-lifting-operator', authToken, formsController.getAllCompetencyCertificationLiftOperator);
 router.get('/competency-form/user/:userId', authToken, formsController.getCompetencyFormByUserId);
 router.get('/competency-form/:id', authToken, formsController.getCompetencyFormById);
 router.put('/competency-form/:id', authToken, formsController.updateCompetencyForm);
 router.delete('/competency-form/:id', authToken, formsController.deleteCompetencyForm);
-module.exports = router;
+
 
 
 // Competency Certification Lifting Operator routes
@@ -134,3 +134,5 @@ router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUser
 router.post("/lifting-equipment-registration", authToken, formsController.createLiftingEquipmentRegistration);
 router.get("/lifting-equipment-registration", authToken, formsController.getAllLiftingEquipmentRegistration);
 router.get("/lifting-equipment-registration/user", authToken, formsController.getLiftingEquipmentRegistrationByUserId);
+
+module.exports = router;

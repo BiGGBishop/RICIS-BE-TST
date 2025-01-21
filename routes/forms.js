@@ -30,7 +30,7 @@ router.get(
 router.post(
   "/authorization-manufacturer",
   authToken,
-  authToken,
+
   //validateReqBody(authorizationManufacturerSchema),
   asyncHandler(formsController.createAuthorizationManufacturer)
 );
@@ -44,7 +44,7 @@ router.get(
   "/authorization-manufacturer/:userId",
   asyncHandler(formsController.getAuthorizationManufacturerByUserId)
 );
-
+                                                                   
 router.post(
   "/authorization-training",
   authToken,

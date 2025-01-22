@@ -20,12 +20,12 @@ exports.create = async (data) => {
     const response = await AuthorizationApproved.create(data);
     console.log("the data ...",response)
     return response;
-  } catch (error) {
+  } catch (error) {                                                            
     console.error("Error details:", error);
   }
 };
 
-exports.findAll = async () => {
+exports.findAllAuthorizationApproved = async () => {
   try {
     const response = await AuthorizationApproved.findAll({
       include: [
@@ -41,17 +41,17 @@ exports.findAll = async () => {
     return response;
   }catch (error) {
     console.error("Error details:", error);
-  }
-};
-
-exports.findByUserId = async (userId) => {
+  }                                                                                             
+};                                             
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+exports.findByUserIdAuthorizationApproved  = async (userId) => {
   return await AuthorizationApproved.findAll({ where: { user_id: userId } });
 };
 
 //crate authorization manufacturer
 
 exports.createAuthorizationManufacturer = async (data) => {
-  return AuthorizationManufacturer.create(data);
+  return AuthorizationManufacturer.create(data);                                                            
 };
 
 exports.findAllAuthorizationManufacturer = async () => {
@@ -99,6 +99,10 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormLiftOperator.findAll();
   };
 
+  exports.findByUserIdCompetencyCertificationLiftOperator= async()=>{
+    return CompetencyCertificationFormLiftOperator.findAll({ where: { user_id: userId } });
+  };
+
 
   //certififcation form boiler
 
@@ -106,7 +110,7 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormBoiler.create(data);
   };
   
-  exports.findAllCompetencyCertificationLiftOperator = async () => {
+  exports.findAllCompetencyCertificationFormBoiler = async () => {
     return CompetencyCertificationFormBoiler.findAll();
   };
   
@@ -248,8 +252,6 @@ exports.findCompetencyCertificationInspectionById  = async (id) => {
 };
 
 
-
-
 // New functions for LifingOperatorCertification08
 exports.createCompetencyCertificationWelder = async (data) => {
   return CompetencyCertificationWelder.create(data);
@@ -262,7 +264,7 @@ exports.findAllCompetencyCertificationWelder = async () => {
 exports.findCompetencyCertificationWelderByUserId  = async (userId) => {
     return CompetencyCertificationWelder.findAll({ where: { userId } });
 };
-
+                                                                         
 
 
 // LiftingEquipmentRegistration
@@ -270,7 +272,7 @@ exports.createLiftingEquipmentRegistration = async (data) => {
   return LiftingEquipmentRegistration.create(data);
 };
 
-exports.findLiftingEquipmentRegistrationByUserId = async (userId) => {
+exports.findByUserIdLiftingEquipmentRegistration = async (userId) => {
   return LiftingEquipmentRegistration.findAll({ where: { userId: userId } });
 };
 

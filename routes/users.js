@@ -18,6 +18,7 @@ router.get("/classification-with-incidental",authToken, asyncHandler(usersContro
 router.post("/classification-with-merge",authToken,usersController.getClassificationMergeData);
 router.put("/application/msg/add", authToken, asyncHandler(usersController.addMsgToApplication)); 
 router.get("/payment/token",authToken, asyncHandler(usersController.getPaymentToken));
+router.get("/my-applications",authToken,asyncHandler(usersController.getAllUserForms));
 
 
 

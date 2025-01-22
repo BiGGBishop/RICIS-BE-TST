@@ -82,22 +82,17 @@ module.exports = (sequelize, DataTypes) => {
 
 			//Lifting equipment category
 			lifting_equipment_classification: DataTypes.ENUM(
-				"Class VI",
-        "Class VII",
-        "Class VIII",
-        "Class IX",
-        "Class X"
+			"Class VI",
+			"Class VII",
+			"Class VIII",
+			"Class IX",
+			"Class X"
 			),
-			
-			
-
 			//lifting equipemnt categories
-
-
       type_of_service:{
 				type:DataTypes.ENUM(
-					"New Application",
-					"Re-Application"
+					"Nuclear",
+					"Non-Nuclear"
 				)
 			},
 			
@@ -297,9 +292,9 @@ module.exports = (sequelize, DataTypes) => {
 			//approval_category: DataTypes.STRING,                                                                                                                         
 			//approval_class: DataTypes.STRING,
 			//training_approval_number_ngtan: DataTypes.STRING,
-			//director_of_factories: DataTypes.TEXT,
+			//d  irector_of_factories: DataTypes.TEXT,
 			//date_sign_director_of_factories: DataTypes.DATE,
-			companyQualityManual: {
+		companyQualityManual: {
         type: DataTypes.TEXT,                                                                                     
         allowNull: true,
       },
@@ -311,26 +306,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      documentationQuality: {
+     
+      documentationSupervisor: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      designerDocumentation: {
+
+      documentationInspector: {
         type: DataTypes.TEXT,
         allowNull: true,
-      },
-      weldingDocumentation: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      ndtDocumentation: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
-      indtDocumentation: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
+      },       
       isoCertification: {
         type: DataTypes.TEXT,
         allowNull: true,

@@ -1,6 +1,7 @@
 const { getClassificationsWithMerge,getClassificationWithIncidental } = require("../services/userServices");
 const axios = require('axios');
 const UserService = require("../services/userServices")
+const FormsRepo = require("../repositories/formsRepo");
 
 
 exports.getOTP = async (req, res) => {
@@ -236,7 +237,7 @@ exports.getClassificationWithIncidental = async (req, res) => {
       message: "An error occurred while processing the request",
     });
   }
-};
+};                                                                                                                                                        
 
 
 exports.getClassificationMergeData = async (req, res) => {
@@ -259,3 +260,66 @@ exports.getClassificationMergeData = async (req, res) => {
 
   }
 };
+
+
+exports.getAllUserForms = async (req,res) => {
+const userId = req?.user?.id;
+if(!userId){
+  return res.status(400).json({message:"action not allowed you need to log in as a user"})
+}
+  try {
+    const [
+      authorizationApprovedForms,
+      authorizationManufacturerForms,
+      authorizationTrainingForms,
+      boilerRegistrationForms,
+      competencyForms,
+      competencyLifting08Forms,
+      competencyLifting07Forms,
+      competencyInspectionForms,                                                                
+      competencyWelderForms,
+      renewalForms,
+      liftingEquipmentRegistrationForms,
+    ] = await Promise.all([
+      FormsRepo.findByUserIdAuthorizationManufacturer(userId),
+      FormsRepo.findByUserIdAuthorizationTraining(userId),
+      FormsRepo.findByUserIdBoilerRegistration(userId),
+      FormsRepo.findByUserIdCompetencyForm(userId),
+      FormsRepo.findByUserIdCompetencyLifting08(userId),
+      FormsRepo.findByUserIdCompetencyLifting07(userId),
+      FormsRepo.findByUserIdCompetencyInspection(userId),
+      FormsRepo.findByUserIdCompetencyWelder(userId),
+      FormsRepo.findByUserIdRenewal(userId),
+      FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),
+    ]);
+
+    const allForms = {
+      authorizationApprovedForms: authorizationApprovedForms || [],
+      authorizationManufacturerForms: authorizationManufacturerForms || [],
+      authorizationTrainingForms: authorizationTrainingForms || [],
+      boilerRegistrationForms: boilerRegistrationForms || [],
+      competencyForms: competencyForms || [],
+      competencyLifting08Forms: competencyLifting08Forms || [],
+      competencyLifting07Forms: competencyLifting07Forms || [],
+      competencyInspectionForms: competencyInspectionForms || [],
+      competencyWelderForms: competencyWelderForms || [],
+      renewalForms: renewalForms || [],
+      liftingEquipmentRegistrationForms: liftingEquipmentRegistrationForms || [],
+    };
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "User forms fetched successfully.",
+      DATA: allForms,
+    };
+  } catch (error) {
+    console.error("Error fetching all user forms:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+};
+                                                                             

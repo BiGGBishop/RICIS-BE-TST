@@ -38,7 +38,7 @@ exports.createAuthorizationApproved = async (req) => {
 };
 
 exports.getAllAuthorizationApproved = async () => {
-  const allAuthorizations = await FormsRepo.findAll();
+  const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
 
   return {
     STATUS_CODE: StatusCodes.OK,
@@ -160,7 +160,7 @@ exports.getAuthorizationManufacturerByUserId = async (userId) => {
 };
 
 
-exports.createAuthorizationTraining = async (req) => {
+exports.createTrainingAuthorization = async (req) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({
     id: req.user?.id,

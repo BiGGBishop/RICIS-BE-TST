@@ -84,8 +84,8 @@ module.exports = {
       },
       type_of_service: {
         type: Sequelize.ENUM(
-          'New Application',
-          'Re-Application'
+          'Nuclear',
+          'Non-Nuclear'
         ),
       },
       application_type: {
@@ -249,30 +249,28 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      companyQualityManual: {
+        type: Sequelize.TEXT,                                                                                     
+        allowNull: true,
+      },
+      operationalProcedures: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       companyDocumentation: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      documentationQuality: {
+     
+      documentationSupervisor: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      designerDocumentation: {
+
+      documentationInspector: {
         type: Sequelize.TEXT,
         allowNull: true,
-      },
-      weldingDocumentation: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      ndtDocumentation: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      indtDocumentation: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
+      },       
       isoCertification: {
         type: Sequelize.TEXT,
         allowNull: true,

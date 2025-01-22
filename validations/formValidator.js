@@ -14,11 +14,11 @@ const authorizationApprovedSchema= Joi.object({
   lifting_equipment_classification: Joi.string().valid(
     "Class VI", "Class VII", "Class VIII", "Class IX", "Class X"
   ).optional(),
-  type_of_service: Joi.string().valid("New Application", "Re-Application").required(),
+  type_of_service: Joi.string().valid("Nuclear", "Non-Nuclear").required(),
   application_type: Joi.string().valid("New Application", "Re-Application").required(),
   available_for_documentation_review: Joi.boolean().optional(),
   exemption_request: Joi.boolean().optional(),
-  company_name: Joi.string().optional(),
+  company_name: Joi.string().optional(), 
   cac_registration_number: Joi.string().optional(),
   physical_address: Joi.string().optional(),
   year_of_commencing_business: Joi.string().optional(),
@@ -68,10 +68,8 @@ const authorizationApprovedSchema= Joi.object({
   operationalProcedures: Joi.string().optional(),
   companyDocumentation: Joi.string().optional(),
   documentationQuality: Joi.string().optional(),
-  designerDocumentation: Joi.string().optional(),
-  weldingDocumentation: Joi.string().optional(),
-  ndtDocumentation: Joi.string().optional(),
-  indtDocumentation: Joi.string().optional(),
+  documentationSupervisor: Joi.string().optional(),
+  documentationInspector: Joi.string().optional(),
   isoCertification: Joi.string().optional(),
   is_draft: Joi.boolean().optional(),
 });

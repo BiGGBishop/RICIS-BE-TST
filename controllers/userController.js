@@ -270,7 +270,7 @@ if(!userId){
 }
   try {
     const [
-      //             authorizationApprovedForms,
+       authorizationApprovedForms,
       authorizationManufacturerForms,
       authorizationTrainingForms,
       competencyCertificationLiftOperator

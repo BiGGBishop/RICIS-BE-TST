@@ -1,14 +1,15 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
+'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('AuthorizationApproveds', {
       id: {
-        allowNull: false,
+        type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -82,10 +83,16 @@ module.exports = {
         ),
       },
       type_of_service: {
-        type: Sequelize.ENUM('New Application', 'Re-Application'),
+        type: Sequelize.ENUM(
+          'New Application',
+          'Re-Application'
+        ),
       },
       application_type: {
-        type: Sequelize.ENUM('New Application', 'Re-Application'),
+        type: Sequelize.ENUM(
+          'New Application',
+          'Re-Application'
+        ),
       },
       available_for_documentation_review: {
         type: Sequelize.BOOLEAN,
@@ -159,6 +166,33 @@ module.exports = {
       technical_supervisor_phonenumber: {
         type: Sequelize.STRING,
       },
+      supervisor_high_school: {
+        type: Sequelize.JSONB,
+      },
+      supervisor_polytechnic: {
+        type: Sequelize.JSONB,
+      },
+      supervisor_university: {
+        type: Sequelize.JSONB,
+      },
+      supervisor_professional_qualification_institution: {
+        type: Sequelize.STRING,
+      },
+      supervisor_date_of_issue: {
+        type: Sequelize.DATE,
+      },
+      supervisor_professional_expiration_date: {
+        type: Sequelize.DATE,
+      },
+      supervisor_experience_name_of_company: {
+        type: Sequelize.STRING,
+      },                                                                                    
+      supervisor_joining_date: {
+        type: Sequelize.STRING,
+      },
+      supervisor_exit_date:{
+        type: Sequelize.STRING,
+      },
       approved_inspector_name: {
         type: Sequelize.STRING,
       },
@@ -174,25 +208,31 @@ module.exports = {
       approved_inspector_phonenumber: {
         type: Sequelize.STRING,
       },
-      High_school: {
+      inspector_high_school: {
         type: Sequelize.JSONB,
       },
-      polytechnic: {
+      inspector_polytechnic: {
         type: Sequelize.JSONB,
       },
-      university: {
+      inspector_university: {
         type: Sequelize.JSONB,
       },
-      professional_qualification_institution: {
+      inspector_professional_qualification_institution: {
         type: Sequelize.STRING,
       },
-      date_of_issue: {
+      inspector_date_of_issue: {
         type: Sequelize.DATE,
       },
-      professional_expiration_date: {
+      inspector_professional_expiration_date: {
         type: Sequelize.DATE,
       },
-      experience_name_of_company: {
+      inspector_experience_name_of_company: {
+        type: Sequelize.STRING,
+      },
+      inspector_joining_date: {
+        type: Sequelize.STRING,
+      },
+      inspector_exit_date: {
         type: Sequelize.STRING,
       },
       company_declaration_date: {
@@ -200,12 +240,6 @@ module.exports = {
       },
       company_responsible_charge: {
         type: Sequelize.STRING,
-      },
-      joining_date: {
-        type: Sequelize.STRING,
-      },
-      exit_date: {
-        type: Sequelize.DATE,
       },
       companyQualityManual: {
         type: Sequelize.TEXT,
@@ -257,6 +291,7 @@ module.exports = {
       },
     });
   },
+
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('AuthorizationApproveds');
   },

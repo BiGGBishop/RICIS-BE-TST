@@ -134,7 +134,7 @@ module.exports = (sequelize, DataTypes) => {
 			member_indt:{
 				type:DataTypes.TEXT,
 				allowNull: true
-			},
+			},                                                                             
 
 			//technical supervisor
 			member_other_bodies: DataTypes.STRING,
@@ -152,6 +152,71 @@ module.exports = (sequelize, DataTypes) => {
 			technical_supervisor_phonenumber: DataTypes.STRING,
 
 
+      //Education
+			supervisor_high_school: {
+				type: DataTypes.JSONB
+			/*	name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,                                                       
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+			supervisor_polytechnic: {
+				type: DataTypes.JSONB
+				/*name_of_school:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				},
+				date_admitted:{
+					type:DataTypes.DATE,
+					allowNull: true,
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,
+				}*/
+			},
+		supervisor_university: {
+				type: DataTypes.JSONB
+				/*name_of_school:{     
+					type:DataTypes.DATE,        
+					allowNull: true
+				},
+				date_completed:{
+					type: DataTypes.DATE,
+					allowNull: true,
+				},
+				qualification:{
+					type:DataTypes.STRING,
+					allowNull: true,                                                     
+				}*/
+			},
+		                              
+			supervisor_professional_qualification_institution: DataTypes.STRING,
+			supervisor_date_of_issue: DataTypes.DATE, 
+			supervisor_professional_expiration_date:DataTypes.DATE,
+			supervisor_experience_name_of_company:DataTypes.STRING,
+			supervisor_joining_date: DataTypes.STRING,
+      supervisor_exit_date:DataTypes.STRING,
+
+
+
       //approved inspector
       approved_inspector_name: DataTypes.STRING,
       approved_inspector_address: DataTypes.TEXT,
@@ -160,14 +225,14 @@ module.exports = (sequelize, DataTypes) => {
       approved_inspector_phonenumber: DataTypes.STRING,
 
 			//Education
-			High_school: {
+		  inspector_high_school: {
 				type: DataTypes.JSONB
 			/*	name_of_school:{
 					type:DataTypes.STRING,
 					allowNull: true,
 				},
 				date_admitted:{
-					type:DataTypes.DATE,
+					type:DataTypes.DATE,                                                       
 					allowNull: true,
 				},
 				date_completed:{
@@ -180,7 +245,7 @@ module.exports = (sequelize, DataTypes) => {
 					allowNull: true,
 				}*/
 			},
-			polytechnic: {
+			inspector_polytechnic: {
 				type: DataTypes.JSONB
 				/*name_of_school:{
 					type:DataTypes.STRING,
@@ -199,7 +264,7 @@ module.exports = (sequelize, DataTypes) => {
 					allowNull: true,
 				}*/
 			},
-			university: {
+      inspector_university: {
 				type: DataTypes.JSONB
 				/*name_of_school:{
 					type:DataTypes.STRING,
@@ -215,27 +280,27 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				qualification:{
 					type:DataTypes.STRING,
-					allowNull: true,
+					allowNull: true,                                                     
 				}*/
 			},
 		                              
-			professional_qualification_institution: DataTypes.STRING,
-			date_of_issue: DataTypes.DATE, 
-			professional_expiration_date:DataTypes.DATE,
-			experience_name_of_company:DataTypes.STRING,
-			company_declaration_date:DataTypes.DATE,
-			company_responsible_charge:DataTypes.STRING,
-			joining_date: DataTypes.STRING,
-			exit_date: DataTypes.DATE,                                                  
-			
+		inspector_professional_qualification_institution: DataTypes.STRING,
+		inspector_date_of_issue: DataTypes.DATE, 
+		inspector_professional_expiration_date:DataTypes.DATE,
+		inspector_experience_name_of_company:DataTypes.STRING,
+		inspector_joining_date: DataTypes.STRING,
+    inspector_exit_date:DataTypes.STRING,
+    company_declaration_date:DataTypes.DATE,
+		company_responsible_charge:DataTypes.STRING,                                               
+			                                                                                                                                                                                                                                                                                            
 			//date_sign: DataTypes.DATE,
-			//approval_category: DataTypes.STRING,
+			//approval_category: DataTypes.STRING,                                                                                                                         
 			//approval_class: DataTypes.STRING,
 			//training_approval_number_ngtan: DataTypes.STRING,
 			//director_of_factories: DataTypes.TEXT,
 			//date_sign_director_of_factories: DataTypes.DATE,
 			companyQualityManual: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT,                                                                                     
         allowNull: true,
       },
       operationalProcedures: {
@@ -277,7 +342,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		},
     {
-      sequelize,
+      sequelize,      
       modelName: 'AuthorizationApproved',
       tableName: 'AuthorizationApproveds',
       timestamps: true,

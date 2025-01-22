@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
               type:  DataTypes.DATE,
               allowNull: true
             },
-			form_number:{
+			form_number:{ 
 				type: DataTypes.STRING,
 				allowNull: true,
 			} ,
@@ -133,7 +133,7 @@ module.exports = (sequelize, DataTypes) => {
 			is_draft: {
 				type: DataTypes,
 				defaultValue: false,
-			},
+			}, 
 		},
 		{
 			sequelize,
@@ -142,6 +142,6 @@ module.exports = (sequelize, DataTypes) => {
 			timestamps: true,
 		}
 	);
-
+                                                     
 	return ApprovedInspectionAgency;
-};
+};      

@@ -1,8 +1,5 @@
 const Joi = require('joi');
 
-    
-const Joi = require('joi');
-
 const authorizationApprovedSchema= Joi.object({
   userId: Joi.number().integer().required(),
   categoryId: Joi.number().integer().required(),

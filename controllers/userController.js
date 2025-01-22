@@ -2,6 +2,7 @@ const { getClassificationsWithMerge,getClassificationWithIncidental } = require(
 const axios = require('axios');
 const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
+const StatusCodes = require("../utils/statusCodes")
 
 
 exports.getOTP = async (req, res) => {
@@ -269,50 +270,53 @@ if(!userId){
 }
   try {
     const [
-      authorizationApprovedForms,
+      //             authorizationApprovedForms,
       authorizationManufacturerForms,
       authorizationTrainingForms,
-      boilerRegistrationForms,
-      competencyForms,
-      competencyLifting08Forms,
-      competencyLifting07Forms,
-      competencyInspectionForms,                                                                
-      competencyWelderForms,
-      renewalForms,
-      liftingEquipmentRegistrationForms,
+      competencyCertificationLiftOperator
+      //boilerRegistrationForms,
+      // competencyForms,
+      // competencyLifting08Forms,
+      // competencyLifting07Forms,
+      // competencyInspectionForms,                                                                
+      //competencyWelderForms,
+      // renewalForms,
+      // liftingEquipmentRegistrationForms,
     ] = await Promise.all([
+         FormsRepo.findByUserIdAuthorizationApproved(userId),
       FormsRepo.findByUserIdAuthorizationManufacturer(userId),
-      FormsRepo.findByUserIdAuthorizationTraining(userId),
-      FormsRepo.findByUserIdBoilerRegistration(userId),
-      FormsRepo.findByUserIdCompetencyForm(userId),
-      FormsRepo.findByUserIdCompetencyLifting08(userId),
-      FormsRepo.findByUserIdCompetencyLifting07(userId),
-      FormsRepo.findByUserIdCompetencyInspection(userId),
-      FormsRepo.findByUserIdCompetencyWelder(userId),
-      FormsRepo.findByUserIdRenewal(userId),
-      FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),
+      FormsRepo.findByUserIdTrainingAuthorization(userId),
+      FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId),
+     // FormsRepo.findByUserIdBoilerRegistrationRepos(userId),
+      //FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId),
+     // FormsRepo.findByUserIdCompetencyLifting08(userId),
+     // FormsRepo.findByUserIdCompetencyLifting07(userId),
+      //FormsRepo.findByUserIdCompetencyInspection(userId),
+      //FormsRepo.findByUserIdCompetencyWelder(userId),
+      //FormsRepo.findByUserIdRenewalForm(userId),
+      //FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),
     ]);
 
     const allForms = {
-      authorizationApprovedForms: authorizationApprovedForms || [],
+     authorizationApprovedForms: authorizationApprovedForms || [],
       authorizationManufacturerForms: authorizationManufacturerForms || [],
       authorizationTrainingForms: authorizationTrainingForms || [],
-      boilerRegistrationForms: boilerRegistrationForms || [],
-      competencyForms: competencyForms || [],
-      competencyLifting08Forms: competencyLifting08Forms || [],
-      competencyLifting07Forms: competencyLifting07Forms || [],
-      competencyInspectionForms: competencyInspectionForms || [],
-      competencyWelderForms: competencyWelderForms || [],
-      renewalForms: renewalForms || [],
-      liftingEquipmentRegistrationForms: liftingEquipmentRegistrationForms || [],
+      competencyCertificationLiftOperatior:competencyCertificationLiftOperator||[]
+     // boilerRegistrationForms: boilerRegistrationForms || [],
+      //competencyForms: competencyForms || [],
+      //compete ncyLifting08Forms: competencyLifting08Forms || [],
+      //competencyLifting07Forms: competencyLifting07Forms || [],
+      //competencyInspectionForms: competencyInspectionForms || [],
+      //competencyWelderForms: competencyWelderForms || [],
+      //renewalForms: renewalForms || [],
+      //liftingEquipmentRegistrationForms: liftingEquipmentRegistrationForms || [],
     };
 
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "User forms fetched successfully.",
-      DATA: allForms,
-    };
+    return res.status(200).json({
+      status: true,
+      message: "User forms fetched successfully.",
+      data: allForms,
+    });
   } catch (error) {
     console.error("Error fetching all user forms:", error);
     return {

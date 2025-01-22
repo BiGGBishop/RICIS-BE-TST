@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const authorizationApprovedSchema= Joi.object({
-  userId: Joi.number().integer().required(),
+  user_id: Joi.number().integer().required(),
   categoryId: Joi.number().integer().required(),
   subcategoryId: Joi.number().integer().required(),
   classificationId: Joi.number().integer().required(),
@@ -25,7 +25,7 @@ const authorizationApprovedSchema= Joi.object({
   number_of_employee: Joi.number().integer().optional(),
   member_nagobin: Joi.string().optional(),
   member_leia: Joi.string().optional(),
-  member_indt: Joi.string().optional(),
+
   member_other_bodies: Joi.string().optional(),
   quality_certification: Joi.string().optional(),
   competence_category: Joi.string().optional(),
@@ -43,7 +43,7 @@ const authorizationApprovedSchema= Joi.object({
   supervisor_polytechnic: Joi.object().optional(),
   supervisor_university: Joi.object().optional(),
   supervisor_professional_qualification_institution: Joi.string().optional(),
-  supervisor_date_of_issue: Joi.date().optional(),
+  supervisor_date_of_issue: Joi.date().optional(), 
   supervisor_professional_expiration_date: Joi.date().optional(),
   supervisor_experience_name_of_company: Joi.string().optional(),
   supervisor_joining_date: Joi.string().optional(),
@@ -67,14 +67,14 @@ const authorizationApprovedSchema= Joi.object({
   companyQualityManual: Joi.string().optional(),
   operationalProcedures: Joi.string().optional(),
   companyDocumentation: Joi.string().optional(),
-  documentationQuality: Joi.string().optional(),
+      
   documentationSupervisor: Joi.string().optional(),
   documentationInspector: Joi.string().optional(),
   isoCertification: Joi.string().optional(),
   is_draft: Joi.boolean().optional(),
 });
 
-
+ 
 
 
 const competencyCertificationFormSchema = Joi.object({

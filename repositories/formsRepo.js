@@ -85,7 +85,7 @@ exports.createBoilerRegistrationRepo = async (data) => {
       return await BoilerRegistration.findAll();
   };
   
-  exports.findBoilerRegistrationReposByUserId = async (userId) => {
+  exports.findByUserIdBoilerRegistrationRepos = async (userId) => {
       return await BoilerRegistration.findAll({ where: { user_id: userId } });
   };
 
@@ -99,14 +99,14 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormLiftOperator.findAll();
   };
 
-  exports.findByUserIdCompetencyCertificationLiftOperator= async()=>{
+  exports.findByUserIdCompetencyCertificationLiftOperator= async(userId)=>{
     return CompetencyCertificationFormLiftOperator.findAll({ where: { user_id: userId } });
   };
 
 
   //certififcation form boiler
 
-  exports.createCompetencyForm = async (data) => {
+  exports.createCompetencyCertificationFormBoiler = async (data) => {
     return CompetencyCertificationFormBoiler.create(data);
   };
   
@@ -114,19 +114,19 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormBoiler.findAll();
   };
   
-  exports.findCompetencyFormByUserId = async (userId) => {
+  exports.findByUserIdCompetencyCertificationFormBoiler= async (userId) => {
       return CompetencyCertificationFormBoiler.findAll({ where: { userId } });
   };
-  
-  exports.findCompetencyFormById = async (id) => {
+   
+  exports.findByIdCompetencyCertificationFormBoiler = async (id) =>   {
     return CompetencyCertificationFormBoiler.findByPk(id);
   };
   
-  exports.updateCompetencyForm = async (id, update) => {
+  exports.updateCompetencyCertificationFormBoiler= async (id, update) => {
     return CompetencyCertificationFormBoiler.update(update, { where: { id } });
   };
   
-  exports.deleteCompetencyForm = async (id) => {
+  exports.deleteCompetencyCertificationFormBoiler= async (id) => {
     return CompetencyCertificationFormBoiler.destroy({ where: { id } });
   };
 
@@ -160,7 +160,7 @@ exports.findAllRenewalForms = async () => {
   }
 };
 
-exports.findRenewalFormByUserId = async (userId) => {
+exports.findByUserIdRenewalForm = async (userId) => {
   try {
     const response = await RenewalForm.findAll({
       where: { userId: userId },
@@ -190,7 +190,7 @@ exports.findAllOperatorCertifications = async () => {
   return OperatorCertification.findAll();
 };
 
-exports.findOperatorCertificationsByUserId = async (userId) => {
+exports.findByUserIdOperatorCertificationsByUserId  = async (userId) => {
     return OperatorCertification.findAll({ where: { userId } });
 };
 

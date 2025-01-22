@@ -43,9 +43,9 @@ exports.findAllAuthorizationApproved = async () => {
     console.error("Error details:", error);
   }                                                                                             
 };                                             
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 exports.findByUserIdAuthorizationApproved  = async (userId) => {
-  return await AuthorizationApproved.findAll({ where: { user_id: userId } });
+  return AuthorizationApproved.findAll({ where: { user_id: userId } });
 };
 
 //crate authorization manufacturer
@@ -56,7 +56,7 @@ exports.createAuthorizationManufacturer = async (data) => {
 
 exports.findAllAuthorizationManufacturer = async () => {
   return AuthorizationManufacturer.findAll();
-};
+};       
 
 exports.findByUserIdAuthorizationManufacturer = async (user_id) => {
   return AuthorizationManufacturer.findAll({ where: { user_id } });
@@ -65,15 +65,15 @@ exports.findByUserIdAuthorizationManufacturer = async (user_id) => {
 
 //createTraining authorization
 exports.createTrainingAuthorization = async (data) => {
-  return await TrainingOrganizationForm.create(data);
-};
+  return   TrainingOrganizationForm.create(data);
+};        
 
 exports.findAllTrainingAuthorization = async () => {
     return await TrainingOrganizationForm.findAll();
   };
 
 exports.findByUserIdTrainingAuthorization = async (userId) => {
-    return await TrainingOrganizationForm.findAll({ where: { userId } });
+    return TrainingOrganizationForm.findAll({ where: { userId } });
   };
 
   //Boier registration

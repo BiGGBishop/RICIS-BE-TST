@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
     CompetencyCertificationLifting.init(
         {
-            userId: {
+            user_id:{
                 type: DataTypes.INTEGER,
                 references: {
                     model: "users",
@@ -58,14 +58,6 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				onDelete: 'SET NULL',
 			},
-            date_received: {
-              type:  DataTypes.DATE,
-              allowNull: true
-            },
-			form_number:{
-				type: DataTypes.STRING,
-				allowNull: true,
-			} ,
             // Type of Certification (Multiple Select)
             approved_lift_installer: DataTypes.BOOLEAN,
             work_equipment_operator: DataTypes.BOOLEAN,

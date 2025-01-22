@@ -11,7 +11,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -123,10 +123,7 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      member_indt: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
+    
       member_other_bodies: {
         type: Sequelize.STRING,
       },
@@ -249,14 +246,7 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      companyQualityManual: {
-        type: Sequelize.TEXT,                                                                                     
-        allowNull: true,
-      },
-      operationalProcedures: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
+      
       companyDocumentation: {
         type: Sequelize.TEXT,
         allowNull: true,

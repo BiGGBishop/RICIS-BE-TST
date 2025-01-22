@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 
   AuthorizationApproved.init(
     {
-      userId: {
+      user_id: {
 				type: DataTypes.INTEGER,
 				references: {
 					model: "users", // Name of the users table
@@ -125,11 +125,7 @@ module.exports = (sequelize, DataTypes) => {
 			member_leia:{
 				type:DataTypes.TEXT,
 				allowNull: true
-			},
-			member_indt:{
-				type:DataTypes.TEXT,
-				allowNull: true
-			},                                                                             
+			},                                                                          
 
 			//technical supervisor
 			member_other_bodies: DataTypes.STRING,

@@ -288,12 +288,12 @@ module.exports = (sequelize, DataTypes) => {
 			//approval_category: DataTypes.STRING,                                                                                                                         
 			//approval_class: DataTypes.STRING,
 			//training_approval_number_ngtan: DataTypes.STRING,
-			//d  irector_of_factories: DataTypes.TEXT,
+			//d  irector_of_factories: DataTypes.T EXT,
 			//date_sign_director_of_factories: DataTypes.DATE,
 		companyQualityManual: {
         type: DataTypes.TEXT,                                                                                     
         allowNull: true,
-      },
+      },             
       operationalProcedures: {
         type: DataTypes.TEXT,
         allowNull: true,
@@ -306,7 +306,7 @@ module.exports = (sequelize, DataTypes) => {
       documentationSupervisor: {
         type: DataTypes.TEXT,
         allowNull: true,
-      },       
+      },             
 
       documentationInspector: {
         type: DataTypes.TEXT,

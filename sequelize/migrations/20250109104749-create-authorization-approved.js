@@ -102,7 +102,7 @@ module.exports = {
       },
       company_name: {
         type: Sequelize.STRING,
-      },
+      }, 
       cac_registration_number: {
         type: Sequelize.STRING,
       },
@@ -241,7 +241,7 @@ module.exports = {
       companyQualityManual: {
         type: Sequelize.TEXT,
         allowNull: true,
-      },
+      },            
       operationalProcedures: {
         type: Sequelize.TEXT,
         allowNull: true,

@@ -3,14 +3,14 @@ const { asyncHandler } = require("../middlewares/handler");
 const formsController = require("../controllers/formsController");
 const { authToken } = require("../utils/AunthenticateUser");
 const {validateReqBody} = require("../validations/reqValidator");
-const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator")
+     const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator")
 
 const router = express.Router();
 
 router.post(
   "/authorization-approved",
   authToken,
-  validateReqBody(authorizationApprovedSchema),
+   
   asyncHandler(formsController.createAuthorizationApproved)
 );
 
@@ -20,7 +20,7 @@ router.get(
   asyncHandler(formsController.getAllAuthorizationApproved)
 );
 
-
+                                                        
 router.get(
   "/authorization-approved/:userId",
   authToken,
@@ -122,7 +122,7 @@ router.get("/competency-certification-welder/userId", authToken, asyncHandler(fo
 
 
 
-//renewal
+//renewal  
 router.post("/renewal-form", authToken, formsController.createRenewalForm);
 router.get("/renewal-form", authToken, formsController.getAllRenewalForms);
 router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUserId);

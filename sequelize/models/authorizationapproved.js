@@ -170,7 +170,7 @@ module.exports = (sequelize, DataTypes) => {
 					type:DataTypes.STRING,
 					allowNull: true,
 				},
-				date_admitted:{
+				date_admitted:{   
 					type:DataTypes.DATE,
 					allowNull: true,
 				},
@@ -198,7 +198,7 @@ module.exports = (sequelize, DataTypes) => {
 					allowNull: true,                                                     
 				}*/
 			},
-		                              
+		                               
 			supervisor_professional_qualification_institution: DataTypes.STRING,
 			supervisor_date_of_issue: DataTypes.DATE, 
 			supervisor_professional_expiration_date:DataTypes.DATE,
@@ -306,7 +306,7 @@ module.exports = (sequelize, DataTypes) => {
       documentationSupervisor: {
         type: DataTypes.TEXT,
         allowNull: true,
-      },
+      },       
 
       documentationInspector: {
         type: DataTypes.TEXT,

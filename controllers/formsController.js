@@ -27,7 +27,7 @@ exports.getAllAuthorizationApproved = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({
+    return res.status(500).json({ 
       status: false,
       message: "Internal Server Error",
     });
@@ -41,7 +41,7 @@ exports.getAClassifications = async (req, res) => {
 
   const data = await FormsService.getAClassifications(classId, userId); // Pass only necessary data
 
-  return res.status(200).json({
+  return res.status(200).json({                                                                                                                             
     status: data.STATUS,
     message: data.MESSAGE,
     data: data.DATA,

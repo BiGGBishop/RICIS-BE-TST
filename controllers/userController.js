@@ -269,20 +269,7 @@ if(!userId){
   return res.status(400).json({message:"action not allowed you need to log in as a user"})
 }
   try {
-    const [
-       authorizationApprovedForms,
-      authorizationManufacturerForms,
-      authorizationTrainingForms,
-      competencyCertificationLiftOperator
-      //boilerRegistrationForms,
-      // competencyForms,
-      // competencyLifting08Forms,
-      // competencyLifting07Forms,
-      // competencyInspectionForms,                                                                
-      //competencyWelderForms,
-      // renewalForms,
-      // liftingEquipmentRegistrationForms,
-    ] = await Promise.all([
+    const results = await Promise.all([
          FormsRepo.findByUserIdAuthorizationApproved(userId),
       FormsRepo.findByUserIdAuthorizationManufacturer(userId),
       FormsRepo.findByUserIdTrainingAuthorization(userId),
@@ -294,24 +281,10 @@ if(!userId){
       //FormsRepo.findByUserIdCompetencyInspection(userId),
       //FormsRepo.findByUserIdCompetencyWelder(userId),
       //FormsRepo.findByUserIdRenewalForm(userId),
-      //FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),
+      //FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),                   
     ]);
-
-    const allForms = {
-     authorizationApprovedForms: authorizationApprovedForms || [],
-      authorizationManufacturerForms: authorizationManufacturerForms || [],
-      authorizationTrainingForms: authorizationTrainingForms || [],
-      competencyCertificationLiftOperatior:competencyCertificationLiftOperator||[]
-     // boilerRegistrationForms: boilerRegistrationForms || [],
-      //competencyForms: competencyForms || [],
-      //compete ncyLifting08Forms: competencyLifting08Forms || [],
-      //competencyLifting07Forms: competencyLifting07Forms || [],
-      //competencyInspectionForms: competencyInspectionForms || [],
-      //competencyWelderForms: competencyWelderForms || [],
-      //renewalForms: renewalForms || [],
-      //liftingEquipmentRegistrationForms: liftingEquipmentRegistrationForms || [],
-    };
-
+    const allForms = results.map((forms) => forms || []);
+      
     return res.status(200).json({
       status: true,
       message: "User forms fetched successfully.",

@@ -43,9 +43,9 @@ exports.findAllAuthorizationApproved = async () => {
     console.error("Error details:", error);
   }                                                                                             
 };                                             
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+                                                                                                                                                                                                                                                                                                               
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
-  return await TrainingOrganizationForm.findAll({
+  return  AuthorizationApproved.findAll({
     where: { user_id: userId },
     ...options,
   });

@@ -85,7 +85,8 @@ module.exports = {
           'Class IV',
           'Class V'
         ),
-        defaultValue:"Class I"
+        defaultValue:"Class I",
+        allowNull:true,
       },
       lifting_equipment_classification: {
         type: Sequelize.ENUM(

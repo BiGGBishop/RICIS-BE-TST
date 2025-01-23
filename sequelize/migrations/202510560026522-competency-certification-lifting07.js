@@ -61,6 +61,16 @@
               type:  Sequelize.DATE,
               allowNull: true
             },
+            paymentStatus: {
+                type: Sequelize.ENUM("unpaid", "paid"),
+                defaultValue:"unpaid"
+               
+              },
+              appStatus: {
+                type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+               defaultValue:"pending"
+              },
+              
             form_number: {
               type: Sequelize.STRING,
               defaultValue: "RICS-A-07"
@@ -68,15 +78,19 @@
             // Type of Certification (Multiple Select)
             approved_lift_installer: {
                 type: Sequelize.BOOLEAN,
+                allowNull:true
             },
             work_equipment_operator: {
                 type: Sequelize.BOOLEAN,
+                allowNull:true
             },
             rigger_signaler: {
                 type: Sequelize.BOOLEAN,
+                allowNull:true
             },
             scaffolding_technician: {
                 type: Sequelize.BOOLEAN,
+                allowNull:true
             },
             abseiling_technician: {
                 type: Sequelize.BOOLEAN,

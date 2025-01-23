@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       // Category has many applications
       Categories.hasMany(models.Application, {
         foreignKey: 'categoryId',
-        as: 'applications',
+        as: 'applications',          
       });
     }
   }

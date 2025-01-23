@@ -270,7 +270,7 @@ if(!userId){
   return res.status(400).json({message:"action not allowed you need to log in as a user"})
 }
   try {
-    const results = await Promise.all([
+   const results = await Promise.all([
          FormsRepo.findByUserIdAuthorizationApproved(userId,{
           include:[
             {
@@ -349,6 +349,7 @@ if(!userId){
       //FormsRepo.findByUserIdLiftingEquipmentRegistration(userId),                   
     ]);
     const allForms = results.map((forms) => forms || []);
+    console.log(allForms)
       
     return res.status(200).json({
       status: true,

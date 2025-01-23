@@ -39,10 +39,13 @@ module.exports = {
 			  },
 			appStatus: {
 				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
-				defaultValue:"pending"
-			   
+				defaultValue:"pending"  
 			  },
 			  form_number: {
+				type: Sequelize.STRING,
+				allowNull: true,
+			  },
+			  form_name: {
 				type: Sequelize.STRING,
 				allowNull: true,
 			  },

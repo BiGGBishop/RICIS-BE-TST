@@ -37,7 +37,7 @@ router.post("/classificationMerge", authToken, asyncHandler(adminController.addC
 router.patch("/updateclassificationMerge/:classId", authToken, asyncHandler(adminController.updateClassificationMerge)); 
 router.delete("/deleteclassificationMerge/:classId", authToken, asyncHandler(adminController.deleteClassificationMerge)); 
 router.put("/classification/restrict/:classId", authToken, asyncHandler(adminController.restrictClassifications)); 
-router.get("/application/", authToken, asyncHandler(adminController.getAllApplications)); 
+router.get("/all-applications/", authToken, asyncHandler(adminController.getAllUsersForms));
 router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication)); 
 router.put("/application/:appId", authToken, asyncHandler(adminController.actionOnApplication)); 
 router.get("/application/filter/:status", authToken, asyncHandler(adminController.filterApplication)); 
@@ -53,3 +53,4 @@ module.exports = router;
 
 
 
+    

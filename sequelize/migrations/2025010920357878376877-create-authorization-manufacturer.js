@@ -34,11 +34,12 @@ module.exports = {
 			},
       paymentStatus: {
         type: Sequelize.ENUM("unpaid", "paid"),
+        defaultValue:"unpaid"
        
       },
       appStatus: {
         type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
-       
+       defaultValue:"pending"
       },
       boiler_service_classification: {
         type: Sequelize.ENUM(
@@ -50,10 +51,12 @@ module.exports = {
           "Class F",
           "Class G"
         ),
+        defaultValue:"Class A"
        
       },
       type_of_service: {
         type: Sequelize.ENUM("Nuclear", "Non-Nuclear"),
+        defaultValue:"Nuclear"
        
       },
       lifting_service_classification: {
@@ -66,10 +69,12 @@ module.exports = {
     "Installer Class A",
     "Installer Class B"
         ),
+        defaultValue:"Manufacture Crane"
         
       },
       application_type: {
         type: Sequelize.ENUM("New Application","Re-application"),
+        defaultValue:"New Application"
        
       },
       available_for_documentation_review: {

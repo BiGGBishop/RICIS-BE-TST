@@ -419,3 +419,14 @@ exports.getClassificationWithIncidental = async (req, res) => {
     data: data.DATA,
   });
 };
+
+
+exports.getAllUsersForms = async (req, res) => {
+  const data = await AdminService.getAllUsersForms(req, res);
+
+  return res.status(200).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};

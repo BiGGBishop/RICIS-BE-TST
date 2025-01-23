@@ -96,7 +96,8 @@ module.exports = (sequelize, DataTypes) => {
 				defaultValue: "pending",
 			  },
 			
-      boiler_service_classification:DataTypes.ENUM(
+      boiler_service_classification:{
+		type:DataTypes.ENUM(
 				"Class A",
 				"Class B",
 				"Class C",
@@ -105,10 +106,14 @@ module.exports = (sequelize, DataTypes) => {
         "Class F",
         "Class G"
 			),
+			defaultValue:"Class A"
+		},
       type_of_service:{                                             
-				type: DataTypes.ENUM("Nuclear","Non-Nuclear"),allowNull: false,
+				type: DataTypes.ENUM("Nuclear","Non-Nuclear"),
+				defaultValue:"Nuclear"
 			},
-      lifting_service_classification:DataTypes.ENUM(
+      lifting_service_classification:{
+		type:DataTypes.ENUM(
         "Manufacture Crane",
         "Manufacturer Lifting Accessory ",
 		"Manufacturer Lift & Escalator",
@@ -117,12 +122,20 @@ module.exports = (sequelize, DataTypes) => {
 		 "Installer Class A",
 		 "Installer Class B"
       ),
+	  defaultValue:"Manufacture Crane"
+	},
 			application_type: {
 				type: DataTypes.ENUM("New Application", "Re-application"),
-				allowNull: false,	allowNull: false,
+				defaultValue:"New Application"
 			},                                                                                                                        
-			available_for_documentation_review: DataTypes.BOOLEAN,
-			exemption_request: DataTypes.BOOLEAN,
+			available_for_documentation_review: {
+				type:DataTypes.BOOLEAN,
+				allowNull:true
+			},
+			exemption_request:{
+				type:DataTypes.BOOLEAN,
+				allowNull:"true"
+			},
 
 			//company information
 			company_name: DataTypes.STRING,
@@ -157,7 +170,10 @@ module.exports = (sequelize, DataTypes) => {
 			technical_supervisor_name: DataTypes.STRING,
 			technical_supervisor_address: DataTypes.TEXT,
 			technical_supervisor_email: DataTypes.STRING,
-			technical_supervisor_date_of_birth: DataTypes.DATE,
+			technical_supervisor_date_of_birth:{
+			type:DataTypes.DATE,
+			allowNull:"true"
+			},
 			technical_supervisor_phonenumber: DataTypes.STRING,
 
 			//Education
@@ -221,13 +237,25 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		                              
 			professional_qualification_institution: DataTypes.STRING,
-			date_of_issue: DataTypes.DATE, 
-			professional_expiration_date:DataTypes.DATE,
+			date_of_issue:{ 
+				type:DataTypes.DATE,
+				allowNull:"true"
+			},
+			professional_expiration_date:{
+				type:DataTypes.DATE,
+				allowNull:"true"
+			},
 			experience_name_of_company:DataTypes.STRING,
-			  company_declaration_date:DataTypes.DATE,
+			  company_declaration_date:{
+				type:DataTypes.DATE,
+				allowNull:"true"
+			  },
 			  company_responsible_charge:DataTypes.STRING,
 			joining_date: DataTypes.STRING,
-			exit_date: DataTypes.DATE,                                                  
+			exit_date:{
+				type:DataTypes.DATE,
+				allowNull:"true"
+			},                                                  
 			
 			//date_sign: DataTypes.DATE,
 			//approval_category: DataTypes.STRING,

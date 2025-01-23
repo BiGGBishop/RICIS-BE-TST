@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
 	class ApprovedInspectionAgency extends Model {
 		static associate(models) {
 			ApprovedInspectionAgency.belongsTo(models.User, {
-				foreignKey: "userId", // This will create the foreign key in the 'User' table
+				foreignKey: "user_id", // This will create the foreign key in the 'User' table
 				as: "user", // Alias for the association
 			});
 		}
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	ApprovedInspectionAgency.init(
 		{
-			userId: {
+			user_id: {
 				type: DataTypes.INTEGER,
 				references: {
 					model: "users", // Name of the users table

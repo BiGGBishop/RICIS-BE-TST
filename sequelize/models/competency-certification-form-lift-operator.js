@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       category_of_certification: {
         type: DataTypes.ENUM(
           "Class A",
-          "Class B",
+          "Class B",     
           "Class C",
           "Class D",
           "Class E",
@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       employer_contact_person: {
         type: DataTypes.STRING,
       },
-      employer_contact_telephone: {
+      employer_contact_telephone: {   
         type: DataTypes.STRING,
       },
       employer_contact_email_address: {
@@ -102,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       training_method: {
-        type: DataTypes.ENUM("Online", "Class Room", "Field"),
+        type: DataTypes.ENUM("Online", "Class Room", "Field"),    
       },
       training_organization_registration_number: {
         type: DataTypes.STRING,

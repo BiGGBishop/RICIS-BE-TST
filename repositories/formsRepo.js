@@ -22,7 +22,7 @@ exports.create = async (data) => {
     return response;
   } catch (error) {                                                            
     console.error("Error details:", error);
-  }
+  }                                               
 };
 
 exports.findAllAuthorizationApproved = async () => {
@@ -35,17 +35,20 @@ exports.findAllAuthorizationApproved = async () => {
           attributes: ['id', 'classification_name'], // Adjust attributes as needed
         },
       ],
-      attributes: { exclude: [] },
+      attributes: { exclude: [] },              
       order: [['createdAt', 'DESC']], // Sort by most recent
     });
-    return response;
+    return response;    
   }catch (error) {
     console.error("Error details:", error);
   }                                                                                             
 };                                             
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-exports.findByUserIdAuthorizationApproved  = async (userId) => {
-  return AuthorizationApproved.findAll({ where: { user_id: userId } });
+exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
+  return await TrainingOrganizationForm.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
 
 //crate authorization manufacturer
@@ -58,8 +61,11 @@ exports.findAllAuthorizationManufacturer = async () => {
   return AuthorizationManufacturer.findAll();
 };       
 
-exports.findByUserIdAuthorizationManufacturer = async (user_id) => {
-  return AuthorizationManufacturer.findAll({ where: { user_id } });
+exports.findByUserIdAuthorizationManufacturer = async (userId, options = {}) => {
+  return await AuthorizationManufacturer.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
 
 
@@ -73,7 +79,7 @@ exports.findAllTrainingAuthorization = async () => {
   };
 
 exports.findByUserIdTrainingAuthorization = async (userId) => {
-    return TrainingOrganizationForm.findAll({ where: { userId } });
+    return  TrainingOrganizationForm.findAll({ where: { user_id: userId } });
   };
 
   //Boier registration
@@ -99,10 +105,12 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormLiftOperator.findAll();
   };
 
-  exports.findByUserIdCompetencyCertificationLiftOperator= async(userId)=>{
-    return CompetencyCertificationFormLiftOperator.findAll({ where: { user_id: userId } });
+  exports.findByUserIdCompetencyCertificationLiftOperator= async(userId,options = {}) => {
+    return await CompetencyCertificationFormLiftOperator.findAll({
+      where: { user_id: userId },
+      ...options,
+    });
   };
-
 
   //certififcation form boiler
 
@@ -114,8 +122,11 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormBoiler.findAll();
   };
   
-  exports.findByUserIdCompetencyCertificationFormBoiler= async (userId) => {
-      return CompetencyCertificationFormBoiler.findAll({ where: { userId } });
+  exports.findByUserIdCompetencyCertificationFormBoiler= async (userId,options = {}) => {
+    return await CompetencyCertificationFormBoiler.findAll({
+      where: { user_id: userId },
+      ...options,
+    });
   };
    
   exports.findByIdCompetencyCertificationFormBoiler = async (id) =>   {
@@ -190,8 +201,11 @@ exports.findAllOperatorCertifications = async () => {
   return OperatorCertification.findAll();
 };
 
-exports.findByUserIdOperatorCertificationsByUserId  = async (userId) => {
-    return OperatorCertification.findAll({ where: { userId } });
+exports.findByUserIdOperatorCertificationsByUserId  = async (userId,options = {}) => {
+  return await OperatorCertification.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
 
 exports.findOperatorCertificationById = async (id) => {
@@ -217,8 +231,11 @@ exports.findAllCompetencyCertificationLifting  = async () => {
   return CompetencyCertificationLifting.findAll();
 };
 
-exports.findCompetencyCertificationLiftingByUserId  = async (userId) => {
-    return CompetencyCertificationLifting.findAll({ where: { userId } });
+exports.findCompetencyCertificationLiftingByUserId  = async (userId,options = {}) => {
+  return await CompetencyCertificationLifting.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
 
 exports.findCompetencyCertificationLiftingById  = async (id) => {
@@ -272,8 +289,11 @@ exports.createLiftingEquipmentRegistration = async (data) => {
   return LiftingEquipmentRegistration.create(data);
 };
 
-exports.findByUserIdLiftingEquipmentRegistration = async (userId) => {
-  return LiftingEquipmentRegistration.findAll({ where: { userId: userId } });
+exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) => {
+  return await TrainingOrganizationForm.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
 
 exports.findAllLiftingEquipmentRegistration = async () => {

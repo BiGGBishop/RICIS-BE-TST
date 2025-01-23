@@ -3,6 +3,7 @@ const axios = require('axios');
 const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
 const StatusCodes = require("../utils/statusCodes")
+const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" )
 
 
 exports.getOTP = async (req, res) => {
@@ -22,7 +23,7 @@ exports.resendOTP = async (req, res) => {
     status: data.STATUS,
     message: data.MESSAGE,
     data: data.DATA,
-  });
+  });                           
 };
 
 exports.validateOTP = async (req, res) => {
@@ -270,10 +271,74 @@ if(!userId){
 }
   try {
     const results = await Promise.all([
-         FormsRepo.findByUserIdAuthorizationApproved(userId),
-      FormsRepo.findByUserIdAuthorizationManufacturer(userId),
-      FormsRepo.findByUserIdTrainingAuthorization(userId),
-      FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId),
+         FormsRepo.findByUserIdAuthorizationApproved(userId,{
+          include:[
+            {
+              model: Classification,
+              as: "classification",
+              attributes: ["id", "classification_name"],
+              include: {
+                model: ClassificationFees,
+                as: "classificationFees", // Changed alias to match the association
+                attributes: ["amount"],
+              },
+            },
+            { model: Categories, as: 'category', attributes: ['name'] },
+            { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+            { model: Fee, as: 'fee', attributes: ['fee_type'] },
+          ],       
+        }),                            
+      FormsRepo.findByUserIdAuthorizationManufacturer(userId,{
+        include: [
+          {
+            model: Classification,
+            as: "classification",
+            attributes: ["id", "classification_name"],
+            include: {
+              model: ClassificationFees,
+              as: "classificationFees", // Changed alias to match the association
+              attributes: ["amount"],
+            },
+          },
+          { model: Categories, as: 'category', attributes: ['name'] },
+          { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+          { model: Fee, as: 'fee', attributes: ['fee_type'] },
+        ],       
+      }),                 
+      FormsRepo.findByUserIdTrainingAuthorization(userId,{
+        include: [
+          {
+            model: Classification,
+            as: "classification",
+            attributes: ["id", "classification_name"],
+            include: {
+              model: ClassificationFees,
+              as: "classificationFees", // Changed alias to match the association
+              attributes: ["amount"],
+            },
+          },
+          { model: Categories, as: 'category', attributes: ['name'] },
+          { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+          { model: Fee, as: 'fee', attributes: ['fee_type'] },
+        ],       
+      }),
+      FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId,{
+        include: [
+          {
+            model: Classification,
+            as: "classification",
+            attributes: ["id", "classification_name"],
+            include: {
+              model: ClassificationFees,
+              as: "classificationFees", // Changed alias to match the association
+              attributes: ["amount"],
+            },
+          },
+          { model: Categories, as: 'category', attributes: ['name'] },
+          { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+          { model: Fee, as: 'fee', attributes: ['fee_type'] },
+        ],     
+      }),
      // FormsRepo.findByUserIdBoilerRegistrationRepos(userId),
       //FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId),
      // FormsRepo.findByUserIdCompetencyLifting08(userId),

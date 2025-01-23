@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       Classification.belongsToMany(models.Fee, {
         through: models.ClassificationFees,
         foreignKey: "classificationId",
-        as: "fees",
+        as: "fees", 
       });
       Classification.hasMany(models.ClassificationFees, {
         foreignKey: "classificationId",

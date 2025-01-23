@@ -5,7 +5,26 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class AuthorizationManufacturer extends Model {
     static associate(models) {
-      AuthorizationManufacturer.belongsTo(models.User, { foreignKey: "user_id" });
+		AuthorizationManufacturer.belongsTo(models.User, {
+			foreignKey: "user_id",
+			as: "user",
+		  });
+	  AuthorizationManufacturer.belongsTo(models.Categories, {
+		foreignKey: "categoryId",
+		as: "category",
+		});
+		AuthorizationManufacturer.belongsTo(models.SubCategories, {
+			foreignKey: "subcategoryId",
+			as: "subcategory",
+		});
+		AuthorizationManufacturer.belongsTo(models.Classification, {
+			foreignKey: "classificationId",
+			as: "classification",
+		});
+		AuthorizationManufacturer.belongsTo(models.Fee, {
+			foreignKey: "feeId",
+			as: "fee",
+		});   
     }
   }
 
@@ -238,3 +257,4 @@ module.exports = (sequelize, DataTypes) => {
 
   return AuthorizationManufacturer;
 };
+ 

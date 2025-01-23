@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       references: {
         model: "classifications",
-        key: "id",
+        key: "id",     
       },
       onDelete: "SET NULL",
     },

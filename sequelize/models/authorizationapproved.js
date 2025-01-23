@@ -4,10 +4,27 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class AuthorizationApproved extends Model {
     static associate(models) {
+		AuthorizationApproved.belongsTo(models.User, {
+			foreignKey: "user_id",
+			as: "user",
+		  });
       AuthorizationApproved.belongsTo(models.Classification, {
         foreignKey: "classificationId",
         as: "classification",
       });
+	  AuthorizationApproved.belongsTo(models.Categories, {
+        foreignKey: "categoryId",
+        as: "category",
+    });
+    AuthorizationApproved.belongsTo(models.SubCategories, {
+        foreignKey: "subcategoryId",
+        as: "subcategory",
+    });
+  
+    AuthorizationApproved.belongsTo(models.Fee, {
+        foreignKey: "feeId",
+        as: "fee",
+    });
     }
   }
 

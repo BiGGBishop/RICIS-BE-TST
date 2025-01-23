@@ -6,15 +6,33 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
       // Define associations here if required in the future
       TrainingOrganizationForm.belongsTo(models.User, {
-				foreignKey: "userId", // This will create the foreign key in the 'User' table
+				foreignKey: "user_id", // This will create the foreign key in the 'User' table
 				as: "user", // Alias for the association
+			});       
+	  
+    TrainingOrganizationForm.belongsTo(models.Categories, {
+			foreignKey: "categoryId",
+			as: "category",
 			});
-		}
-	}
+    TrainingOrganizationForm.belongsTo(models.SubCategories, {
+				foreignKey: "subcategoryId",
+				as: "subcategory",
+			});
+	TrainingOrganizationForm.belongsTo(models.Classification, {
+				foreignKey: "classificationId",
+				as: "classification",
+			});
+    TrainingOrganizationForm.belongsTo(models.Fee, {
+				foreignKey: "feeId",
+				as: "fee",
+			});          
+		} 
+		                   
+	}            
 
 	TrainingOrganizationForm.init(
 		{
-			userId: {
+			user_id: {
 				type: DataTypes.INTEGER,
 				references: {
 					model: "users", // Name of the users table

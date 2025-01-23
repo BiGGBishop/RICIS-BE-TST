@@ -35,7 +35,7 @@ exports.createAuthorizationApproved = async (req) => {
     MESSAGE: "Authorization successfully created.",
     DATA: newAuthorizationSubmit,
   };
-};
+};        
 
 exports.getAllAuthorizationApproved = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
@@ -45,7 +45,7 @@ exports.getAllAuthorizationApproved = async () => {
     STATUS: true,
     MESSAGE: "Authorizations fetched successfully.",
     DATA: allAuthorizations,
-  };
+  }; 
 };
 
 exports.getAClassifications = async (classId, userId) => {

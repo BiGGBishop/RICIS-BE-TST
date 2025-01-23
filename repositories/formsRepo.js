@@ -41,8 +41,24 @@ exports.findAllAuthorizationApproved = async () => {
   }catch (error) {
     console.error("Error details:", error);
   }                                                                                             
-};                                             
-                                                                                                                                                                                                                                                                                                               
+};   
+                                          
+exports.updateAuthorizationApproved = async (id, data) => {
+  try {
+    const [updatedRows] = await AuthorizationApproved.update(data, {
+      where: { id: id },
+    });
+
+    if (updatedRows === 0) {
+      return null; // Indicate that the record was not found
+    }
+
+    return await AuthorizationApproved.findByPk(id); // Return the updated record
+  } catch (error) {
+    console.error("Error updating AuthorizationApproved:", error);
+    throw error; // Re-throw the error to be caught by the service
+  }
+};                                                                                                                                                                                                                                                                                                     
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
   return  AuthorizationApproved.findAll({
     where: { user_id: userId },
@@ -74,7 +90,7 @@ exports.createTrainingAuthorization = async (data) => {
 };        
 
 exports.findAllTrainingAuthorization = async () => {
-    return await TrainingOrganizationForm.findAll();
+    return  TrainingOrganizationForm.findAll();
   };
 
 exports.findByUserIdTrainingAuthorization = async (userId) => {
@@ -91,7 +107,7 @@ exports.createBoilerRegistrationRepo = async (data) => {
   };
   
   exports.findByUserIdBoilerRegistrationRepos = async (userId) => {
-      return await BoilerRegistration.findAll({ where: { user_id: userId } });
+      return  BoilerRegistration.findAll({ where: { user_id: userId } });
   };
 
 

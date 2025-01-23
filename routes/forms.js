@@ -20,6 +20,11 @@ router.get(
   asyncHandler(formsController.getAllAuthorizationApproved)
 );
 
+router.put(
+  "/authorization-approved/:id",
+  authToken,
+  asyncHandler(formsController.updateAuthorizationApproved)
+);
                                                         
 router.get(
   "/authorization-approved/:userId",

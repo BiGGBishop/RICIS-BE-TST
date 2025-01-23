@@ -4,13 +4,12 @@ const AdminRepo = require("../repositories/adminRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
 
-
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
-
+  
   if (!userExist) {
     return {
       STATUS_CODE: StatusCodes.UNAUTHORIZED,
@@ -19,46 +18,23 @@ exports.createAuthorizationApproved = async (req) => {
     };
   }
 
-  try {
-    // Upload files to Cloudinary
-    const companyQualityManualUrl = req.body.companyQualityManual ? await uploadSingleFile(req.body.companyQualityManual) : null;
-    const operationalProceduresUrl = req.body.operationalProcedures ? await uploadSingleFile(req.body.operationalProcedures) : null;
-    const companyDocumentationUrl = req.body.companyDocumentation ? await uploadSingleFile(req.body.companyDocumentation) : null;
-    const documentationSupervisorUrl = req.body.documentationSupervisor ? await uploadSingleFile(req.body.documentationSupervisor) : null;
-    const documentationInspectorUrl = req.body.documentationInspector ? await uploadSingleFile(req.body.documentationInspector) : null;
-    const isoCertificationUrl = req.body.isoCertification ? await uploadSingleFile(req.body.isoCertification) : null;
+  // Step 3: Save the AuthorizationApproved record
+  const data = {
+    ...req.body,
+    user_id: userId,
+  };
 
-    // Step 3: Save the AuthorizationApproved record
-    const data = {
-      ...req.body,
-      user_id: userId,
-      companyQualityManual: companyQualityManualUrl,
-      operationalProcedures: operationalProceduresUrl,
-      companyDocumentation: companyDocumentationUrl,
-      documentationSupervisor: documentationSupervisorUrl,
-      documentationInspector: documentationInspectorUrl,
-      isoCertification: isoCertificationUrl,
-    };
+  console.log(data)
 
-    console.log(data)
+  const newAuthorizationSubmit = await FormsRepo.create(data);
+  console.log("new submit",newAuthorizationSubmit)
 
-    const newAuthorizationSubmit = await FormsRepo.create(data);
-    console.log("new submit",newAuthorizationSubmit)
-
-    return {
-      STATUS_CODE: StatusCodes.CREATED,
-      STATUS: true,
-      MESSAGE: "Authorization successfully created.",
-      DATA: newAuthorizationSubmit,
-    };
-  } catch (error) {
-    console.error("Error uploading file or creating record:", error);
-    return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-      STATUS: false,
-      MESSAGE: "Failed to create authorization due to file upload error.",
-    };
-  }
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Authorization successfully created.",
+    DATA: newAuthorizationSubmit,
+  };
 };        
 
 exports.getAllAuthorizationApproved = async () => {
@@ -70,6 +46,52 @@ exports.getAllAuthorizationApproved = async () => {
     MESSAGE: "Authorizations fetched successfully.",
     DATA: allAuthorizations,
   }; 
+};
+
+
+exports.updateAuthorizationApproved = async (req, id) => {
+  const userId = req?.user?.id;
+
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  try {
+    const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(
+      id,
+      req.body
+    );
+
+    if (!updatedAuthorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization not found.",
+      };
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization successfully updated.",
+      DATA: updatedAuthorization,
+    };
+  } catch (error) {
+    console.error("Error updating authorization:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update authorization.",
+    };
+  }
 };
 
 exports.getAClassifications = async (classId, userId) => {

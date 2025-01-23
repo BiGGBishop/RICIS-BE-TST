@@ -114,6 +114,25 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     }
   };
 
+  exports.updateAuthorizationApproved = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await FormsService.updateAuthorizationApproved(req, id);
+  
+      return res.status(data.STATUS_CODE).json({
+        status: data.STATUS,
+        message: data.MESSAGE,
+        data: data.DATA,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
   exports.getAuthorizationTrainingByUserId = async (req, res) => {
     const { userId } = req.params;
     const data = await FormsService.getAuthorizationTrainingByUserId(userId);

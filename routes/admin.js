@@ -36,10 +36,13 @@ router.get("/classify/merge", authToken, asyncHandler(adminController.getClassif
 router.post("/classificationMerge", authToken, asyncHandler(adminController.addClassificationMerge)); 
 router.patch("/updateclassificationMerge/:classId", authToken, asyncHandler(adminController.updateClassificationMerge)); 
 router.delete("/deleteclassificationMerge/:classId", authToken, asyncHandler(adminController.deleteClassificationMerge)); 
-router.put("/classification/restrict/:classId", authToken, asyncHandler(adminController.restrictClassifications)); 
+router.put("/classification/restrict/:classId", authToken, asyncHandler(adminController.restrictClassifications));
+
 router.get("/all-applications/", authToken, asyncHandler(adminController.getAllUsersForms));
-router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication)); 
-router.put("/application/:appId", authToken, asyncHandler(adminController.actionOnApplication)); 
+
+router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication));
+ 
+router.put("/application/:appId", authToken, asyncHandler(adminController.actionOnApplication));
 router.get("/application/filter/:status", authToken, asyncHandler(adminController.filterApplication)); 
 router.post("/fees", authToken, feeValidation, asyncHandler(adminController.addFees)); 
 router.get("/fees", authToken, asyncHandler(adminController.fetchFees)); 

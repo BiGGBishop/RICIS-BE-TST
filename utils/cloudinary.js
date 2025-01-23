@@ -9,11 +9,20 @@ cloudinary.config({
 async function uploadSingleFile(file) {
     console.log(file)
     try {
-      const result = await cloudinary.uploader.upload(file,{ resource_type: 'auto'});
-      return result.secure_url;
-    } catch (error) {
+                const uploadedResponse = await cloudinary.uploader.upload(file, {
+                    public_id: "ricis",
+                    resource_type: 'auto',
+                    timeout: 600000,
+                    chunk_size: 6000000
+                }),
+                file = uploadedResponse.secure_url;
+                console.log(file)
+
+                return file;
+    
+ } catch (error) {
       console.error("Error uploading file to Cloudinary:", error);
-      throw new Error("Failed to upload file");
+      return new Error("Failed to upload file");      
     }
   };
 async function uploadMultiple(files) {

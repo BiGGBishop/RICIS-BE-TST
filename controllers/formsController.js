@@ -81,7 +81,7 @@ exports.getAuthorizationManufacturerByUserId = async (req, res) => {
 
 exports.createAuthorizationTraining = async (req, res) => {
   try {
-    const data = await FormsService.createAuthorizationTraining(req);
+    const data = await FormsService.createTrainingAuthorization(req);
     return res.status(201).json({
       status: true,
       message: "Training authorization created successfully",

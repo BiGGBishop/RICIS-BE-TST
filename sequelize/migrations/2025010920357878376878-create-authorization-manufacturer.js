@@ -54,6 +54,10 @@ module.exports = {
         defaultValue:"Class A"
        
       },
+      form_number: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       type_of_service: {
         type: Sequelize.ENUM("Nuclear", "Non-Nuclear"),
         defaultValue:"Nuclear"

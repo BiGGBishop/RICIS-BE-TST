@@ -18,7 +18,7 @@ module.exports = {
 			  categoryId: Sequelize.INTEGER,
 			  subcategoryId: Sequelize.INTEGER,
 			  classificationId: Sequelize.INTEGER,
-			  incidentalClassificationId: Sequelize.INTEGER,
+
 			  feeId:{
 						type: Sequelize.INTEGER,
 						allowNull: false,
@@ -30,14 +30,21 @@ module.exports = {
 					},
 			  paymentStatus: {
 				type: Sequelize.ENUM("unpaid", "paid"),
+				defaultValue:"unpaid"
 			   
 			  },
 			  type_of_certification:{
 				type: Sequelize.ENUM("Technical Authority", "Appointed Person", "Approved Person"),
+				defaultValue:"Technical Authority"
 			  },
 			appStatus: {
 				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+				defaultValue:"pending"
 			   
+			  },
+			  form_number: {
+				type: Sequelize.STRING,
+				allowNull: true,
 			  },
 			  category_of_certification: {
 				type: Sequelize.ENUM(
@@ -49,10 +56,12 @@ module.exports = {
 				  "Class F",
 				  "Class G"
 				),
+				defaultValue:"Class A"
 			   
 			  },
 			  application_type: {
 				type: Sequelize.ENUM("New Application","Re-application"),
+				allowNull:"New Application"
 			   
 			  },
 			  available_for_documentation_review: {
@@ -89,6 +98,7 @@ module.exports = {
 			  },
 			  training_method: {
 				type: Sequelize.ENUM("Online", "Class Room", "Field"),
+				defaultValue:"Online"
 			  },
 			  training_organization_registration_number: {
 				type: Sequelize.STRING,

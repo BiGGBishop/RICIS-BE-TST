@@ -81,53 +81,70 @@ module.exports = (sequelize, DataTypes) => {
               type:  DataTypes.DATE,
               allowNull: true
             },
+			paymentStatus: {
+				type: DataTypes.ENUM("unpaid", "paid"),
+				defaultValue:"unpaid"
+			   
+			  },
+			  appStatus: {
+				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+			   defaultValue:"pending"
+			  },
 			form_number:{
 				type: DataTypes.STRING,
 				allowNull: true,
 			} ,
 
-			//Boiler pressure categories
+			
 			boiler_pressure_classification:{
 				type:DataTypes.ENUM(
 				  "Class I",
-          "Class II",
-          "Class III",
-          "Class IV",
-          "Class V",
-				)
+				"Class II",
+				"Class III",
+				"Class IV",
+				"Class V",
+				),
+				defaultValue:"Class I"
 			},
 
-			//Lifting equipment category
-			lifting_equipment_classification: DataTypes.ENUM(
+			
+			lifting_equipment_classification: {
+			type:DataTypes.ENUM(
 			"Class VI",
 			"Class VII",
 			"Class VIII",
 			"Class IX",
 			"Class X"
 			),
-			//lifting equipemnt categories
-      type_of_service:{
+			defaultValue:""
+		},
+			
+      type_of_services:{
 				type:DataTypes.ENUM(
 					"Nuclear",
 					"Non-Nuclear"
-				)
-			},
-			
-			
+				),
+				defaultValue:"Nuclear"
+			},		
 
 			application_type:{
 				type:DataTypes.ENUM(
 					"New Application",
 					"Re-Application"
-				)
+				),
+				defaultValue:"New Application"
 			},
 			
+			available_for_documentation_review:{
+				type: DataTypes.BOOLEAN,
+				allowNull:true
+			},
+			exemption_request:{
+				type:DataTypes.BOOLEAN,
+				allowNull:true
 
-			//document fo review
-			available_for_documentation_review: DataTypes.BOOLEAN,
-			exemption_request: DataTypes.BOOLEAN,
+			},
 
-			//company information
 			company_name: DataTypes.STRING,
 			cac_registration_number:DataTypes.STRING,
 			physical_address: DataTypes.TEXT,
@@ -156,11 +173,11 @@ module.exports = (sequelize, DataTypes) => {
 			technical_supervisor_name: DataTypes.STRING,
 			technical_supervisor_address: DataTypes.TEXT,
 			technical_supervisor_email: DataTypes.STRING,
-			technical_supervisor_date_of_birth: DataTypes.DATE,
+			technical_supervisor_date_of_birth:{
+				type:DataTypes.DATE,
+			},
 			technical_supervisor_phonenumber: DataTypes.STRING,
 
-
-      //Education
 			supervisor_high_school: {
 				type: DataTypes.JSONB
 			/*	name_of_school:{
@@ -217,8 +234,14 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		                               
 			supervisor_professional_qualification_institution: DataTypes.STRING,
-			supervisor_date_of_issue: DataTypes.DATE, 
-			supervisor_professional_expiration_date:DataTypes.DATE,
+			supervisor_date_of_issue:{
+				type:DataTypes.DATE,
+				allowNull:true
+			},
+			supervisor_professional_expiration_date:{
+				type:DataTypes.DATE,
+				allowNull:true
+			},
 			supervisor_experience_name_of_company:DataTypes.STRING,
 			supervisor_joining_date: DataTypes.STRING,
       supervisor_exit_date:DataTypes.STRING,
@@ -229,7 +252,10 @@ module.exports = (sequelize, DataTypes) => {
       approved_inspector_name: DataTypes.STRING,
       approved_inspector_address: DataTypes.TEXT,
       approved_inspector_email: DataTypes.STRING,
-      approved_inspector_date_of_birth: DataTypes.DATE,
+      approved_inspector_date_of_birth:{
+		type:DataTypes.DATE,
+		allowNull:true
+	},
       approved_inspector_phonenumber: DataTypes.STRING,
 
 			//Education
@@ -293,20 +319,22 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		                              
 		inspector_professional_qualification_institution: DataTypes.STRING,
-		inspector_date_of_issue: DataTypes.DATE, 
-		inspector_professional_expiration_date:DataTypes.DATE,
+		inspector_date_of_issue:{
+			type:DataTypes.DATE,
+			allowNull:true
+		}, 
+		inspector_professional_expiration_date:{
+			type:DataTypes.DATE,
+			allowNull:true
+		},
 		inspector_experience_name_of_company:DataTypes.STRING,
 		inspector_joining_date: DataTypes.STRING,
     inspector_exit_date:DataTypes.STRING,
-    company_declaration_date:DataTypes.DATE,
-		company_responsible_charge:DataTypes.STRING,                                               
-			                                                                                                                                                                                                                                                                                            
-			//date_sign: DataTypes.DATE,
-			//approval_category: DataTypes.STRING,                                                                                                                         
-			//approval_class: DataTypes.STRING,
-			//training_approval_number_ngtan: DataTypes.STRING,
-			//d  irector_of_factories: DataTypes.T EXT,
-			//date_sign_director_of_factories: DataTypes.DATE,
+    company_declaration_date:{
+		type:DataTypes.DATE,
+		allowNull:true
+	},
+	company_responsible_charge:DataTypes.STRING,                                               
 		companyQualityManual: {
         type: DataTypes.TEXT,                                                                                     
         allowNull: true,

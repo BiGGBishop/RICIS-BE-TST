@@ -102,9 +102,9 @@ module.exports = (sequelize, DataTypes) => {
 				"Class B",
 				"Class C",
         		"Class D",
-        "Class E",
-        "Class F",
-        "Class G"
+				"Class E",
+				"Class F",
+				"Class G"	
 			),
 			defaultValue:"Class A"
 		},

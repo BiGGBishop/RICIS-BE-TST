@@ -3,6 +3,19 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
+
+    await queryInterface.sequelize.query(`
+      CREATE TYPE "enum_TrainingOrganizationForm_boilers_pressure_categories" AS ENUM (
+        'Authorized Inspector',
+        'Design Engineer',
+        'Power Engineer',
+        'Welding Engineer',
+        'Refrigerator Engineer',
+        'Boiler & Pressure Vessel Operator',
+        'Pressure Welder',
+        'Refrigeration Technician'
+      );
+    `);
     await queryInterface.createTable("TrainingOrganizationForm", {
       id: {
         allowNull: false,
@@ -55,6 +68,15 @@ module.exports = {
         },
         onDelete: "SET NULL",
       },
+      paymentStatus: {
+        type: Sequelize.ENUM("unpaid", "paid"),
+        defaultValue:"unpaid"
+       
+      },
+      appStatus: {
+        type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+       defaultValue:"pending"
+      },
       date_received: {
         type: Sequelize.DATE,
         allowNull: true,
@@ -63,9 +85,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      boiler_pressure_categories: {
+      boilers_pressure_categories: {
         type: Sequelize.ENUM(
-					"Authorized Insepector",
+					"Authorized Inspector",
 					"Design Engineer",
 					"Power Engineer",
 					"Welding Engineer",
@@ -73,6 +95,7 @@ module.exports = {
 					"Boiler & Pressure Vessel Operator", 
 					"Pressure Welder",
 					"Refrigeration Technician"),
+          defaultValue:"Authorized Inspector",
       },
       lifting_equipment_category: {
         type: Sequelize.ENUM(
@@ -85,18 +108,22 @@ module.exports = {
 				"Scaffolding Technician",
 				"Abseiling Technician"
 		),
+    defaultValue:"Approved Person"
       },
       application_type: {
         type: Sequelize.ENUM(
 			"New Application",
 			"Re-Application"
 		),
+    defaultValue:"New Application"
       },
       available_for_documentation_review: {
         type: Sequelize.BOOLEAN,
+        allowNull:"true"
       },
       exemption_request: {
         type: Sequelize.BOOLEAN,
+        allowNull:"true"
       },
       company_name: {
         type: Sequelize.STRING,
@@ -127,12 +154,15 @@ module.exports = {
       },
       member_other_bodies: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       quality_certification: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       competence_category: {
         type: Sequelize.STRING,
+        allowNull:true
       },
       competence_line: {
         type: Sequelize.STRING,
@@ -160,6 +190,7 @@ module.exports = {
       },
       technical_supervisor_date_of_birth: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       technical_supervisor_phonenumber: {
         type: Sequelize.STRING,
@@ -177,17 +208,21 @@ module.exports = {
         type:Sequelize.STRING
       } ,
 			date_of_issue: {
-        type:Sequelize.DATE
+        type:Sequelize.DATE,
+        allowNull:true
       }
 			,
       professional_expiration_date:{
-        type:Sequelize.DATE
+        type:Sequelize.DATE,
+        allowNull:true
       },
 			experience_name_of_company:{
         type:Sequelize.STRING,
+        allowNull:true
       },
       company_declaration_date:{
-        type:Sequelize.DATE
+        type:Sequelize.DATE,
+        allowNull:true
       },
       company_responsible_charge:{
         type:Sequelize.STRING,
@@ -197,33 +232,43 @@ module.exports = {
       },
 			exit_date: {
         type:Sequelize.DATE,
+        allowNull:true
       },
       companyQualityManual: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       operationalProcedures: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       companyDocumentation: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       documentationQuality: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       designerDocumentation: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       weldingDocumentation: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       ndtDocumentation: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       indtDocumentation: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       isoCertification: {
         type: Sequelize.TEXT,
+        allowNull:true
       },
       is_draft: {
         type: Sequelize.BOOLEAN,
@@ -242,5 +287,6 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("TrainingOrganizationForm");
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_TrainingOrganizationForm_boiler_pressure_categories";');
   },
 };

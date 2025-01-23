@@ -79,19 +79,24 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				onDelete: 'SET NULL',
 			},
-            date_received: {
-              type:  DataTypes.DATE,
-              allowNull: true
-            },
+			paymentStatus: {
+				type: DataTypes.ENUM("unpaid", "paid"),
+				defaultValue:"unpaid"
+			   
+			  },
+			  appStatus: {
+				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+			   defaultValue:"pending"
+			  },
 			form_number:{
 				type: DataTypes.STRING,
 				allowNull: true,
 			} ,
 
 			//Boiler pressure categories
-			boiler_pressure_categories:{
+			boilers_pressure_categories:{
 				type:DataTypes.ENUM(
-					"Authorized Insepector",
+					"Authorized Inspector",
 					"Design Engineer",
 					"Power Engineer",
 					"Welding Engineer",
@@ -99,11 +104,13 @@ module.exports = (sequelize, DataTypes) => {
 					"Boiler & Pressure Vessel Operator",
 					"Pressure Welder",
 					"Refrigeration Technician"
-				)
+				),
+				defaultValue:"Authorized Inspector"
+				
 			},
 
 			//Lifting equipment category
-			lifting_equipment_category: DataTypes.ENUM(
+			lifting_equipment_category:{ type:DataTypes.ENUM(
 				"Approved Person",
 				"Lift Technician",
 				"Crane Operator",
@@ -113,6 +120,8 @@ module.exports = (sequelize, DataTypes) => {
 				"Scaffolding Technician",
 				"Abseiling Technician"
 			),
+			defaultValue:"Approved Person"
+		},
 			
 			
 
@@ -123,13 +132,20 @@ module.exports = (sequelize, DataTypes) => {
 				type:DataTypes.ENUM(
 					"New Application",
 					"Re-Application"
-				)
+				),
+				defaultValue:"New Application"
 			},
 			
 
 			//document fo review
-			available_for_documentation_review: DataTypes.BOOLEAN,
-			exemption_request: DataTypes.BOOLEAN,
+			available_for_documentation_review: {
+				type:DataTypes.BOOLEAN,
+				allowNull:true
+			},
+			exemption_request: {
+				type:DataTypes.BOOLEAN,
+				allowNull:true
+			},
 
 			//company information
 			company_name: DataTypes.STRING,
@@ -164,7 +180,10 @@ module.exports = (sequelize, DataTypes) => {
 			technical_supervisor_name: DataTypes.STRING,
 			technical_supervisor_address: DataTypes.TEXT,
 			technical_supervisor_email: DataTypes.STRING,
-			technical_supervisor_date_of_birth: DataTypes.DATE,
+			technical_supervisor_date_of_birth:{
+				type: DataTypes.DATE,
+				allowNull:true
+			},
 			technical_supervisor_phonenumber: DataTypes.STRING,
 
 			//Education
@@ -228,13 +247,25 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		                              
 			professional_qualification_institution: DataTypes.STRING,
-			date_of_issue: DataTypes.DATE, 
-			professional_expiration_date:DataTypes.DATE,
+			date_of_issue: {
+				type:DataTypes.DATE,
+				allowNull:true
+			},
+			professional_expiration_date:{
+				type:DataTypes.DATE,
+				allowNull:true
+			},
 			experience_name_of_company:DataTypes.STRING,
-			  company_declaration_date:DataTypes.DATE,
+			  company_declaration_date:{
+				type:DataTypes.DATE,
+				allowNull:true,
+			  },
 			  company_responsible_charge:DataTypes.STRING,
 			joining_date: DataTypes.STRING,
-			exit_date: DataTypes.DATE,                                                  
+			exit_date:{ 
+				type:DataTypes.DATE,
+				allowNull:true,
+			},                                     
 			
 			//date_sign: DataTypes.DATE,
 			//approval_category: DataTypes.STRING,

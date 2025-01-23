@@ -1,10 +1,13 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-'use strict';
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    await queryInterface.sequelize.query(`
+      CREATE TYPE "public"."enum_AuthorizationApproveds_type_of_services" AS ENUM ('Nuclear', 'Non-Nuclear');
+    `);
+
     await queryInterface.createTable('AuthorizationApproveds', {
       id: {
         type: Sequelize.INTEGER,
@@ -60,6 +63,16 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      paymentStatus: {
+        type: Sequelize.ENUM("unpaid", "paid"),
+        defaultValue:"unpaid"
+       
+      },
+      appStatus: {
+        type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+       defaultValue:"pending"
+      },
+      
       form_number: {
         type: Sequelize.STRING,
         allowNull: true,
@@ -72,6 +85,7 @@ module.exports = {
           'Class IV',
           'Class V'
         ),
+        defaultValue:"Class I"
       },
       lifting_equipment_classification: {
         type: Sequelize.ENUM(
@@ -81,24 +95,29 @@ module.exports = {
           'Class IX',
           'Class X'
         ),
+        defaultValue:"Class VI"
       },
-      type_of_service: {
+      type_of_services: {
         type: Sequelize.ENUM(
           'Nuclear',
           'Non-Nuclear'
         ),
+        defaultValue:'Nuclear',
       },
       application_type: {
         type: Sequelize.ENUM(
           'New Application',
           'Re-Application'
         ),
+        defaultValue:"New Application"
       },
       available_for_documentation_review: {
         type: Sequelize.BOOLEAN,
+        allowNull:true
       },
       exemption_request: {
         type: Sequelize.BOOLEAN,
+        allowNull:true
       },
       company_name: {
         type: Sequelize.STRING,
@@ -159,6 +178,7 @@ module.exports = {
       },
       technical_supervisor_date_of_birth: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       technical_supervisor_phonenumber: {
         type: Sequelize.STRING,
@@ -177,9 +197,11 @@ module.exports = {
       },
       supervisor_date_of_issue: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       supervisor_professional_expiration_date: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       supervisor_experience_name_of_company: {
         type: Sequelize.STRING,
@@ -201,6 +223,7 @@ module.exports = {
       },
       approved_inspector_date_of_birth: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       approved_inspector_phonenumber: {
         type: Sequelize.STRING,
@@ -219,9 +242,11 @@ module.exports = {
       },
       inspector_date_of_issue: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       inspector_professional_expiration_date: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       inspector_experience_name_of_company: {
         type: Sequelize.STRING,
@@ -234,6 +259,7 @@ module.exports = {
       },
       company_declaration_date: {
         type: Sequelize.DATE,
+        allowNull:true
       },
       company_responsible_charge: {
         type: Sequelize.STRING,
@@ -282,5 +308,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('AuthorizationApproveds');
+    await queryInterface.removeColumn('AuthorizationApproveds', 'type_of_service');
+    
   },
 };

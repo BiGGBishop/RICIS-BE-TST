@@ -92,6 +92,11 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: true,
 			} ,
+			form_name:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+
 
 			//Boiler pressure categories
 			boilers_pressure_categories:{

@@ -52,6 +52,11 @@ module.exports = (sequelize, DataTypes) => {
       appStatus: {
         type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
       },
+      form_name:{
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
+
 	  type_of_certification:{
 		type: DataTypes.ENUM("Technical Authority", "Appointed Person", "Approved Person"),
 	  },

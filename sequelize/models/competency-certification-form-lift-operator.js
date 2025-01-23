@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: DataTypes.INTEGER,
       subcategoryId: DataTypes.INTEGER,
       classificationId: DataTypes.INTEGER,
-      incidentalClassificationId: DataTypes.INTEGER,
+     
       feeId: {
         type: DataTypes.INTEGER,
         allowNull: false,

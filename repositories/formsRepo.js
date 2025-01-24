@@ -42,7 +42,7 @@ exports.findAllAuthorizationApproved = async () => {
     console.error("Error details:", error);
   }                                                                                             
 };   
-                                          
+
 exports.updateAuthorizationApproved = async (id, data) => {
   try {
     const [updatedRows] = await AuthorizationApproved.update(data, {
@@ -53,12 +53,21 @@ exports.updateAuthorizationApproved = async (id, data) => {
       return null; // Indicate that the record was not found
     }
 
-    return await AuthorizationApproved.findByPk(id); // Return the updated record
+    return await AuthorizationApproved.findByPk(id);
   } catch (error) {
     console.error("Error updating AuthorizationApproved:", error);
-    throw error; // Re-throw the error to be caught by the service
+    throw error; 
   }
-};                                                                                                                                                                                                                                                                                                     
+};                                                                                                                                                                                                                                  
+exports.findAuthorizationApprovedById = async (id) => {
+  try {
+    const response = await AuthorizationApproved.findByPk(id);
+    return response;
+  } catch (error) {
+    console.error("Error details:", error);
+    throw error; 
+  }
+};                                                                   
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
   return  AuthorizationApproved.findAll({
     where: { user_id: userId },
@@ -75,6 +84,23 @@ exports.createAuthorizationManufacturer = async (data) => {
 exports.findAllAuthorizationManufacturer = async () => {
   return AuthorizationManufacturer.findAll();
 };       
+
+exports.updateAuthorizationManufacturer = async (id, data) => {
+  try {
+    const [updatedRows] = await AuthorizationManufacturer.update(data, {
+      where: { id: id },
+    });
+   
+    if (updatedRows === 0) {
+      return null; // Indicate that the record was not found
+    }
+
+    return await AuthorizationManufacturer.findByPk(id); 
+  } catch (error) {
+    console.error("Error updating AuthorizationManufacturer:", error);
+    throw error;
+  }
+};
 
 exports.findByUserIdAuthorizationManufacturer = async (userId, options = {}) => {
   return await AuthorizationManufacturer.findAll({

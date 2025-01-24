@@ -20,11 +20,19 @@ router.get(
   asyncHandler(formsController.getAllAuthorizationApproved)
 );
 
+router.get(
+  "/get-authorization-approved/:id",
+  authToken,
+  asyncHandler(formsController.getAuthorizationApprovedById)
+);
+
 router.put(
-  "/authorization-approved/:id",
+  "/update-authorization-approved/:id",
   authToken,
   asyncHandler(formsController.updateAuthorizationApproved)
 );
+
+
                                                         
 router.get(
   "/authorization-approved/:userId",
@@ -32,6 +40,7 @@ router.get(
   asyncHandler(formsController.getAuthorizationApprovedByUserId)
 );
 
+//authorization manufacture
 router.post(
   "/authorization-manufacturer",
   authToken,
@@ -43,6 +52,11 @@ router.post(
 router.get(
   "/all-authorization-manufacturer",
   asyncHandler(formsController.getAllAuthorizationManufacturer)
+);
+router.put(
+  "/update-authorization-manufacturer/:id",
+  authToken,
+  asyncHandler(formsController.updateAuthorizationManufacturer)
 );
 
 router.get(
@@ -62,7 +76,11 @@ router.get(
     asyncHandler(formsController.getAllAuthorizationTraining)
   );
 
-
+  router.put(
+    "/update-authorization-training/:id",
+    authToken,
+    asyncHandler(formsController.updateAuthorizationTraining)
+  );
 router.get(
   "/authorization-training/:userId",
   authToken,

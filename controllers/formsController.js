@@ -34,6 +34,16 @@ exports.getAllAuthorizationApproved = async (req, res) => {
   }
 };
 
+exports.updateAuthorizationApproved = async (req, res) => {
+  const { id } = req.params;
+  const data = await FormsService.updateAuthorizationApproved(req, id);
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
 exports.getAClassifications = async (req, res) => {
   // Pass the necessary data (e.g., req.params.classId and req.user.id) to the service
   const classId = req.params.classId;  // The classId from the URL
@@ -71,6 +81,16 @@ exports.createAuthorizationManufacturer = async (req, res) => {
 exports.getAllAuthorizationManufacturer = async (req, res) => {
   const data = await FormsService.getAllAuthorizationManufacturer();
   return res.status(200).json({ status: true, message: "Fetched successfully", data });
+};
+
+exports.updateAuthorizationManufacturer = async (req, res) => {
+  const { id } = req.params;
+  const data = await FormsService.updateAuthorizationManufacturer(req, id);
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
 };
 
 exports.getAuthorizationManufacturerByUserId = async (req, res) => {
@@ -133,12 +153,42 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     }
   };
 
+
+  exports.getAuthorizationApprovedById = async (req, res) => {
+    const { id } = req.params;
+    const data = await FormsService.getAuthorizationApprovedById(id);
+    return res.status(200).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  };
+
   exports.getAuthorizationTrainingByUserId = async (req, res) => {
     const { userId } = req.params;
     const data = await FormsService.getAuthorizationTrainingByUserId(userId);
     return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };
 
+
+  exports.updateAuthorizationTraining = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await FormsService.updateAuthorizationTraining(req, id);
+  
+      return res.status(data.STATUS_CODE).json({
+        status: data.STATUS,
+        message: data.MESSAGE,
+        data: data.DATA,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
 
   exports.createBoilerRegistration = async (req, res) => {
     const data = await FormsService.createBoilerRegistration(req);

@@ -94,6 +94,32 @@ exports.updateAuthorizationApproved = async (req, id) => {
   }
 };
 
+exports.getAuthorizationApprovedById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findAuthorizationApprovedById(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in getAuthorizationApprovedById service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch authorization.",
+    };
+  }
+};
+
 exports.getAClassifications = async (classId, userId) => {
   const userOrAdminExist =
     (await UserRepo.findUser({ id: userId })) ||
@@ -199,6 +225,53 @@ exports.getAllAuthorizationManufacturer = async () => {
     MESSAGE: "Authorizations fetched successfully.",
     DATA: allAuthorizations,
   };
+};
+
+
+
+exports.updateAuthorizationManufacturer = async (req, id) => {
+  const userId = req?.user?.id;
+
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  try {
+    const updatedAuthorizationManufacturer = await FormsRepo.updateAuthorizationManufacturer(
+      id,
+      req.body
+    );
+
+    if (!updatedAuthorizationManufacturer) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization not found.",
+      };
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization successfully updated.",
+      DATA: updatedAuthorizationManufacturer,
+    };
+  } catch (error) {
+    console.error("Error updating authorization:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update authorization.",
+    };
+  }
 };
 
 exports.getAuthorizationManufacturerByUserId = async (userId) => {

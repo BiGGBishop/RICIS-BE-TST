@@ -1,4 +1,3 @@
-
 const { AuthorizationApproved } = require("../sequelize/models");
 const { AuthorizationManufacturer } = require("../sequelize/models");
 const { TrainingOrganizationForm } = require("../sequelize/models");

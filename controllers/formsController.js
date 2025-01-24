@@ -170,6 +170,11 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };
 
+  exports.getAuthorizationTrainingById = async (req, res) => {
+    const { id } = req.params;
+    const data = await FormsService.getAuthorizationTrainingById(id);
+    return res.status(data.STATUS_CODE).json(data);
+  };
 
   exports.updateAuthorizationTraining = async (req, res) => {
     try {

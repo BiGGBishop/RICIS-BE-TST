@@ -228,6 +228,31 @@ exports.getAllAuthorizationManufacturer = async () => {
 };
 
 
+exports.getAuthorizationManufacturerById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findAuthorizationManufacturerById(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in getAuthorizationApprovedById service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch authorization.",
+    };
+  }
+};
 
 exports.updateAuthorizationManufacturer = async (req, id) => {
   const userId = req?.user?.id;
@@ -318,6 +343,80 @@ exports.getAllAuthorizationTraining = async () => {
       DATA: allAuthorizations,
     };
   };
+
+
+
+exports.updateAuthorizationTraining= async (req, id) => {
+  const userId = req?.user?.id;
+
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  try {
+    const updatedAuthorizationTraining = await FormsRepo.updateAuthorizationTraining(
+      id,
+      req.body
+    );
+
+    if (!updatedAuthorizationTraining) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization not found.",
+      };
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization successfully updated.",
+      DATA: updatedAuthorizationTraining,
+    };
+  } catch (error) {
+    console.error("Error updating authorization:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update authorization.",
+    };
+  }
+};
+
+
+exports.getAuthorizationTrainingById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findTrainingAuthorizationById(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Authorization training record not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization training record fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in getAuthorizationTrainingById service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch authorization training record.",
+    };
+  }
+};
 
   exports.getAuthorizationTrainingByUserId = async (userId) => {
     return FormsRepo.findByUserIdTrainingAuthorization(userId);

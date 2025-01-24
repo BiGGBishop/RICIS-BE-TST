@@ -102,6 +102,16 @@ exports.updateAuthorizationManufacturer = async (id, data) => {
   }
 };
 
+exports.findAuthorizationManufacturerById = async (id) => {
+  try {
+    const response = await AuthorizationManufacturer.findByPk(id);
+    return response;
+  } catch (error) {
+    console.error("Error details:", error);
+    throw error; 
+  }
+};  
+
 exports.findByUserIdAuthorizationManufacturer = async (userId, options = {}) => {
   return await AuthorizationManufacturer.findAll({
     where: { user_id: userId },
@@ -119,10 +129,33 @@ exports.findAllTrainingAuthorization = async () => {
     return  TrainingOrganizationForm.findAll();
   };
 
-exports.findByUserIdTrainingAuthorization = async (userId) => {
-    return  TrainingOrganizationForm.findAll({ where: { user_id: userId } });
+
+  exports.updateTrainingAuthorization = async(id,data)=>{
+    try {
+      const [updatedRows] = await TrainingOrganizationForm.update({data,
+        where: { id: id },
+      });
+     
+      if (updatedRows === 0) {
+        return null; // Indicate that the record was not found
+      }
+  
+      return await TrainingOrganizationForm.findByPk(id); 
+    } catch (error) {
+      console.error("Error updating TrainingOrganizationForm:", error);
+      throw error;
+    }
   };
 
+exports.findByUserIdTrainingAuthorization = async (userId ,options = {}) => {
+  return await AuthorizationManufacturer.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
+};
+exports.findTrainingAuthorizationById = async (id) => {
+  return TrainingOrganizationForm.findByPk(id);
+}
   //Boier registration
 exports.createBoilerRegistrationRepo = async (data) => {
     return  await BoilerRegistration.create(data);

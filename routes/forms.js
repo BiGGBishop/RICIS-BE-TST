@@ -81,6 +81,12 @@ router.get(
     authToken,
     asyncHandler(formsController.updateAuthorizationTraining)
   );
+
+  router.get(
+    "/get-authorization-training/:id",
+    authToken,
+    asyncHandler(formsController.getAuthorizationTrainingById)
+  );
 router.get(
   "/authorization-training/:userId",
   authToken,
@@ -104,6 +110,8 @@ router.get(
     authToken,
     asyncHandler(formsController.getBoilerRegistrationByUserId)
 );
+
+
 // Competency Certification Form Routes
 router.post('/competency-form-lifting', authToken,validateReqBody(competencyCertificationFormLiftOperatorSchema), formsController.createCompetencyCertificationLiftOperator);
 router.get('/competency-form-lifting-operator', authToken, formsController.getAllCompetencyCertificationLiftOperator);

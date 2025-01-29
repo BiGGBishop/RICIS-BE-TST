@@ -137,6 +137,14 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes,
 				defaultValue: false,
 			},
+			remark: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			feedback: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
 		},
 		{
 			sequelize,

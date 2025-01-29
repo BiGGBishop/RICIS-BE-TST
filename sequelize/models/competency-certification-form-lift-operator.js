@@ -226,6 +226,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      remark: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    feedback: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

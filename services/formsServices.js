@@ -3,7 +3,7 @@ const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
-
+ 
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
   const userExist = await UserRepo.findUser({
@@ -240,6 +240,7 @@ exports.getAuthorizationManufacturerById = async (id) => {
     }
     return {
       STATUS_CODE: StatusCodes.OK,
+      
       STATUS: true,
       MESSAGE: "Authorization fetched successfully.",
       DATA: authorization,
@@ -1239,4 +1240,64 @@ exports.getAllLiftingEquipmentRegistration = async () => {
       MESSAGE: "Lifting equipment registrations fetched successfully.",
       DATA: registrations,
   };
+};
+
+
+exports.createReport = async (req) => {
+  const userId = req?.user?.id
+  const userExist = await UserRepo.findUser({
+    id: req.user?.id,
+  });
+  
+  if (!userExist) {
+    console.log("working")
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  const data = {
+    ...req.body,
+    user_id: userId, // Or any other relevant data
+  };
+  const newReport = await FormsRepo.createReport(data);
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Report created successfully.",
+    DATA: newReport,
+  };
+};
+
+exports.getAllReports = async () => {
+  return FormsRepo.findAllReports();
+};
+
+exports.getReportByUserId = async (userId) => {
+  try {
+    const reports = await FormsRepo.findReportByUserId(userId);
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Reports fetched successfully.",
+      DATA: reports,
+    };
+  } catch (error) {
+    console.error("Error in getReportByUserId service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch reports by user ID.",
+    };
+  }
+};
+
+ 
+  exports.updateReport = async (id, update) => {
+  return FormsRepo.updateReport(id, update);
+};
+
+exports.deleteReport = async (id) => {
+  return FormsRepo.deleteReport(id);
 };

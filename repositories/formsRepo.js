@@ -12,6 +12,7 @@ const {AuthorizedInspectorCertification} = require("../sequelize/models");
 const {CompetencyCertificationWelder} = require("../sequelize/models");
 const {LiftingEquipmentRegistration} = require("../sequelize/models");
 const {CompetencyCertificationFormLiftOperator}= require("../sequelize/models/");
+const {Report} = require ("../sequelize/models")
 
 
 exports.create = async (data) => {
@@ -372,4 +373,65 @@ exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) =
 
 exports.findAllLiftingEquipmentRegistration = async () => {
   return LiftingEquipmentRegistration.findAll();
+};
+
+
+//report functions
+exports.createReport = async (data) => {
+  try {
+    const response = await Report.create(data);
+    return response;
+  } catch (error) {
+    console.error("Error creating report:", error);
+    throw error;
+  }
+};
+
+exports.findAllReports = async () => {
+  try {
+    const response = await Report.findAll();
+    return response;
+  } catch (error) {
+    console.error("Error fetching all reports:", error);
+    throw error;
+  }
+};
+exports.findReportByUserId = async (userId) => {
+  try {
+    const response = await Report.findAll({ where: { user_id: userId } });
+    return response;
+  } catch (error) {
+    console.error("Error fetching report by user ID:", error);
+    throw error; // Re-throw the error to be caught by the service
+  }
+};
+
+exports.findReportById = async (id) => {
+    try {
+      const response = await Report.findByPk(id);
+      return response;
+    } catch (error) {
+      console.error("Error fetching report by ID:", error);
+      throw error;
+    }
+  };
+
+exports.updateReport = async (id, update) => {
+  try {
+    const response = await Report.update(update, { where: { id } });
+    return response;
+  } catch (error) {
+    console.error("Error updating report:", error);
+    throw error;
+  }
+};
+
+exports.deleteReport = async (id) => {
+  try {
+    const response = await Report.destroy({ where: { id } });
+    return response;
+  } catch (error) {
+    console.error("Error deleting report:", error);
+    throw error;
+  }
 };

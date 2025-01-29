@@ -1,9 +1,9 @@
 const AdminRepo = require("../repositories/adminRepo");
-const FormsRepo = require("../repositories/formsRepo")
+const FormsRepo = require("../repositories/formsRepo");
 const UserRepo = require("../repositories/userRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { Op } = require("sequelize");
-const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models'); 
+const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models');
 
 exports.getAdminDetails = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({ email: req.user?.email });
@@ -328,7 +328,7 @@ exports.addClassificationMerge = async (req) => {
 
   const classObject = {
     classificationId: req.body.classificationId,
-    classificationIncidentalId: req.body.classificationIncidentalId,
+    classificationIncidentalIds: req.body.classificationIncidentalId,
   };
 
   
@@ -1296,13 +1296,13 @@ exports.getAllUsersForms = async (req) => {
         MESSAGE: "No users found.",
         DATA: [],
       };
-    }6
+    }
 
     const allForms = [];
     for (const user of users) {
       const userId = user.id;
       const results = await Promise.all([
-       FormsRepo.findByUserIdAuthorizationApproved(userId,{
+FormsRepo.findByUserIdAuthorizationApproved(userId,{
                  include:[
                    {
                      model: Classification,

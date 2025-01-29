@@ -3,6 +3,9 @@ const StatusCodes = require("../utils/statusCodes");
 const{createCompetencyFormLiftOperator} = require("../services/formsServices")
 
 
+
+//Authorization Approved
+
 exports.createAuthorizationApproved = async (req, res) => {
   
     const data = await FormsService.createAuthorizationApproved(req, res);
@@ -44,6 +47,8 @@ exports.updateAuthorizationApproved = async (req, res) => {
   });
 };
 
+//get a classification
+
 exports.getAClassifications = async (req, res) => {
   // Pass the necessary data (e.g., req.params.classId and req.user.id) to the service
   const classId = req.params.classId;  // The classId from the URL
@@ -59,7 +64,7 @@ exports.getAClassifications = async (req, res) => {
 };
 
 
-
+//Authorization Manufacturer
 exports.createAuthorizationManufacturer = async (req, res) => {
   try {
     const newAuthorizationData = await FormsService.createAuthorizationManufacturer(req);
@@ -93,12 +98,24 @@ exports.updateAuthorizationManufacturer = async (req, res) => {
   });
 };
 
+
+exports.getAuthorizationManufacturerById = async (req, res) => {
+  const { id } = req.params;
+  const data = await FormsService.getAuthorizationManufacturerById(id);
+  return res.status(200).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
 exports.getAuthorizationManufacturerByUserId = async (req, res) => {
   const { userId } = req.params;
   const data = await FormsService.getAuthorizationManufacturerByUserId(userId);
   return res.status(200).json({ status: true, message: "Fetched successfully", data });
 };
 
+
+//Authorization Training
 exports.createAuthorizationTraining = async (req, res) => {
   try {
     const data = await FormsService.createTrainingAuthorization(req);
@@ -134,35 +151,6 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     }
   };
 
-  exports.updateAuthorizationApproved = async (req, res) => {
-    try {
-      const { id } = req.params;
-      const data = await FormsService.updateAuthorizationApproved(req, id);
-  
-      return res.status(data.STATUS_CODE).json({
-        status: data.STATUS,
-        message: data.MESSAGE,
-        data: data.DATA,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        status: false,
-        message: "Internal Server Error",
-      });
-    }
-  };
-
-
-  exports.getAuthorizationApprovedById = async (req, res) => {
-    const { id } = req.params;
-    const data = await FormsService.getAuthorizationApprovedById(id);
-    return res.status(200).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA,
-    });
-  };
 
   exports.getAuthorizationTrainingByUserId = async (req, res) => {
     const { userId } = req.params;
@@ -195,6 +183,8 @@ exports.getAllAuthorizationTraining = async (req, res) => {
     }
   };
 
+
+  //Boiler Registration
   exports.createBoilerRegistration = async (req, res) => {
     const data = await FormsService.createBoilerRegistration(req);
   
@@ -262,6 +252,10 @@ exports.getCompetencyFormByUserId = async (req, res) => {
       data: data.DATA,
   });
 };
+
+
+
+//competency form
 
 exports.getCompetencyFormById = async (req, res) => {
 const { id } = req.params;
@@ -507,4 +501,77 @@ exports.getAllLiftingEquipmentRegistration = async (req, res) => {
             MESSAGE: "Error fetching all lifting equipment registrations.",
         });
     }
+};
+
+//report controller logic
+// Report Controller Functions
+exports. createReport = async (req, res) => {
+  try {
+    const report = await FormsService.createReport(req);
+    res.status(201).json(report);
+  } catch (error) {
+    console.error("Error in controller creating report:", error);
+    res.status(500).json({ message: "Failed to create report", error: error.message });
+  }
+};
+
+exports.getReportByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const data = await FormsService.getReportByUserId(userId);
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  } catch (error) {
+    console.error("Error in getReportByUserId controller:", error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.getAllReports = async (req, res) => {
+  try {
+    const reports = await FormsService.getAllReports();
+    res.status(200).json(reports);
+  } catch (error) {
+    console.error("Error in controller fetching all reports:", error);
+    res.status(500).json({ message: "Failed to fetch reports", error: error.message });
+  }
+};
+
+exports.getReportById = async (req, res) => {
+    try {
+      const report = await FormsService.getReportById(req.params.id);
+      if (!report) {
+        return res.status(404).json({ message: "Report not found" });
+      }
+      res.status(200).json(report);
+    } catch (error) {
+      console.error("Error in controller fetching report by ID:", error);
+      res.status(500).json({ message: "Failed to fetch report", error: error.message });
+    }
+  };
+
+exports.updateReport = async (req, res) => {
+  try {
+    const report = await FormsService.updateReport(req.params.id, req.body);
+    res.status(200).json({ message: "Report updated successfully", report });
+  } catch (error) {
+    console.error("Error in controller updating report:", error);
+    res.status(500).json({ message: "Failed to update report", error: error.message });
+  }
+};
+
+exports.deleteReport = async (req, res) => {
+  try {
+    await FormsService.deleteReport(req.params.id);
+    res.status(200).json({ message: "Report deleted successfully" });
+  } catch (error) {
+    console.error("Error in controller deleting report:", error);
+    res.status(500).json({ message: "Failed to delete report", error: error.message });
+  }
 };

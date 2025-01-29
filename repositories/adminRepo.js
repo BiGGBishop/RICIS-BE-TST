@@ -86,13 +86,23 @@ exports.addClassification = async (update) => {
   }
 };
 
-exports.addClassificationMerge = async (update) => {
+exports.addClassificationMerge = async (classificationData, incidentalClassificationIds) => {
   try {
-    const response = await ClassificationMerge.create(update);
-    // console.log({response, update})
-    return response;
+    const primaryClassification = await Classification.create(classificationData);
+
+    if (incidentalClassificationIds && incidentalClassificationIds.length > 0) {
+      for (const incidentalId of incidentalClassificationIds) {
+        await ClassificationMerge.create({
+          classificationId: primaryClassification.id,
+          classificationIncidentalId: incidentalId,
+        });
+      }
+    }
+
+    return primaryClassification;
   } catch (error) {
-    console.error("Error details:", error);
+    console.error("Error adding classification:", error);
+    throw error;
   }
 };
 

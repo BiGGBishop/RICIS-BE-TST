@@ -53,6 +53,11 @@ router.get(
   "/all-authorization-manufacturer",
   asyncHandler(formsController.getAllAuthorizationManufacturer)
 );
+
+router.get(
+  "/get-authorization-manufacturer/:id",
+  asyncHandler(formsController.getAllAuthorizationManufacturer)
+);
 router.put(
   "/update-authorization-manufacturer/:id",
   authToken,
@@ -163,5 +168,14 @@ router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUser
 router.post("/lifting-equipment-registration", authToken, formsController.createLiftingEquipmentRegistration);
 router.get("/lifting-equipment-registration", authToken, formsController.getAllLiftingEquipmentRegistration);
 router.get("/lifting-equipment-registration/user", authToken, formsController.getLiftingEquipmentRegistrationByUserId);
+
+// Report Routes    
+router.post("/create-reports", authToken,asyncHandler(formsController.createReport));
+router.get("/reports",authToken, formsController.getAllReports);
+router.get( "/reports-userid/:userId", authToken, asyncHandler(formsController.getReportByUserId));
+router.get("/reports/:id", authToken,formsController.getReportById);
+router.put("/reports/:id",authToken,  formsController.updateReport);
+router.delete("/reports/:id",authToken, 
+   formsController.deleteReport);
 
 module.exports = router;

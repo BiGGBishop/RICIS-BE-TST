@@ -38,7 +38,7 @@ exports.authToken = (req, res, next) => {
       const decoded = jwt.verify(token, JWT_SECRET )
       req.user = decoded;
 
-      // console.log(user)
+      console.log(req.user)
 
       next();
       return;

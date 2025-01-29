@@ -1294,8 +1294,55 @@ exports.getReportByUserId = async (userId) => {
 };
 
  
-  exports.updateReport = async (id, update) => {
-  return FormsRepo.updateReport(id, update);
+exports.updateReport = async (req) => {
+  const adminExist = await AdminRepo.findAdminUser({
+    id: req.user?.id,
+  });
+
+  if (!adminExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
+
+  if (role?.name !== "admin") {
+    return {
+      STATUS_CODE: StatusCodes.FORBIDDEN,
+      STATUS: false,
+      MESSAGE: "Access denied, admin only",
+    };
+  }
+
+  const { id } = req.params;
+  const update = req.body;
+
+  try {
+    const updatedReport = await FormsRepo.updateReport(id, update);
+    if (!updatedReport) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Report not found",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Report updated successfully",
+      DATA: updatedReport,
+    };
+  } catch (error) {
+    console.error("Error updating report:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update report",
+    };
+  }
 };
 
 exports.deleteReport = async (id) => {

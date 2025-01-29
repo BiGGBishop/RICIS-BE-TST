@@ -417,6 +417,8 @@ exports.findReportById = async (id) => {
   };
 
 exports.updateReport = async (id, update) => {
+  
+
   try {
     const response = await Report.update(update, { where: { id } });
     return response;

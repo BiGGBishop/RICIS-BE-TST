@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       report: {
-        type: DataTypes.STRING, // Assuming a file path or URL
+        type: DataTypes.TEXT, // Assuming a file path or URL
       },
       certificate_image: {
         type: DataTypes.TEXT, // Assuming a file path or URL

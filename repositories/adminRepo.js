@@ -4,6 +4,8 @@ const { UserRole } = require("../sequelize/models"); // Importing from the index
 const { AdminStaff } = require("../sequelize/models"); // Importing from the index file
 const { Classification } = require("../sequelize/models"); // Importing from the index file
 const { ClassificationMerge } = require("../sequelize/models"); // Importing from the index file
+
+const {ClassificationIncidentalMerge} = require("../sequelize/models");
 const { Categories } = require("../sequelize/models"); // Importing from the index file
 const { SubCategories } = require("../sequelize/models"); // Importing from the index file
 const { Conversation } = require("../sequelize/models"); // Importing from the index file
@@ -86,23 +88,52 @@ exports.addClassification = async (update) => {
   }
 };
 
-exports.addClassificationMerge = async (classificationData, incidentalClassificationIds) => {
-  try {
-    const primaryClassification = await Classification.create(classificationData);
+exports.addClassificationMerge = async (update) => {
+  const { classificationId, incidentalClassificationIds } = update;
 
-    if (incidentalClassificationIds && incidentalClassificationIds.length > 0) {
-      for (const incidentalId of incidentalClassificationIds) {
-        await ClassificationMerge.create({
-          classificationId: primaryClassification.id,
-          classificationIncidentalId: incidentalId,
-        });
-      }
+  try {
+    const classificationMerge = await ClassificationMerge.create({
+      classificationId,
+    });
+
+    for (const incidentalClassificationId of incidentalClassificationIds) {
+      await ClassificationIncidentalMerge.create({
+        classificationMergeId: classificationMerge.id,
+        incidentalClassificationId,
+      });
     }
 
-    return primaryClassification;
+    const primaryClassification = await Classification.findOne({
+      where: { id: classificationId },
+    });
+
+    const incidentalClassifications = await Classification.findAll({
+      where: { id: incidentalClassificationIds },
+    });
+
+    const formattedIncidentalClassifications = incidentalClassifications.map(
+      (incidental) => ({
+        classification_name: incidental.classification_name,
+        categoryId: incidental.categoryId,
+        subcategoryId: incidental.subcategoryId,
+        form_type: incidental.form_type,
+      })
+    );
+
+    const response = {
+      primaryClassification: {
+        classification_name: primaryClassification.classification_name,
+        categoryId: primaryClassification.categoryId,
+        subcategoryId: primaryClassification.subcategoryId,
+        form_type: primaryClassification.form_type,
+      },
+      incidentalClassifications: formattedIncidentalClassifications,
+    };
+
+    return response
   } catch (error) {
-    console.error("Error adding classification:", error);
-    throw error;
+    console.error(error);
+    return error
   }
 };
 

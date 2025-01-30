@@ -38,7 +38,7 @@ module.exports = {
         type: Sequelize.STRING, // Assuming a file path or URL
       },
       certificate_number: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       expiry_date: {
         type: Sequelize.DATE,

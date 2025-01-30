@@ -328,7 +328,7 @@ exports.addClassificationMerge = async (req) => {
 
   const classObject = {
     classificationId: req.body.classificationId,
-    classificationIncidentalIds: req.body.classificationIncidentalId,
+    incidentalClassificationIds: req.body.incidentalClassificationIds,
   };
 
   

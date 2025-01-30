@@ -909,10 +909,10 @@ exports.addMsgToApplication = async (req) => {
 
 
 
-//getting merge clasification wit classification Number
-exports.getClassificationsWithMerge = async(classification_number)=>{
+//getting merge clasification with classification Number and application type
+exports.getClassificationsWithMerge = async (classification_number, application_type) => {
   try {
-    console.log("working..")
+    console.log("working..");
     const classification_merge = await ClassificationMerge.findOne({
       include: [
         {
@@ -936,12 +936,17 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
             {
               model: ClassificationFees,
               as: "classificationFees",
-              attributes: ["amount","feeId"],
+              attributes: ["amount", "feeId"],
               include: [
                 {
                   model: Fee,
                   as: "fee",
-                  attributes: ["fee_type", "application_category"],
+                  attributes: ["fee_type", "application_category", "application_type"],
+                  where: {
+                    application_type: {
+                      [Sequelize.Op.contains]: [application_type],
+                    },
+                  },
                 },
               ],
             },
@@ -965,12 +970,17 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
             {
               model: ClassificationFees,
               as: "classificationFees",
-              attributes: ["amount","feeId"],
+              attributes: ["amount", "feeId"],
               include: [
                 {
                   model: Fee,
                   as: "fee",
-                  attributes: ["fee_type", "application_category"],
+                  attributes: ["fee_type", "application_category", "application_type"],
+                  where: {
+                    application_type: {
+                      [Sequelize.Op.contains]: [application_type],
+                    },
+                  },
                 },
               ],
             },
@@ -979,7 +989,6 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
       ],
       attributes: ["classificationId", "classificationIncidentalId"],
     });
-  
 
     if (!classification_merge) {
       return {
@@ -990,14 +999,11 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
       };
     }
 
-    //const dataIncidental = await Classification.findOne(classification_merge.classificationIncidentalId)
-    //console.log(dataIncidental)
-
     return {
       STATUS_CODE: 200,
       STATUS: true,
       MESSAGE: "Classification and incidental classification fetched successfully",
-      DATA:classification_merge,
+      DATA: classification_merge,
     };
   } catch (error) {
     console.error("Error in getClassificationWithIncidental service:", error);
@@ -1008,7 +1014,8 @@ exports.getClassificationsWithMerge = async(classification_number)=>{
       DATA: null,
     };
   }
-}
+};
+
 
 
 

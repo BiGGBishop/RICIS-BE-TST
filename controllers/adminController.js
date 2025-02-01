@@ -390,8 +390,8 @@ exports.fetchFees = async (req, res) => {
   });
 };
 
-exports.updateFees = async (req, res) => {
-  const data = await AdminService.updateFees(req, res);
+exports.updateFees = async (req,res) => {
+  const data = await AdminService.updateFees(req);
 
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,

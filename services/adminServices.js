@@ -1161,17 +1161,13 @@ exports.updateFees = async (req) => {
     };
   }
 
-  const feeId = req.params.feeId;
-  const filter = {
-    id: feeId,
-  };
+  const id = req.params.feeId;
 
-  const feeObj = {
-    fee_type: req.body.fee_type,
-    account_type: req.body.account_type,
-  };
+  const update = req.body
 
-  const fees = await AdminRepo.findAndUpdateFee(filter, feeObj);
+ 
+
+  const fees = await AdminRepo.findAndUpdateFee(update,id);
 
   return {
     STATUS_CODE: StatusCodes.OK,

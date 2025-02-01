@@ -11,6 +11,8 @@ const { SubCategories } = require("../sequelize/models"); // Importing from the 
 const { Conversation } = require("../sequelize/models"); // Importing from the index file
 const { Fee } = require("../sequelize/models"); // Importing from the index file
 const { ClassificationFees } = require("../sequelize/models"); // Importing from the index file
+const {Op} = require("sequelize")
+
 
 exports.findOne = async (filter) => {
   const response = await User.findOne({ where: filter });
@@ -181,18 +183,135 @@ exports.fetchAClassification = async (filter) => {
   return response;
 };
 
-exports.fetchClassificationMerge = async (filter) => {
+exports.fetchClassificationMerge = async () => {
+  console.log("working..")
   try {
-    const response = await ClassificationMerge.findOne({
-      filter, // Ensure we only get one record
+    const primaryClassifications = await Classification.findAll({
+      include: [
+        {
+          model: Categories,
+          as: "category",
+          attributes: ["name"],
+        },
+        {
+          model: SubCategories,
+          as: "subcategory",
+          attributes: ["name"],
+        },
+        {
+          model: ClassificationFees,
+          as: "classificationFees",
+          attributes: ["amount"],
+          include: [
+            {
+              model: Fee,
+              as: "fee",
+              attributes: ["fee_type", "application_category","application_type"],
+            },
+          ],
+        },
+      ],
     });
-    return response;
+
+    if (!primaryClassifications || primaryClassifications.length === 0) {
+      return [];
+    }
+
+    const allClassificationsWithMerges = await Promise.all(primaryClassifications.map(async (primaryClassification) => {
+      const classificationMerge = await ClassificationMerge.findOne({
+        where: { classificationId: primaryClassification.id },
+      });
+
+      if (!classificationMerge) {
+        return {
+          primaryClassification: {
+            classification_name: primaryClassification.classification_name,
+            categoryId: primaryClassification.categoryId,
+            subcategoryId: primaryClassification.subcategoryId,
+            form_type: primaryClassification.form_type,
+            category_name: primaryClassification.category?.name,
+            subcategory_name: primaryClassification.subcategory?.name,
+            amount:
+              primaryClassification.classificationFees &&
+              primaryClassification.classificationFees[0]?.amount,
+              fee: primaryClassification.classificationFees?.[0]?.fee,
+          },
+          incidentalClassifications: [],
+        };
+      }
+
+      const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
+        where: { classificationMergeId: classificationMerge.id },
+        include: [
+          {
+            model: Classification,
+            as: "incidentalClassification",
+            include: [
+              {
+                model: Categories,
+                as: "category",
+                attributes: ["name"],
+              },
+              {
+                model: SubCategories,
+                as: "subcategory",
+                attributes: ["name"],
+              },
+              {
+                model: ClassificationFees,
+                as: "classificationFees",
+                attributes: ["amount"],
+                include: [
+                  {
+                    model: Fee,
+                    as: "fee",
+                    attributes: ["fee_type", "application_category","application_type"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      const incidentalClassifications = getIncidentalClassifications.map(item => {
+        return {
+              classification_name: item.incidentalClassification?.classification_name,
+              categoryId: item.incidentalClassification?.categoryId,
+              subcategoryId: item.incidentalClassification?.subcategoryId,
+              form_type: item.incidentalClassification?.form_type,
+              category_name: item.incidentalClassification?.category?.[0]?.name,
+              subcategory_name: item.incidentalClassification?.subcategory?.[0]?.name,
+              amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
+              fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+          }
+      })
+
+      return {
+        primaryClassification: {
+          classification_name: primaryClassification.classification_name,
+          categoryId: primaryClassification.categoryId,
+          subcategoryId: primaryClassification.subcategoryId,
+          form_type: primaryClassification.form_type,
+          category_name: primaryClassification.category?.name,
+          subcategory_name: primaryClassification.subcategory?.name,
+          amount:
+            primaryClassification.classificationFees &&
+            primaryClassification.classificationFees[0]?.amount,
+            fee: primaryClassification.classificationFees?.[0]?.fee,
+        },
+        incidentalClassifications: incidentalClassifications,
+      };
+    }));
+
+    console.log(allClassificationsWithMerges)
+
+    return allClassificationsWithMerges;
   } catch (error) {
-    console.error("Error fetching classification merge:", error);
+    console.error(error);
     throw error;
   }
 };
-
 exports.fetchClassificationsNoIncidental = async (filter) => {
   const response = await Classification.findAll({
     where: filter,

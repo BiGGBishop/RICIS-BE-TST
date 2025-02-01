@@ -139,19 +139,8 @@ exports.getAClassifications = async (req, res) => {
 
   exports.getClassificationMerge = async (req, res) => {
     try {
-      const merges = await ClassificationMerge.findAll({
-        include: [
-          {
-            model: Classification,
-            as: "classification",
-          },
-          {
-            model: Classification,
-            as: "incidentalClassification",
-          },
-        ],
-      });
-  
+     const merges = await AdminService.getClassificationMerge(req)
+     
       return res.status(200).json({
         status: true,
         message: "Classification merges retrieved successfully",
@@ -165,6 +154,8 @@ exports.getAClassifications = async (req, res) => {
       });
     }
   };
+
+  
 
 exports.getClassificationsNoIncidental = async (req, res) => {
   try {

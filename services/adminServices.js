@@ -435,33 +435,9 @@ exports.getClassificationMerge = async (req) => {
     };
   }
 
-  const role = await AdminRepo.findRole({ id: userOrAdminExist?.userroleId });
-  console.log({ userExist: role });
+  const response = await AdminRepo.fetchClassificationMerge();
 
-  if (role?.name == "user") {
-    const filter = {
-    };
-
-    const user = await AdminRepo.fetchClassificationMerge(filter);
-
-
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      DATA: user,
-    };
-  }
-
-  if (role.name == "admin" || role.name == "staff") {
-    const filter = {};
-    const user = await AdminRepo.fetchClassificationMerge(filter);
-
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      DATA: user,
-    };
-  }
+  return response;
 };
 
 exports.getClassificationsNoIncidental = async (req) => {

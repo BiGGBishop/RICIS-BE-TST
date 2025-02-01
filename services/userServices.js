@@ -11,7 +11,7 @@ const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
 
-const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models'); 
+const { Classification,ClassificationFees,Fee, ClassificationMerge,ClassificationIncidentalMerge,Categories,SubCategories } = require('../sequelize/models'); 
 
 
 exports.getOTP = async (req) => {
@@ -910,52 +910,478 @@ exports.addMsgToApplication = async (req) => {
 
 
 //getting merge clasification with classification Number and application type
-exports.getClassificationsWithMerge = async (classification_number, application_type) => {
+// exports.getClassificationsWithMerges = async (classification_number, application_type) => {
+//   try {
+//     const primaryClassification = await Classification.findOne({
+//       where: { classification_number: classification_number },
+//       include: [
+//         {
+//           model:Categories,
+//           as: "category",
+//         },
+//         {
+//           model: SubCategories,
+//           as: "subcategory",
+//         },
+//         {
+//           model: Fee,
+//           as: "fee",
+//           through: {
+//             model: ClassificationFees,
+//             attributes: ["amount"],
+//           },
+//           where: application_type ? { application_type: { [Op.contains]: [application_type] } } : {},
+//         },
+//       ],
+//     });
+
+//     if (!primaryClassification) {
+//       return {
+//         STATUS_CODE: 404,
+//         STATUS: false,
+//         MESSAGE: "Primary classification not found",
+//         DATA: null,
+//       };
+//     }
+//     const classificationMerge = await ClassificationMerge.findOne({
+//       where: { classificationId: primaryClassification.id },
+//       include: [
+//         {
+//           model: Classification,
+//           as: "incidentalClassification",
+//           through: {
+//             model: ClassificationIncidentalMerge,
+//             as: "incidentalClassifications"
+//           },
+//           include: [
+//             {
+//               model: Categories,
+//               as: "category",
+//             },
+//             {
+//               model: SubCategories,
+//               as: "subcategory",
+//             },
+//             {
+//               model: Fee,
+//               as: "fee",
+//               through: {
+//                 model: ClassificationFees,
+//                 attributes: ["amount"],
+//               },
+//               where: application_type ? { application_type: { [Op.contains]: [application_type] } } : {},
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     if (!classificationMerge) {
+//       return {
+//         STATUS_CODE: 404,
+//         STATUS: false,
+//         MESSAGE: "Classification merge not found",
+//         DATA: null,
+//       };
+//     }
+
+//     const formattedIncidentalClassifications =
+//       classificationMerge.incidentalClassifications.map(
+//         (incidentalMerge) => {
+//           const incidental = incidentalMerge.incidentalClassification;
+//           return {
+//             classification_name: incidental.classification_name,
+//             category: incidental.category ? {
+//               id: incidental.category.id,
+//               name: incidental.category.name,
+//             } : null,
+//             subcategory: incidental.subcategory ? {
+//               id: incidental.subcategory.id,
+//               name: incidental.subcategory.name,
+//             } : null,
+//             form_type: incidental.form_type,
+//             fee: incidental.fee.map(fee => ({
+//               fee_type: fee.fee_type,
+//               amount: fee.ClassificationFees.amount,
+//             })),
+//           };
+//         }
+//       );
+
+//     const response = {
+//       primaryClassification: {
+//         classification_name: primaryClassification.classification_name,
+//         category: primaryClassification.category ? {
+//           id: primaryClassification.category.id,
+//           name: primaryClassification.category.name,
+//         } : null,
+//         subcategory: primaryClassification.subcategory ? {
+//           id: primaryClassification.subcategory.id,
+//           name: primaryClassification.subcategory.name,
+//         } : null,
+//         form_type: primaryClassification.form_type,
+//         fee: primaryClassification.fee.map(fee => ({
+//           fee_type: fee.fee_type,
+//           amount: fee.ClassificationFees.amount,
+//         })),
+//       },
+//       incidentalClassifications: formattedIncidentalClassifications,
+//     };
+
+//     return {
+//       STATUS_CODE: 200,
+//       STATUS: true,
+//       MESSAGE: "Classification merge data retrieved successfully",
+//       DATA: response,
+//     };
+//   } catch (error) {
+//     console.error("Error in getClassificationsWithMerge:", error);
+//     return {
+//       STATUS_CODE: 500,
+//       STATUS: false,
+//       MESSAGE: "An error occurred while processing the request",
+//       DATA: null,
+//     };
+//   }
+// };
+
+// exports.getClassificationsWithMerges = async (classification_number) => {
+//   try {
+//     const primaryClassification = await Classification.findOne({
+//       where: { classification_number:classification_number },
+//     });
+
+//     console.log(primaryClassification);
+//     if (!primaryClassification) {
+//       return null; // Or throw an error, depending on your needs
+//     }
+
+//     const classificationMerge = await ClassificationMerge.findOne({
+//       where: { classificationId: primaryClassification.id },
+//     });
+//     console.log(classificationMerge)
+//     if (!classificationMerge) {
+//       return null; // Or throw an error, depending on your needs
+//     }
+
+//     const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
+//       where: { classificationMergeId: classificationMerge.id },
+//     });
+//     const incidentalClassifications = [];
+//     for (let i = 0; i < getIncidentalClassifications.length; i++) {
+//       const incidentalClassificationRecord = await Classification.findByPk(
+//         getIncidentalClassifications[i].incidentalClassificationId
+//       );
+//       incidentalClassifications.push({
+//         classification_name: incidentalClassificationRecord.classification_name,
+//         categoryId: incidentalClassificationRecord.categoryId,
+//         subcategoryId: incidentalClassificationRecord.subcategoryId,
+//         form_type: incidentalClassificationRecord.form_type,
+//       });
+//     }
+   
+
+//     const response = {
+//       primaryClassification: {
+//         classification_name: primaryClassification.classification_name,
+//         categoryId: primaryClassification.categoryId,
+//         subcategoryId: primaryClassification.subcategoryId,
+//         form_type: primaryClassification.form_type,
+//       },
+//       incidentalClassifications: incidentalClassifications,
+//     };
+
+//     return response;
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// exports.getClassificationsWithMerges = async (classification_number, application_type) => {
+//   try {
+//     const primaryClassification = await Classification.findOne({
+//       where: { classification_number: classification_number },
+//       include: [
+//         {
+//           model: ClassificationFees,
+//           as: "classificationFees",
+//           include: [
+//             {
+//               model: Fee,
+//               as: "fee",
+//               where: {
+//                 application_type: {
+//                   [Op.contains]: [application_type],
+//                 },
+//               },
+//             },
+//           ],
+//         },
+//         {
+//           model: Categories,
+//           as: "category",
+//         },
+//         {
+//           model: SubCategories,
+//           as: "subcategory",
+//         },
+//       ],
+//     });
+
+//     if (!primaryClassification) {
+//       return null;
+//     }
+
+//     const classificationMerge = await ClassificationMerge.findOne({
+//       where: { classificationId: primaryClassification.id },
+//     });
+
+//     if (!classificationMerge) {
+//       return null;
+//     }
+
+//     const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
+//       where: { classificationMergeId: classificationMerge.id },
+//     });
+
+//     const incidentalClassifications = [];
+//     for (let i = 0; i < getIncidentalClassifications.length; i++) {
+//       const incidentalClassificationRecord = await Classification.findOne({
+//         where: { id: getIncidentalClassifications[i].incidentalClassificationId },
+//         include: [
+//           {
+//             model: ClassificationFees,
+//             as: "classificationFees",
+//             include: [
+//               {
+//                 model: Fee,
+//                 as: "fee",
+//                 where: {
+//                   application_type: {
+//                     [Op.contains]: [application_type],
+//                   },
+//                 },
+//               },
+//             ],
+//           },
+//           {
+//             model: Categories,
+//             as: "category",
+//           },
+//           {
+//             model: SubCategories,
+//             as: "subcategory",
+//           },
+//         ],
+//       });
+
+//       if (incidentalClassificationRecord) {
+//         incidentalClassifications.push({
+//           classification_name: incidentalClassificationRecord.classification_name,
+//           categoryId: incidentalClassificationRecord.categoryId,
+//           subcategoryId: incidentalClassificationRecord.subcategoryId,
+//           form_type: incidentalClassificationRecord.form_type,
+//           fee: incidentalClassificationRecord.classificationFees[0]?.fee
+//             ? {
+//                 amount: incidentalClassificationRecord.classificationFees[0].amount,
+//                 fee_type: incidentalClassificationRecord.classificationFees[0].fee.fee_type,
+//                 category_name: incidentalClassificationRecord.category?.name,
+//                 subcategory_name: incidentalClassificationRecord.subcategory?.name,
+//               }
+//             : null,
+//         });
+//       }
+//     }
+
+//     const response = {
+//       primaryClassification: {
+//         classification_name: primaryClassification.classification_name,
+//         categoryId: primaryClassification.categoryId,
+//         subcategoryId: primaryClassification.subcategoryId,
+//         form_type: primaryClassification.form_type,
+//         fee: primaryClassification.classificationFees[0]?.fee
+//           ? {
+//               amount: primaryClassification.classificationFees[0].amount,
+//               fee_type: primaryClassification.classificationFees[0].fee.fee_type,
+//               category_name: primaryClassification.category?.name,
+//               subcategory_name: primaryClassification.subcategory?.name,
+//             }
+//           : null,
+//       },
+//       incidentalClassifications: incidentalClassifications,
+//     };
+
+//     return response;
+//   } catch (error) {
+//     console.error(error);
+//     return null;
+//   }
+// };
+
+// exports.getClassificationsWithMerges = async (classification_number) => {
+//   try {
+//     const primaryClassification = await Classification.findOne({
+//       where: { classification_number: classification_number },
+//       include: [
+//         {
+//           model: Categories,
+//           as: "category",
+//           attributes: ["name"],
+//         },
+//         {
+//           model: SubCategories,
+//           as: "subcategory",
+//           attributes: ["name"],
+//         },
+//         {
+//           model: ClassificationFees,
+//           as: "classificationFees",
+//           include: [
+//             {
+//               model: Fee,
+//               as: "fee",
+//               attributes: ["amount"],
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     if (!primaryClassification) {
+//       return null;
+//     }
+
+//     const classificationMerge = await ClassificationMerge.findOne({
+//       where: { classificationId: primaryClassification.id },
+//     });
+
+//     if (!classificationMerge) {
+//       return null;
+//     }
+
+//     const getIncidentalClassifications = await ClassificationMerge.findAll({
+//       where: { classificationId: classificationMerge.classificationIncidentalId },
+//       include: [
+//         {
+//           model: Classification,
+//           as: "incidentalClassification",
+//           include: [
+//             {
+//               model: Categories,
+//               as: "category",
+//               attributes: ["name"],
+//             },
+//             {
+//               model: SubCategories,
+//               as: "subcategory",
+//               attributes: ["name"],
+//             },
+//             {
+//               model: ClassificationFees,
+//               as: "classificationFees",
+//               include: [
+//                 {
+//                   model: Fee,
+//                   as: "fee",
+//                   attributes: ["amount"],
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     const incidentalClassifications = getIncidentalClassifications.map(
+//       (item) => {
+//         const incidentalClassification = item.incidentalClassification;
+//         return {
+//           classification_name: incidentalClassification.classification_name,
+//           categoryId: incidentalClassification.categoryId,
+//           subcategoryId: incidentalClassification.subcategoryId,
+//           form_type: incidentalClassification.form_type,
+//           category_name: incidentalClassification.category?.name,
+//           subcategory_name: incidentalClassification.subcategory?.name,
+//           amount:
+//             incidentalClassification.classificationFees &&
+//             incidentalClassification.classificationFees[0]?.fee?.amount,
+//         };
+//       }
+//     );
+
+//     const response = {
+//       primaryClassification: {
+//         classification_name: primaryClassification.classification_name,
+//         categoryId: primaryClassification.categoryId,
+//         subcategoryId: primaryClassification.subcategoryId,
+//         form_type: primaryClassification.form_type,
+//         category_name: primaryClassification.category?.name,
+//         subcategory_name: primaryClassification.subcategory?.name,
+//         amount:
+//           primaryClassification.classificationFees &&
+//           primaryClassification.classificationFees[0]?.fee?.amount,
+//       },
+//       incidentalClassifications: incidentalClassifications,
+//     };
+
+//     return response;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
+
+exports.getClassificationsWithMerges = async (classification_number,application_type) => {
   try {
-    console.log("working..");
-    const classification_merge = await ClassificationMerge.findOne({
+    const primaryClassification = await Classification.findOne({
+      where: { classification_number: classification_number },
+      include: [
+        {
+          model: Categories,
+          as: "category",
+          attributes: ["name"],
+        },
+        {
+          model: SubCategories,
+          as: "subcategory",
+          attributes: ["name"],
+        },
+        {
+          model: ClassificationFees,
+          as: "classificationFees",
+          attributes: ["amount"], // Access amount from ClassificationFees
+          include: [
+            {
+              model: Fee,
+              as: "fee",
+              where: {
+                application_type: {
+                  [Op.contains]: [application_type],
+                },
+            },
+          }
+          ],
+        },
+      ],
+    });
+
+    if (!primaryClassification) {
+      return null;
+    }
+
+    const classificationMerge = await ClassificationMerge.findOne({
+      where: { classificationId: primaryClassification.id },
+    });
+
+    if (!classificationMerge) {
+      return null;
+    }
+
+    const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
+      where: { classificationMergeId: classificationMerge.id },
       include: [
         {
           model: Classification,
-          as: "classification",
-          where: {
-            classification_number: classification_number,
-          },
-          required: true,
-          include: [
-            {
-              model: Categories,
-              as: "category",
-              attributes: ["name"],
-            },
-            {
-              model: SubCategories,
-              as: "subcategory",
-              attributes: ["name"],
-            },
-            {
-              model: ClassificationFees,
-              as: "classificationFees",
-              attributes: ["amount", "feeId"],
-              include: [
-                {
-                  model: Fee,
-                  as: "fee",
-                  attributes: ["fee_type", "application_category", "application_type"],
-                  where: {
-                    application_type: {
-                      [Sequelize.Op.contains]: [application_type],
-                    },
-                  },
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: Classification,
           as: "incidentalClassification",
-          required: false,
           include: [
             {
               model: Categories,
@@ -970,16 +1396,13 @@ exports.getClassificationsWithMerge = async (classification_number, application_
             {
               model: ClassificationFees,
               as: "classificationFees",
-              attributes: ["amount", "feeId"],
+              attributes: ["amount"], // Access amount from ClassificationFees
               include: [
                 {
                   model: Fee,
                   as: "fee",
-                  attributes: ["fee_type", "application_category", "application_type"],
-                  where: {
-                    application_type: {
-                      [Sequelize.Op.contains]: [application_type],
-                    },
+                  application_type: {
+                    [Op.contains]: [application_type],
                   },
                 },
               ],
@@ -987,36 +1410,61 @@ exports.getClassificationsWithMerge = async (classification_number, application_
           ],
         },
       ],
-      attributes: ["classificationId", "classificationIncidentalId"],
     });
 
-    if (!classification_merge) {
-      return {
-        STATUS_CODE: 404,
-        STATUS: false,
-        MESSAGE: "Classification not found",
-        DATA: null,
-      };
+console.log(getIncidentalClassifications)
+    if (!getIncidentalClassifications) {
+        return {
+            primaryClassification: {
+                classification_name: primaryClassification.classification_name,
+                categoryId: primaryClassification.categoryId,
+                subcategoryId: primaryClassification.subcategoryId,
+                form_type: primaryClassification.form_type,
+                category_name: primaryClassification.category?.name,
+                subcategory_name: primaryClassification.subcategory?.name,
+                amount:
+                  primaryClassification.classificationFees &&
+                  primaryClassification.classificationFees[0]?.amount,
+              },
+              incidentalClassifications: [],
+        }
     }
+  
 
+  const incidentalClassifications = getIncidentalClassifications.map(item => {
     return {
-      STATUS_CODE: 200,
-      STATUS: true,
-      MESSAGE: "Classification and incidental classification fetched successfully",
-      DATA: classification_merge,
+          classification_name: item.incidentalClassification?.classification_name,
+          categoryId: item.incidentalClassification?.categoryId,
+          subcategoryId: item.incidentalClassification?.subcategoryId,
+          form_type: item.incidentalClassification?.form_type,
+          category_name: item.incidentalClassification?.category?.[0]?.name,
+          subcategory_name: item.incidentalClassification?.subcategory?.[0]?.name,
+          amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
+          fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+      }
+  })
+    const response = {
+      primaryClassification: {
+        classification_name: primaryClassification.classification_name,
+        categoryId: primaryClassification.categoryId,
+        subcategoryId: primaryClassification.subcategoryId,
+        form_type: primaryClassification.form_type,
+        category_name: primaryClassification.category?.name,
+        subcategory_name: primaryClassification.subcategory?.name,
+        amount:
+          primaryClassification.classificationFees &&
+          primaryClassification.classificationFees[0]?.amount,
+          fee: primaryClassification.classificationFees?.[0]?.fee,
+      },
+      incidentalClassifications: incidentalClassifications,
     };
+
+    return response;
   } catch (error) {
-    console.error("Error in getClassificationWithIncidental service:", error);
-    return {
-      STATUS_CODE: 500,
-      STATUS: false,
-      MESSAGE: "An error occurred while fetching classification details",
-      DATA: null,
-    };
+    console.error(error);
+    throw error;
   }
 };
-
-
 
 
 exports.getClassificationWithIncidental = async (classification_number) => {

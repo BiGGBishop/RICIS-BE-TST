@@ -1,4 +1,4 @@
-const { getClassificationsWithMerge,getClassificationWithIncidental } = require("../services/userServices");
+const { getClassificationsWithMerges,getClassificationWithIncidental } = require("../services/userServices");
 const axios = require('axios');
 const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
@@ -243,15 +243,12 @@ exports.getClassificationWithIncidental = async (req, res) => {
 
 
 exports.getClassificationMergeData = async (req, res) => {
-  const { classification_number } = req.body;
-  console.log(classification_number)
+  const { classification_number,application_type } = req.body;
+  console.log(classification_number,application_type)
   try{
-    const data = await getClassificationsWithMerge(classification_number)
-
-    return res.status(data.STATUS_CODE).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA,
+    const data = await getClassificationsWithMerges(classification_number,application_type);
+    return res.status(200).json({
+      data: data,
     });
   }catch(error){
     console.error("Error in getClassificatioWithMerge:", error);

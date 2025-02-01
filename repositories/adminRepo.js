@@ -88,6 +88,7 @@ exports.addClassification = async (update) => {
   }
 };
 
+
 exports.addClassificationMerge = async (update) => {
   const { classificationId, incidentalClassificationIds } = update;
 

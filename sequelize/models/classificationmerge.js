@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes)=>{
   class ClassificationMerge extends Model {
     static associate(models) {
       ClassificationMerge.belongsTo(models.Classification, {
@@ -9,8 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "classification",
         onDelete: "SET NULL",
       });
-
-      ClassificationMerge.hasMany(models.ClassificationIncidentalMerge, {
+      ClassificationMerge.hasMany(models.ClassificationIncidentalMerge,{
         foreignKey: "classificationMergeId",
         as: "incidentalClassifications",
       });

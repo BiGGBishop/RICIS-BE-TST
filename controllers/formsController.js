@@ -545,7 +545,7 @@ exports.getAllReports = async (req, res) => {
 
 exports.getReportById = async (req, res) => {
     try {
-      const report = await FormsService.getReportById(req.params.id);
+      const report = await FormsService.getReportId(req);
       if (!report) {
         return res.status(404).json({ message: "Report not found" });
       }
@@ -558,7 +558,7 @@ exports.getReportById = async (req, res) => {
 
 exports.updateReport = async (req, res) => {
   try {
-    const report = await FormsService.updateReport(req.params.id, req.body);
+    const report = await FormsService.updateReport(req);
     res.status(200).json({ message: "Report updated successfully", report });
   } catch (error) {
     console.error("Error in controller updating report:", error);

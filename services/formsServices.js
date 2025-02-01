@@ -1293,6 +1293,26 @@ exports.getReportByUserId = async (userId) => {
   }
 };
 
+exports.getReportId = async (req)=> {
+  const {id} = req.params
+  try {
+    const reports = await FormsRepo.findReportById(id);
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Reports fetched successfully.",
+      DATA: reports,
+    };
+  } catch (error) {
+    console.error("Error in getReportById service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch reports by user ID.",
+    };
+  }
+};
+
  
 exports.updateReport = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({

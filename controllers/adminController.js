@@ -371,7 +371,7 @@ exports.addMsgToApplication = async (req, res) => {
 };
 
 exports.addFees = async (req, res) => {
-  const data = await AdminService.addFees(req, res);
+  const data = await AdminService.addFees(req);
 
   return res.status(data.STATUS_CODE).json({
     status: data.STATUS,

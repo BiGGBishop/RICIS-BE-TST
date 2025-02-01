@@ -1099,8 +1099,7 @@ exports.addFees = async (req) => {
   }
 
   const feeObj = {
-    fee_type: req.body.fee_type,
-    account_type: req.body.account_type,
+    ...req.body
   };
   const addFee = await AdminRepo.addFee(feeObj);
 

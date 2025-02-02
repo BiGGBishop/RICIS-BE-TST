@@ -1433,6 +1433,7 @@ console.log(getIncidentalClassifications)
 
   const incidentalClassifications = getIncidentalClassifications.map(item => {
     return {
+          classification_id:item.incidentalClassification?.id,
           classification_name: item.incidentalClassification?.classification_name,
           categoryId: item.incidentalClassification?.categoryId,
           subcategoryId: item.incidentalClassification?.subcategoryId,
@@ -1445,6 +1446,7 @@ console.log(getIncidentalClassifications)
   })
     const response = {
       primaryClassification: {
+        classification_id:primaryClassification?.id,
         classification_name: primaryClassification.classification_name,
         categoryId: primaryClassification.categoryId,
         subcategoryId: primaryClassification.subcategoryId,

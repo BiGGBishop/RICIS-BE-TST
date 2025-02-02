@@ -262,7 +262,7 @@ exports.fetchClassificationMerge = async () => {
 
       const incidentalClassifications = getIncidentalClassifications.map(item => {
         return {
-              classification_number:item.classification_number,
+              classification_number:item.incidentalClassification?.classification_number,
               classification_name: item.incidentalClassification?.classification_name,
               categoryId: item.incidentalClassification?.categoryId,
               subcategoryId: item.incidentalClassification?.subcategoryId,
@@ -276,6 +276,7 @@ exports.fetchClassificationMerge = async () => {
 
       return {
         primaryClassification: {
+          classification_number:primaryClassification.classification_number,
           classification_name: primaryClassification.classification_name,
           categoryId: primaryClassification.categoryId,
           subcategoryId: primaryClassification.subcategoryId,

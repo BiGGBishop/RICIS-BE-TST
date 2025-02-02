@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
   }
+
   Report.init(
     {
       user_id: {
@@ -22,36 +23,44 @@ module.exports = (sequelize, DataTypes) => {
       },
       inspection_date: {
         type: DataTypes.DATE,
+        allowNull: true,
       },
       Company_name: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       equipment: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       serial_no: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       report: {
-        type: DataTypes.TEXT, // Assuming a file path or URL
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
       certificate_image: {
-        type: DataTypes.TEXT, // Assuming a file path or URL
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
       certificate_number: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       expiry_date: {
         type: DataTypes.DATE,
+        allowNull: true,
       },
       status: {
-				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
-				defaultValue:"pending"  
-			  },
-        is_draft: {
-          type: DataTypes.BOOLEAN,                  
-          defaultValue: false,
-          },
+        type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+      },
+      is_draft: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: true,
+      },
     },
     {
       sequelize,
@@ -60,5 +69,6 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true,
     }
   );
+
   return Report;
 };

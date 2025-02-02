@@ -21,36 +21,44 @@ module.exports = {
       },
       inspection_date: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
       Company_name: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       equipment: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       serial_no: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       report: {
         type: Sequelize.TEXT, // Assuming a file path or URL
+        allowNull: true,
       },
       certificate_image: {
         type: Sequelize.TEXT, // Assuming a file path or URL
+        allowNull: true,
       },
       
       certificate_number: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       expiry_date: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
       status: {
 				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
-				defaultValue:"pending"  
 			  },
       is_draft: {
           type: Sequelize.BOOLEAN,                  
           defaultValue: false,
+          allowNull: true,
           },
       createdAt: {
         allowNull: false,

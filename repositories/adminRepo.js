@@ -223,22 +223,7 @@ exports.fetchClassificationMerge = async () => {
       });
 
       if (!classificationMerge) {
-        return {
-          primaryClassification: {
-            classification_number:primaryClassification.classification_number,
-            classification_name: primaryClassification.classification_name,
-            categoryId: primaryClassification.categoryId,
-            subcategoryId: primaryClassification.subcategoryId,
-            form_type: primaryClassification.form_type,
-            category_name: primaryClassification.category?.name,
-            subcategory_name: primaryClassification.subcategory?.name,
-            amount:
-              primaryClassification.classificationFees &&
-              primaryClassification.classificationFees[0]?.amount,
-              fee: primaryClassification.classificationFees?.[0]?.fee,
-          },
-          incidentalClassifications: [],
-        };
+        return null
       }
 
       const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
@@ -303,17 +288,143 @@ exports.fetchClassificationMerge = async () => {
             fee: primaryClassification.classificationFees?.[0]?.fee,
         },
         incidentalClassifications: incidentalClassifications,
+        createdAt: classificationMerge.createdAt,
       };
     }));
 
-    console.log(allClassificationsWithMerges)
+    
+    const filteredClassificationsWithMerges = allClassificationsWithMerges.filter(
+      (item) => item !== null && item.createdAt
+    );
 
-    return allClassificationsWithMerges;
+    return filteredClassificationsWithMerges;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
+// exports.fetchClassificationMerge = async () => {
+//   console.log("working..");
+//   try {
+//     const primaryClassifications = await Classification.findAll({
+//       include: [
+//         {
+//           model: Categories,
+//           as: "category",
+//           attributes: ["name"],
+//         },
+//         {
+//           model: SubCategories,
+//           as: "subcategory",
+//           attributes: ["name"],
+//         },
+//         {
+//           model: ClassificationFees,
+//           as: "classificationFees",
+//           attributes: ["amount"],
+//           include: [
+//             {
+//               model: Fee,
+//               as: "fee",
+//               attributes: ["fee_type", "application_category", "application_type"],
+//             },
+//           ],
+//         },
+//         {
+//           model: ClassificationMerge,
+//           as: "classificationMerge",
+//         },
+//       ],
+//     });
+
+//     if (!primaryClassifications || primaryClassifications.length === 0) {
+//       return [];
+//     }
+
+//     const classificationMergeIds = primaryClassifications
+//       .filter((pc) => pc.classificationMerge)
+//       .map((pc) => pc.classificationMerge.id);
+
+//     const incidentalClassifications = await ClassificationIncidentalMerge.findAll({
+//       where: { classificationMergeId: classificationMergeIds },
+//       include: [
+//         {
+//           model: Classification,
+//           as: "incidentalClassification",
+//           include: [
+//             {
+//               model: Categories,
+//               as: "category",
+//               attributes: ["name"],
+//             },
+//             {
+//               model: SubCategories,
+//               as: "subcategory",
+//               attributes: ["name"],
+//             },
+//             {
+//               model: ClassificationFees,
+//               as: "classificationFees",
+//               attributes: ["amount"],
+//               include: [
+//                 {
+//                   model: Fee,
+//                   as: "fee",
+//                   attributes: ["fee_type", "application_category", "application_type"],
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       ],
+//     });
+
+//     const allClassificationsWithMerges = primaryClassifications.map((primaryClassification) => {
+//       const incidentalClassificationForPrimary = incidentalClassifications.filter(
+//         (ic) => ic.classificationMergeId === primaryClassification.classificationMerge?.id
+//       );
+
+//       const formattedIncidentalClassifications = incidentalClassificationForPrimary.map((item) => {
+//         return {
+//           classification_number: item.classification_number,
+//           classification_name: item.incidentalClassification?.classification_name,
+//           categoryId: item.incidentalClassification?.categoryId,
+//           subcategoryId: item.incidentalClassification?.subcategoryId,
+//           form_type: item.incidentalClassification?.form_type,
+//           category_name: item.incidentalClassification?.category?.[0]?.name,
+//           subcategory_name: item.incidentalClassification?.subcategory?.[0]?.name,
+//           amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
+//           fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+//         };
+//       });
+
+//       return {
+//         primaryClassification: {
+//           classification_number: primaryClassification.classification_number,
+//           classification_name: primaryClassification.classification_name,
+//           categoryId: primaryClassification.categoryId,
+//           subcategoryId: primaryClassification.subcategoryId,
+//           form_type: primaryClassification.form_type,
+//           category_name: primaryClassification.category?.name,
+//           subcategory_name: primaryClassification.subcategory?.name,
+//           amount:
+//             primaryClassification.classificationFees &&
+//             primaryClassification.classificationFees[0]?.amount,
+//           fee: primaryClassification.classificationFees?.[0]?.fee,
+//         },
+//         incidentalClassifications: formattedIncidentalClassifications,
+//         createdAt: primaryClassification.classificationMerge?.createdAt,
+//       };
+//     });
+
+//     console.log(allClassificationsWithMerges);
+//     return allClassificationsWithMerges;
+//   } catch (error) {
+//     console.error(error);
+//     throw error;
+//   }
+// };
 exports.fetchClassificationsNoIncidental = async (filter) => {
   const response = await Classification.findAll({
     where: filter,

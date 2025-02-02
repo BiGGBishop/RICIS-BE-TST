@@ -271,6 +271,8 @@ exports.fetchClassificationMerge = async () => {
               subcategory_name: item.incidentalClassification?.subcategory?.name,
               amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
               fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+              has_incidental: item.incidentalClassification?.has_incidental
+              
           }
       })
 
@@ -288,6 +290,7 @@ exports.fetchClassificationMerge = async () => {
             primaryClassification.classificationFees[0]?.amount,
             fee: primaryClassification.classificationFees?.[0]?.fee,
         },
+        has_incidental: primaryClassification.has_incidental,
         incidentalClassifications: incidentalClassifications,
         createdAt: classificationMerge.createdAt,
       };

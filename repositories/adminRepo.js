@@ -267,8 +267,8 @@ exports.fetchClassificationMerge = async () => {
               categoryId: item.incidentalClassification?.categoryId,
               subcategoryId: item.incidentalClassification?.subcategoryId,
               form_type: item.incidentalClassification?.form_type,
-              category_name: item.incidentalClassification?.category?.[0]?.name,
-              subcategory_name: item.incidentalClassification?.subcategory?.[0]?.name,
+              category_name: item.incidentalClassification?.category?.name,
+              subcategory_name: item.incidentalClassification?.subcategory?.name,
               amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
               fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
           }

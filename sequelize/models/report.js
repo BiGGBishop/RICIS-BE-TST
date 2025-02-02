@@ -44,6 +44,14 @@ module.exports = (sequelize, DataTypes) => {
       expiry_date: {
         type: DataTypes.DATE,
       },
+      status: {
+				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+				defaultValue:"pending"  
+			  },
+        is_draft: {
+          type: DataTypes.BOOLEAN,                  
+          defaultValue: false,
+          },
     },
     {
       sequelize,

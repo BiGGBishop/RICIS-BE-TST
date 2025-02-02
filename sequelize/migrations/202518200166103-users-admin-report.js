@@ -32,7 +32,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       report: {
-        type: Sequelize.STRING, // Assuming a file path or URL
+        type: Sequelize.TEXT, // Assuming a file path or URL
       },
       certificate_image: {
         type: Sequelize.TEXT, // Assuming a file path or URL
@@ -44,6 +44,14 @@ module.exports = {
       expiry_date: {
         type: Sequelize.DATE,
       },
+      status: {
+				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+				defaultValue:"pending"  
+			  },
+      is_draft: {
+          type: Sequelize.BOOLEAN,                  
+          defaultValue: false,
+          },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

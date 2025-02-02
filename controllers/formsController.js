@@ -555,7 +555,15 @@ exports.getReportById = async (req, res) => {
       res.status(500).json({ message: "Failed to fetch report", error: error.message });
     }
   };
-
+  exports.updateUserReport = async (req, res) => {
+    const data = await FormsService.updateUserReport(req);
+  
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  };
 exports.updateReport = async (req, res) => {
   try {
     const report = await FormsService.updateReport(req);

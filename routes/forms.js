@@ -5,6 +5,7 @@ const { authToken } = require("../utils/AunthenticateUser");
 const {validateReqBody} = require("../validations/reqValidator");
      const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator")
 
+
 const router = express.Router();
 
 router.post(
@@ -175,6 +176,7 @@ router.get("/reports",authToken, formsController.getAllReports);
 router.get( "/reports-userid/:userId", authToken, asyncHandler(formsController.getReportByUserId));
 router.get("/reports/:id", authToken,formsController.getReportById);
 router.put("/reports/:id",authToken,  formsController.updateReport);
+router.put("/edit-reports/:id",authToken,  formsController.updateUserReport);
 router.delete("/reports/:id",authToken, 
    formsController.deleteReport);
 

@@ -426,7 +426,12 @@ exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
     }
 };
 
-
+exports.updateCompetencyCertificationInspection = async (req,res)=>{
+  const { id } = req.params;
+  const response = await FormsService.updateCompetencyCertificationInspection(req, id);
+  console.log(response);
+  res.status(response.STATUS_CODE).json(response);
+}
 // CompetencyCertificationwelder Controller Functions
 exports.createCompetencyCertificationwelder = async (req, res) => {
   const response = await FormsService.createCompetencyCertificationWelder(req);

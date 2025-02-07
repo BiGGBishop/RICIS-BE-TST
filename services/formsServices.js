@@ -961,55 +961,9 @@ exports.createCompetencyCertificationInspection = async (req) => {
   }
 
   const data = {
-    userId: userId,
-    date_received: req.body.date_received,
-    form_number: req.body.form_number,
-    certification_type: req.body.certification_type,
-    certification_class: req.body.certification_class,
-    endorsement: req.body.endorsement,
-    application_type: req.body.application_type,
-    training_start_date: req.body.training_start_date,
-    training_completion_date: req.body.training_completion_date,
-    documentation_available: req.body.documentation_available,
-    exemption_requested: req.body.exemption_requested,
-    employer_name: req.body.employer_name,
-    employer_physical_address: req.body.employer_physical_address,
-    employer_authorization_number: req.body.employer_authorization_number,
-    employer_quality_certifications: req.body.employer_quality_certifications,
-    employer_contact_person: req.body.employer_contact_person,
-    employer_contact_telephone: req.body.employer_contact_telephone,
-    employer_contact_email_address: req.body.employer_contact_email_address,
-    training_organization_name: req.body.training_organization_name,
-    training_method: req.body.training_method,
-    training_organization_registration_number: req.body.training_organization_registration_number,
-    training_facility_location: req.body.training_facility_location,
-    training_organization_quality_certifications: req.body.training_organization_quality_certifications,
-    training_organization_contact_person: req.body.training_organization_contact_person,
-    training_organization_telephone: req.body.training_organization_telephone,
-    training_organization_email: req.body.training_organization_email,
-    applicant_name: req.body.applicant_name,
-    applicant_address: req.body.applicant_address,
-    applicant_date_of_birth: req.body.applicant_date_of_birth,
-    applicant_email_address: req.body.applicant_email_address,
-    applicant_telephone_number: req.body.applicant_telephone_number,
-    competence_category: req.body.competence_category,
-    competence_line_number: req.body.competence_line_number,
-    incidental_line_number: req.body.incidental_line_number,
-    high_school: req.body.high_school,
-    polytechnic: req.body.polytechnic,
-    university: req.body.university,
-    professional_qualification: req.body.professional_qualification,
-    experience: req.body.experience,
-    applicant_declaration_name: req.body.applicant_declaration_name,
-    applicant_declaration_date: req.body.applicant_declaration_date,
-    employer_responsible_charge_name: req.body.employer_responsible_charge_name,
-    employer_responsible_charge_date: req.body.employer_responsible_charge_date,
-    exam_registration_number: req.body.exam_registration_number,
-    director_of_factories: req.body.director_of_factories,
-    director_signature_date: req.body.director_signature_date,
-    uploaded_documents: req.body.uploaded_documents,
-    is_draft: req.body.is_draft || false,
-  };
+    user_id:userId,
+    ...req.body
+  }
 
   const newCertification = await FormsRepo.createCompetencyCertificationInspection(data);
 
@@ -1030,6 +984,30 @@ exports.getCompetencyCertificationInspection = async (userId) => {
       DATA: certifications,
   };
 };
+
+exports.updateCompetencyCertificationInspection = async (req,id)=>{
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  
+  const updatedCertifications = await FormsRepo.updateCompetencyCertificationInspection(id, req.body);
+  console.log(updatedCertifications)
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Competency certifications updated successfully.",
+    DATA: updatedCertifications,
+};
+}
 
 exports.getAllCompetencyCertificationInspection = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationInspection();

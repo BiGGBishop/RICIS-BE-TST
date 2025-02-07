@@ -335,6 +335,45 @@ exports.findAllCompetencyCertificationInspection = async () => {
   return AuthorizedInspectorCertification.findAll();
 };
 
+exports.findCompetencyCertificationInspectionById  = async (id) => {
+  return AuthorizedInspectorCertification.findByPk(id);
+};
+
+
+exports.updateCompetencyCertificationInspection = async (id, data) => {
+  console.log("Updating CompetencyCertificationInspection with id:", id);
+  try{
+    const [updatedRows] = await AuthorizedInspectorCertification.update(data, {
+      where: { id },
+    });
+  if (updatedRows === 0) {
+    console.log(`No CompetencyCertificationInspection found with id: ${id}`);
+    return { success: false, message: "Record not found" };
+  }
+  
+  // Retry logic for fetching the updated record
+  let updatedRecord = null;
+  for (let i = 0; i < 3; i++) { // Try up to 3 times
+    updatedRecord = await AuthorizedInspectorCertification.findByPk(id);
+    if (updatedRecord) {
+      break; // Record found, exit the loop
+    }
+    await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms before retrying
+  }
+
+  if (!updatedRecord) {
+    console.log(`Failed to retrieve updated record with id: ${id} after multiple retries`);
+    return { success: false, message: "Failed to retrieve updated record" };
+  }
+
+  console.log(`Successfully updated CompetencyCertificationInspection with id: ${id}`);
+  return { success: true, data: updatedRecord };
+}
+  catch (error) {
+    console.error("Error updating CompetencyCertificationInspection:", error);
+    return { success: false, message: "An error occurred while updating the record", error: error.message };
+  }
+};
 exports.findCompetencyCertificationInspectionByUserId  = async (userId) => {
     return AuthorizedInspectorCertification.findAll({ where: { userId } });
 };

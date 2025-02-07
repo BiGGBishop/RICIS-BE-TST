@@ -3,7 +3,8 @@ const { asyncHandler } = require("../middlewares/handler");
 const formsController = require("../controllers/formsController");
 const { authToken } = require("../utils/AunthenticateUser");
 const {validateReqBody} = require("../validations/reqValidator");
-     const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator")
+     const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator");
+const { route } = require("./users");
 
 
 const router = express.Router();
@@ -149,7 +150,8 @@ router.delete("/competency-certification-lifting-07/:id", authToken, asyncHandle
 // Competency Certification Lifting Operator routes
 router.post("/competency-certification-inspection", authToken, asyncHandler(formsController.createCompetencyCertificationInspection));
 router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspection));
-router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getCompetencyCertificationInspectionByUserId));
+router.get("/user-competency-certification-inspection", authToken, asyncHandler(formsController.getCompetencyCertificationInspectionByUserId));
+router.put("/update-cci/:id",authToken, asyncHandler(formsController.updateCompetencyCertificationInspection))
 
 
 // Competency Certification Welder routes

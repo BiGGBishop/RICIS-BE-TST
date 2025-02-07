@@ -10,7 +10,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userId: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
           model: "users",
@@ -21,7 +21,7 @@ module.exports = {
       },
       categoryId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "categories",
           key: "id",
@@ -30,7 +30,7 @@ module.exports = {
       },
       subcategoryId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "subcategories",
           key: "id",
@@ -39,7 +39,7 @@ module.exports = {
       },
       classificationId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "classifications",
           key: "id",
@@ -48,7 +48,7 @@ module.exports = {
       },
       feeId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "fees",
           key: "id",
@@ -59,17 +59,29 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      paymentStatus: {
+        type: Sequelize.ENUM("unpaid", "paid"),
+        defaultValue: "unpaid",
+      },
+      appStatus: {
+        type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+        defaultValue: "pending",
+      },
       form_number: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      certification_type: {
-        type: Sequelize.ENUM("Non-Nuclear", "Nuclear"),
-        allowNull: false,
+      form_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
-      certification_class: {
+      type_of_certification: {
+        type: Sequelize.ENUM("Non-Nuclear", "Nuclear"),
+        allowNull: true,
+      },
+      class_of_certification: {
         type: Sequelize.ENUM("Class 1", "Class 2", "Class 3"),
-        allowNull: false,
+        allowNull: true,
       },
       endorsement: {
         type: Sequelize.ENUM("R", "N"),
@@ -77,7 +89,7 @@ module.exports = {
       },
       application_type: {
         type: Sequelize.ENUM("New Application", "Re-application"),
-        allowNull: false,
+        allowNull: true,
       },
       training_start_date: {
         type: Sequelize.DATE,
@@ -86,12 +98,12 @@ module.exports = {
         type: Sequelize.DATE,
       },
       documentation_available: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        type: Sequelize.STRING,
+        defaultValue: true,
       },
       exemption_requested: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false,
+        type: Sequelize.STRING,
+        defaultValue: true,
       },
       employer_name: {
         type: Sequelize.STRING,
@@ -162,39 +174,21 @@ module.exports = {
       incidental_line_number: {
         type: Sequelize.STRING,
       },
-      high_school: {
+      High_school: {
         type: Sequelize.JSONB,
-        allowNull:true
       },
       polytechnic: {
         type: Sequelize.JSONB,
-        allowNull: true
       },
       university: {
         type: Sequelize.JSONB,
-        allowNull:true
       },
-      professional_qualification_institution:{
-        type:Sequelize.STRING,
-        allowNull:true
-
-      } ,
-			date_of_issue: {
-        type:Sequelize.DATE
-      }
-			,
-			experience_name_of_company:{
-        type:Sequelize.STRING,
-      },
-			joining_date:{ 
-        type:Sequelize.STRING,
-      },
-			exit_date: {
-        type:Sequelize.DATE,
-      },
-      companyQualityManual: {
-        type: Sequelize.TEXT,
-      },
+      professional_qualification_institution: Sequelize.STRING,
+      date_of_issue: Sequelize.DATE,
+      expiry_date: Sequelize.DATE,
+      experience_name_of_company: Sequelize.STRING,
+      joining_date: Sequelize.STRING,
+      exit_date: Sequelize.DATE,
       applicant_declaration_name: {
         type: Sequelize.STRING,
       },
@@ -206,6 +200,9 @@ module.exports = {
       },
       employer_responsible_charge_date: {
         type: Sequelize.DATE,
+      },
+      exam_registration_number: {
+        type: Sequelize.STRING,
       },
       director_of_factories: {
         type: Sequelize.STRING,
@@ -237,6 +234,22 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      is_draft: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      remark: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      feedback: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      certificate: {
+        type: Sequelize.JSONB,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -247,7 +260,15 @@ module.exports = {
       },
     });
   },
+
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("AuthorizedInspectorCertifications");
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_paymentStatus";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_appStatus";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_type_of_certification";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_class_of_certification";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_endorsement";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_application_type";');
+    await queryInterface.sequelize.query('DROP TYPE "enum_AuthorizedInspectorCertifications_training_method";');
   },
 };

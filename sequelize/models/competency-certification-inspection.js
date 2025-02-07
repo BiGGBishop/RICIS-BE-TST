@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class AuthorizedInspectorCertification extends Model {
     static associate(models) {
       AuthorizedInspectorCertification.belongsTo(models.User, {
-        foreignKey: "userId",
+        foreignKey: "user_id",
         as: "user",
       });
     }
@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 
   AuthorizedInspectorCertification.init(
     {
-      userId: {
+      user_id: {
         type: DataTypes.INTEGER,
         references: {
           model: "users",
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       categoryId:{
 				type: DataTypes.INTEGER,
-				allowNull: false, 
+				allowNull: true, 
 				references: {
 				  model: 'categories',
 				  key: 'id',
@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			subcategoryId:{
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
 					model: 'subcategories',
 					key: 'id',
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			classificationId:{
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
 				  model: 'classifications',
 				  key: 'id',
@@ -51,7 +51,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			feeId:{
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
 					model: 'fees',
 					key: 'id',
@@ -62,17 +62,31 @@ module.exports = (sequelize, DataTypes) => {
               type:  DataTypes.DATE,
               allowNull: true
             },
-			form_number:{
-				type: DataTypes.STRING,
-				allowNull: true,
-			} ,
-      certification_type: {
+            paymentStatus: {
+              type: DataTypes.ENUM("unpaid", "paid"),
+              defaultValue:"unpaid"
+               
+              },
+              appStatus: {
+              type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+               defaultValue:"pending"
+              },
+            form_number:{
+              type: DataTypes.STRING,
+              allowNull: true,
+            } ,
+            form_name:{
+              type: DataTypes.STRING,
+              allowNull: true,
+            },
+      
+      type_of_certification: {
         type: DataTypes.ENUM("Non-Nuclear", "Nuclear"),
-        allowNull: false,
+        allowNull: true
       },
-      certification_class: {
+      class_of_certification: {
         type: DataTypes.ENUM("Class 1", "Class 2", "Class 3"),
-        allowNull: false,
+        allowNull: true,
       },
       endorsement: {
         type: DataTypes.ENUM("R", "N"),
@@ -80,7 +94,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       application_type: {
         type: DataTypes.ENUM("New Application", "Re-application"),
-        allowNull: false,
+        allowNull: true,
       },
       training_start_date: {
         type: DataTypes.DATE,
@@ -89,12 +103,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
       },
       documentation_available: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        type: DataTypes.STRING,
+        defaultValue: true,
       },
       exemption_requested: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        type: DataTypes.STRING,
+        defaultValue: true,
       },
       employer_name: {
         type: DataTypes.STRING,
@@ -227,6 +241,7 @@ module.exports = (sequelize, DataTypes) => {
 			professional_qualification_institution: DataTypes.STRING,
 			date_of_issue: DataTypes.DATE
 			,
+      expiry_date: DataTypes.DATE,
 			
 			experience_name_of_company:DataTypes.STRING,
 			joining_date: DataTypes.STRING,
@@ -277,6 +292,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+
+			is_draft: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			},
+			
+			remark: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			feedback: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
+			certificate:{
+				type: DataTypes.JSONB,
+				allowNull: true,
+			}
     },
     {
       sequelize,

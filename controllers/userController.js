@@ -2,8 +2,9 @@ const { getClassificationsWithMerges,getClassificationWithIncidental } = require
 const axios = require('axios');
 const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
-const StatusCodes = require("../utils/statusCodes")
-const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" )
+//const StatusCodes = require("../utils/statusCodes")
+const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
+const {Op} = require('sequelize')
 
 
 exports.getOTP = async (req, res) => {
@@ -362,4 +363,57 @@ if(!userId){
     };
   }
 };
-                                                                             
+
+const FormsService = require("../services/formsServices");
+const StatusCodes = require("../utils/statusCodes");
+
+exports.getAllUserFormsWithCertificate = async (req, res) => {
+  const userId = req?.user?.id;
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ message: "action not allowed you need to log in as a user" });
+  }
+  try {
+    const results = await Promise.all([
+      FormsRepo.findByUserIdAuthorizationApproved(userId, {
+        where: {
+          certificate: { [Op.ne]: null }, // Add this where clause
+        },
+        attributes: ['certificate'],
+      }),
+      FormsRepo.findByUserIdAuthorizationManufacturer(userId, {
+        where: {
+          certificate: { [Op.ne]: null }, // Add this where clause
+        },
+        attributes: ['certificate'],
+      }),
+      FormsRepo.findByUserIdTrainingAuthorization(userId, {
+        where: {
+          certificate: { [Op.ne]: null }, // Add this where clause
+        },
+        attributes: ['certificate'],
+      }),
+      FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId, {
+        where: {
+          certificate: { [Op.ne]: null }, // Add this where clause
+        },
+        attributes: ['certificate'],
+      }),
+    ]);
+    const allForms = results.map((forms) => forms || []);
+
+    return res.status(200).json({
+      status: true,
+      message: "User forms fetched successfully.",
+      data: allForms,
+    });
+  } catch (error) {
+    console.error("Error fetching all user forms:", error);
+    return {
+      STATUS_CODE:INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+};

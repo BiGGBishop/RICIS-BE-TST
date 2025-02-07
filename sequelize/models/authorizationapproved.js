@@ -379,6 +379,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.TEXT,
 				allowNull: true,
 			},
+			certificate:{
+				type: DataTypes.JSONB,
+				allowNull: true,
+			}
 		},
     {
       sequelize,      

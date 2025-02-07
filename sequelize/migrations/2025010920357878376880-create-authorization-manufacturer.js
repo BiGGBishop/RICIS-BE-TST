@@ -265,6 +265,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      certificate:{
+        type: Sequelize.JSONB,
+				allowNull: true,
+      }
                                                                                                                                                         
     });
   },

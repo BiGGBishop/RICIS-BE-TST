@@ -17,11 +17,7 @@ module.exports = {
       allowNull: true,
      },
       account_type: {
-        type: Sequelize.STRING
-      },
-      application_type: {
-      type: Sequelize.ARRAY(Sequelize.STRING), // Define as an array of strings
-      allowNull: true,
+       allowNull: true,
       },
       createdAt: {
         allowNull: false,

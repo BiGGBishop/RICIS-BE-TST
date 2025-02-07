@@ -4,18 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
 
-    await queryInterface.sequelize.query(`
-      CREATE TYPE "enum_TrainingOrganizationForm_boilers_pressure_categories" AS ENUM (
-        'Authorized Inspector',
-        'Design Engineer',
-        'Power Engineer',
-        'Welding Engineer',
-        'Refrigerator Engineer',
-        'Boiler & Pressure Vessel Operator',
-        'Pressure Welder',
-        'Refrigeration Technician'
-      );
-    `);
+  
     await queryInterface.createTable("TrainingOrganizationForm", {
       id: {
         allowNull: false,
@@ -282,7 +271,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
     },
+    certificate:{
+      type: Sequelize.JSONB,
+      allowNull: true,
+    }
     });
+    
   },
 
   async down(queryInterface, Sequelize) {

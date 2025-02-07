@@ -228,7 +228,11 @@ module.exports = {
 			  updatedAt: {
 				allowNull: false,
 				type: Sequelize.DATE,
-			  },                      
+			  },
+			  certificate:{
+				type: Sequelize.JSONB,
+						allowNull: true,
+			  }             
 		});
 	},
 

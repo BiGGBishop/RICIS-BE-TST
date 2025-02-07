@@ -4,9 +4,6 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.sequelize.query(`
-      CREATE TYPE "public"."enum_AuthorizationApproveds_type_of_services" AS ENUM ('Nuclear', 'Non-Nuclear');
-    `);
 
     await queryInterface.createTable('AuthorizationApproveds', {
       id: {
@@ -122,7 +119,7 @@ module.exports = {
       },
       company_name: {
         type: Sequelize.STRING,
-      }, 
+      },
       cac_registration_number: {
         type: Sequelize.STRING,
       },
@@ -304,12 +301,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE,
       },
+      certificate:{
+        type: Sequelize.JSONB,
+				allowNull: true,
+      }
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('AuthorizationApproveds');
-    await queryInterface.removeColumn('AuthorizationApproveds', 'type_of_service');
-    
+    await queryInterface.sequelize('AuthorizationApproveds');
+    await queryInterface.sequelize.query(`DROP TYPE IF EXISTS "public"."enum_AuthorizationApproveds_type_of_services";`);
   },
 };

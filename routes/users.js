@@ -19,6 +19,7 @@ router.post("/classification-with-merge",authToken,usersController.getClassifica
 router.put("/application/msg/add", authToken, asyncHandler(usersController.addMsgToApplication)); 
 router.get("/payment/token",authToken, asyncHandler(usersController.getPaymentToken));
 router.get("/my-applications",authToken,asyncHandler(usersController.getAllUserForms));
+router.get("/my-applications-certicates",authToken,asyncHandler(usersController.getAllUserFormsWithCertificate));
 
 
 

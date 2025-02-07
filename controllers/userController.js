@@ -401,7 +401,12 @@ exports.getAllUserFormsWithCertificate = async (req, res) => {
         attributes: ['certificate'],
       }),
     ]);
-    const allForms = results.map((forms) => forms.certificate || []);
+    const allForms = results.map((forms) => {
+      if (forms && forms.length > 0) {
+        return forms.map((form) => form.certificate); // Extract certificate from each form
+      }
+      return []; // Return empty array if no forms are found
+    })
 
     return res.status(200).json({
       status: true,

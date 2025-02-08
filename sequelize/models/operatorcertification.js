@@ -143,7 +143,7 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 			  },
 			  training_method: {
-				type: DataTypes.ENUM("Online", "Class Room", "Field"),
+				type: DataTypes.ENUM("Online","Class Room", "Field"),
 			  },
 			  training_organization_registration_number: {
 				type: DataTypes.STRING,

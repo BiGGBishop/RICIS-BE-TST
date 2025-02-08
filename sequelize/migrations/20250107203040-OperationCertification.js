@@ -65,6 +65,7 @@ module.exports = {
 			},
 			form_number: {
 			  type: Sequelize.STRING,
+			  defaultValue:"RICS-A-07",
 			  allowNull: true,
 			},
 			form_name: {

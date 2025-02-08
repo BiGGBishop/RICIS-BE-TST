@@ -209,7 +209,7 @@ exports.createBoilerRegistrationRepo = async (data) => {
   };
 
 
-  
+
 
   //certififcation form boiler
   exports.createCompetencyCertificationFormBoiler = async (data) => {
@@ -353,11 +353,11 @@ exports.findCompetencyCertificationLiftingById  = async (id) => {
     return CompetencyCertificationLifting.findByPk(id);
 };
 
-exports.CompetencyCertificationLifting  = async (id, data) => {
+exports.updateCompetencyCertificationLifting  = async (id, data) => {
     return CompetencyCertificationLifting.update(data, { where: { id } });
 };
 
-exports.CompetencyCertificationLifting  = async (id) => {
+exports.deleteCompetencyCertificationLifting  = async (id) => {
     return CompetencyCertificationLifting.destroy({ where: { id } });
 };
 
@@ -432,8 +432,50 @@ exports.findAllCompetencyCertificationWelder = async () => {
   return CompetencyCertificationWelder.findAll();
 };
 
-exports.findCompetencyCertificationWelderByUserId  = async (userId) => {
-    return CompetencyCertificationWelder.findAll({ where: { userId } });
+exports.findCompetencyCertificationWelderByUserId  = async (userId,options={}) => {
+    return CompetencyCertificationWelder.findAll({ where: { user_id:userId },
+    ...options});
+};
+
+exports.findCompetencyCertificationWelderById  = async (id) => {
+  return CompetencyCertificationWelder.findByPk(id);
+};
+
+
+exports.updateCompetencyCertificationWelder = async (id, data) => {
+  console.log("Updating CompetencyCertificationwelder with id:", id);
+  try{
+    const [updatedRows] = await CompetencyCertificationWelder.update(data, {
+      where: { id },
+    });
+  if (updatedRows === 0) {
+    console.log(`No CompetencyCertificationWelder
+       found with id: ${id}`);
+    return { success: false, message: "Record not found" };
+  }
+  
+  // Retry logic for fetching the updated record
+  let updatedRecord = null;
+  for (let i = 0; i < 3; i++) { // Try up to 3 times
+    updatedRecord = await CompetencyCertificationWelder.findByPk(id);
+    if (updatedRecord) {
+      break; // Record found, exit the loop
+    }
+    await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms before retrying
+  }
+
+  if (!updatedRecord) {
+    console.log(`Failed to retrieve updated record with id: ${id} after multiple retries`);
+    return { success: false, message: "Failed to retrieve updated record" };
+  }
+
+  console.log(`Successfully updated CompetencyCertificationWelder with id: ${id}`);
+  return { success: true, data: updatedRecord };
+}
+  catch (error) {
+    console.error("Error updating CompetencyCertificationInspection:", error);
+    return { success: false, message: "An error occurred while updating the record", error: error.message };
+  }
 };
                                                                          
 

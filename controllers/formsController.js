@@ -254,9 +254,6 @@ exports.getCompetencyCertificationLiftOperatorByUserId = async (req, res) => {
 };
 
 
-
-//competency form
-
 exports.getCompetencyCertifcationLiftOperatorById = async (req, res) => {
 const { id } = req.params;
 const data = await FormsService.getCompetencyCertificationLiftOperatorFormById(id);
@@ -395,6 +392,12 @@ exports.getCompetencyCertificationLiftingById = async (req, res) => {
   const response = await FormsService.getCompetencyCertificationLiftingById(id);
   res.status(response.STATUS_CODE).json(response);
 };
+exports.updateCompetencyCertificationLifting = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.updateCompetencyCertificationLifting(req, id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
 
 
 // CompetencyCertificationInspection Controller Functions
@@ -499,10 +502,26 @@ exports.getAllCompetencyCertificationWelder = async (req, res) => {
   res.status(response.STATUS_CODE).json(response);
 };
 
+exports.getCompetencyCertificationWelderById = async (req, res) => {
 
+  const {id} = req.params
+  try {
+    const response = await FormsService.getCompetencyCertificationWelderById(id);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching competency forms by ID:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching competency forms by user ID",
+      });
+  }
+};
 exports.getAllCompetencyCertificationWelderByUserId = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req?.user?.id;
     const response = await FormsService.getCompetencyCertificationWelderByUserId(userId);
     res.status(response.STATUS_CODE).json(response);
   } catch (error) {
@@ -516,7 +535,12 @@ exports.getAllCompetencyCertificationWelderByUserId = async (req, res) => {
       });
   }
 };
-
+exports.updateCompetencyCertificationWelder = async (req,res)=>{
+  const { id } = req.params;
+  const response = await FormsService.updateCompetencyCertificationWelder(req, id);
+  console.log(response);
+  res.status(response.STATUS_CODE).json(response);
+}
 
 
 exports.createLiftingEquipmentRegistration = async (req, res) => {

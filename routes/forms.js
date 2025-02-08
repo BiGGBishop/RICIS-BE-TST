@@ -134,17 +134,17 @@ router.post("/competency-certification-operator-1", authToken, formsController.c
 router.get("/competency-certification-operator-1", authToken, formsController.getAllOperatorCertifications);
 router.get("/user-competency-certification-operator-1", authToken, formsController.getOperatorCertificationsByUserId);
 router.get("/competency-certification-operator-1/:id", authToken, formsController.getOperatorCertificationById);
-router.put("/competency-certification-operator-1/:id", authToken, formsController.updateOperatorCertification);
+router.put("/update-cco/:id", authToken, formsController.updateOperatorCertification);
 router.delete("/competency-certification-operator-1/:id", authToken, formsController.deleteOperatorCertification);
 
 
 // Competency Certification Lifting Operator routes
-router.post("/competency-certification-lifting-07", authToken, asyncHandler(formsController.createCompetencyCertificationLifting));
-router.get("/competency-certification-lifting-07", authToken, asyncHandler(formsController.getAllCompetencyCertificationLifting));
-router.get("/competency-certification-lifting-07/userId", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingByUserId));
-router.get("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingById));
-router.put("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.updateCompetencyCertificationLifting));
-router.delete("/competency-certification-lifting-07/:id", authToken, asyncHandler(formsController.deleteCompetencyCertificationLifting));
+router.post("/competency-certification-operator-2", authToken, asyncHandler(formsController.createCompetencyCertificationLifting));
+router.get("/competency-certification-operator-2", authToken, asyncHandler(formsController.getAllCompetencyCertificationLifting));
+router.get("/competency-certification-operator-2", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingByUserId));
+router.get("/competency-certification-operator-2/:id", authToken, asyncHandler(formsController.getCompetencyCertificationLiftingById));
+router.put("/update-cco-2/:id", authToken, asyncHandler(formsController.updateCompetencyCertificationLifting));
+// router.delete("/competency-certification-operator-2/:id", authToken, asyncHandler(formsController.deleteCompetencyCertificationLifting));
 
 
 // Competency Certification Lifting Operator routes
@@ -166,7 +166,9 @@ router.put("/update-ccb/:id",authToken, asyncHandler(formsController.updateCompe
 // Competency Certification Welder routes
 router.post("/competency-certification-welder", authToken, asyncHandler(formsController.createCompetencyCertificationwelder));
 router.get("/competency-certification-welder", authToken, asyncHandler(formsController.getAllCompetencyCertificationWelder));
-router.get("/competency-certification-welder/userId", authToken, asyncHandler(formsController.getAllCompetencyCertificationWelderByUserId));
+router.get("/user-competency-certification-welder", authToken, asyncHandler(formsController.getAllCompetencyCertificationWelderByUserId));
+router.get("/competency-certification-welder/:id", authToken, asyncHandler(formsController.getCompetencyCertificationWelderById));
+router.put("/update-ccw/:id", authToken, asyncHandler(formsController.updateCompetencyCertificationWelder));
 
 
 

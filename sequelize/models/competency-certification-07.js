@@ -3,141 +3,273 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
     class CompetencyCertificationLifting extends Model {
         static associate(models) {
-            CompetencyCertificationLifting.belongsTo(models.User, {
-                foreignKey: "userId",
-                as: "user",
-            });
+          CompetencyCertificationLifting.belongsTo(models.User, {
+            foreignKey: 'user_id',
+            as: 'user',
+          });
+        
         }
-    }
-
-    CompetencyCertificationLifting.init(
+      }
+    
+      CompetencyCertificationLifting.init(
         {
-            user_id:{
-                type: DataTypes.INTEGER,
-                references: {
-                    model: "users",
-                    key: "id",
-                },
-                onDelete: "SET NULL",
-                allowNull: true,
+          user_id: {
+            type: DataTypes.INTEGER,
+            references: {
+              model: 'users',
+              key: 'id',
             },
-            categoryId:{
-				type: DataTypes.INTEGER,
-				allowNull: false, 
-				references: {
-				  model: 'categories',
-				  key: 'id',
-				},
-				onDelete: 'SET NULL',	
-			},
-			subcategoryId:{
-				type: DataTypes.INTEGER,
-				allowNull: false,
-				references: {
-					model: 'subcategories',
-					key: 'id',
-				},
-				onDelete: 'SET NULL',
-				
-			},
-			classificationId:{
-				type: DataTypes.INTEGER,
-				allowNull: false,
-				references: {
-				  model: 'classifications',
-				  key: 'id',
-				},
-				onDelete: 'SET NULL',
-			},
-			feeId:{
-				type: DataTypes.INTEGER,
-				allowNull: false,
-				references: {
-					model: 'fees',
-					key: 'id',
-				},
-				onDelete: 'SET NULL',
-			},
-            // Type of Certification (Multiple Select)
-            approved_lift_installer: DataTypes.BOOLEAN,
-            work_equipment_operator: DataTypes.BOOLEAN,
-            rigger_signaler: DataTypes.BOOLEAN,
-            scaffolding_technician: DataTypes.BOOLEAN,
-            abseiling_technician: DataTypes.BOOLEAN,
-
-            // Class of Certification (Multiple Select)
-            class_of_classification: DataTypes.ENUM("Class a","Class b", "Class 1", "Class 2"),
-            
-
-            application_type: DataTypes.ENUM("New Application", "Re-Application"),
-            training_start_date: DataTypes.DATE,
-            training_completion_date: DataTypes.DATE,
-            documentation_available: DataTypes.BOOLEAN,
-            exemption_requested: DataTypes.BOOLEAN,
-
-            // Employer Information
-            employer_name: DataTypes.STRING,
-            employer_address: DataTypes.TEXT,
-            employer_quality_certifications: DataTypes.ARRAY(DataTypes.STRING),
-            employer_contact_person: DataTypes.STRING,
-            employer_contact_phone: DataTypes.STRING,
-            employer_contact_email: DataTypes.STRING,
-
-            // Training Organization Information
-            training_organization_name: DataTypes.STRING,
-            training_method: DataTypes.ENUM("Online", "Classroom", "Field"),
-            training_organization_registration_number: DataTypes.STRING,
-            training_organization_location: DataTypes.STRING,
-            training_organization_quality_certifications: DataTypes.ARRAY(
-                DataTypes.STRING
+            onDelete: 'SET NULL',
+            allowNull: true,
+          },
+          categoryId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'categories',
+              key: 'id',
+            },
+            onDelete: 'SET NULL',
+          },
+          subcategoryId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'subcategories',
+              key: 'id',
+            },
+            onDelete: 'SET NULL',
+          },
+          classificationId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'classifications',
+              key: 'id',
+            },
+            onDelete: 'SET NULL',
+          },
+          feeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'fees',
+              key: 'id',
+            },
+            onDelete: 'SET NULL',
+          },
+          date_received: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
+          paymentStatus: {
+            type: DataTypes.ENUM('unpaid', 'paid'),
+            defaultValue: 'unpaid',
+          },
+          appStatus: {
+            type: DataTypes.ENUM('pending', 'approved', 'rejected', 'suspended'),
+            defaultValue: 'pending',
+          },
+          form_number: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          type_of_certification: {
+            type: DataTypes.ENUM(
+              'Approved Lift Installer',
+              'Work Equipment Operator',
+              'Rigger Signaler',
+              'Forklift Operator',
+              'Scaffolding Technician',
+              'Abseiling Technician'
             ),
-            training_organization_contact_person: DataTypes.STRING,
-            training_organization_contact_email: DataTypes.STRING,
-            training_organization_contact_phone: DataTypes.STRING,
-
-            // Applicant Information
-            applicant_name: DataTypes.STRING,
-            applicant_address: DataTypes.TEXT,
-            applicant_date_of_birth: DataTypes.DATE,
-            applicant_email: DataTypes.STRING,
-            applicant_phone: DataTypes.STRING,
-            competence_category: DataTypes.STRING,
-            competence_line_number: DataTypes.STRING,
-            incidental_line_number: DataTypes.STRING,
-
-            // Education
-            high_school: DataTypes.JSONB,
-            polytechnic: DataTypes.JSONB,
-            university: DataTypes.JSONB,
-
-            // Professional Qualification
-            professional_qualifications: DataTypes.ARRAY(DataTypes.JSONB),
-
-            // Experience
-            experience_details: DataTypes.ARRAY(DataTypes.JSONB),
-
-            // Declaration
-            applicant_declaration_name: DataTypes.STRING,
-            applicant_declaration_date: DataTypes.DATE,
-            responsible_charge: DataTypes.STRING,
-            declaration_date: DataTypes.DATE,
-
-            // Official Use
-            exam_registration_number: DataTypes.STRING,
-            certification_class_accepted: DataTypes.STRING,
-            director_of_factories: DataTypes.STRING,
-            director_signature_date: DataTypes.DATE,
-
-            // Uploaded Documents
-            uploaded_documents: DataTypes.ARRAY(DataTypes.STRING),
+          },
+          Class_Certification: {
+            type: DataTypes.ENUM('Class A','Class B', 'Class 1','Class 2'),
+          },
+          application_type: {
+            type: DataTypes.ENUM('New Application', 'Re-Application'),
+          },
+          training_start_date: {
+            type: DataTypes.DATE,
+          },
+          training_completion_date: {
+            type: DataTypes.DATE,
+          },
+          documentation_available: {
+            type: DataTypes.STRING,
+            defaultValue: true,
+          },
+          exemption_requested: {
+            type: DataTypes.STRING,
+            defaultValue: true,
+          },
+          employer_name: {
+            type: DataTypes.STRING,
+          },
+          employer_physical_address: {
+            type: DataTypes.TEXT,
+          },
+          employer_authorization_number: {
+            type: DataTypes.STRING,
+          },
+          employer_quality_certifications: {
+            type: DataTypes.STRING,
+          },
+          employer_contact_person: {
+            type: DataTypes.STRING,
+          },
+          employer_contact_telephone: {
+            type: DataTypes.STRING,
+          },
+          employer_contact_email_address: {
+            type: DataTypes.STRING,
+          },
+          training_organization_name: {
+            type: DataTypes.STRING,
+          },
+          training_method: {
+            type: DataTypes.ENUM('Online', 'Class Room', 'Field'),
+          },
+          training_organization_registration_number: {
+            type: DataTypes.STRING,
+          },
+          training_facility_location: {
+            type: DataTypes.STRING,
+          },
+          training_organization_quality_certifications: {
+            type: DataTypes.STRING,
+          },
+          training_organization_contact_person: {
+            type: DataTypes.STRING,
+          },
+          training_organization_telephone: {
+            type: DataTypes.STRING,
+          },
+          training_organization_email: {
+            type: DataTypes.STRING,
+          },
+          applicant_name: {
+            type: DataTypes.STRING,
+          },
+          applicant_address: {
+            type: DataTypes.TEXT,
+          },
+          applicant_date_of_birth: {
+            type: DataTypes.DATE,
+          },
+          applicant_email_address: {
+            type: DataTypes.STRING,
+          },
+          applicant_telephone_number: {
+            type: DataTypes.STRING,
+          },
+          competence_category: {
+            type: DataTypes.STRING,
+          },
+          competence_line_number: {
+            type: DataTypes.STRING,
+          },
+          incidental_line_number: {
+            type: DataTypes.STRING,
+          },
+         High_school : {
+            type: DataTypes.JSONB,
+          },
+          polytechnic: {
+            type: DataTypes.JSONB,
+          },
+          university: {
+            type: DataTypes.JSONB,
+          },
+          professional_qualification_institution: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          date_of_issue: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
+          expiry_date: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
+          experience_name_of_company: {
+            type: DataTypes.STRING,
+          },
+          joining_date: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          exit_date: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
+          applicant_declaration_name: {
+            type: DataTypes.STRING,
+          },
+          applicant_declaration_date: {
+            type: DataTypes.DATE,
+          },
+          employer_responsible_charge_name: {
+            type: DataTypes.STRING,
+          },
+          employer_responsible_charge_date: {
+            type: DataTypes.DATE,
+          },
+          exam_registration_number: {
+            type: DataTypes.STRING,
+          },
+          director_of_factories: {
+            type: DataTypes.STRING,
+          },
+          director_signature_date: {
+            type: DataTypes.DATE,
+          },
+          applicant_cv: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          higher_education_certifications: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          leia_certificate: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          training_certificate: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          employment_letter: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          is_draft: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+          },
+          remark: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          feedback: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+          },
+          certificate: {
+            type: DataTypes.JSONB,
+            allowNull: true,
+          },
         },
         {
-            sequelize,
-            modelName: "CompetencyCertificationLifting",
-            tableName: "CompetencyCertificationLiftings",
-            timestamps: true,
+          sequelize,
+          modelName: 'CompetencyCertificationLifting',
+          tableName: 'CompetencyCertificationLiftings',
+          timestamps: true,
         }
-    );
+      );
 
     return CompetencyCertificationLifting;
 };

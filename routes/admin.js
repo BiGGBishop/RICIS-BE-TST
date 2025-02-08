@@ -43,7 +43,7 @@ router.get("/all-applications/", authToken, asyncHandler(adminController.getAllU
 router.get("/application/:appId", authToken, asyncHandler(adminController.getSingleApplication));
  
 router.put("/application/:appId", authToken, asyncHandler(adminController.actionOnApplication));
-router.get("/application/filter/:status", authToken, asyncHandler(adminController.filterApplication)); 
+router.get("/application/filter/:status", authToken, asyncHandler(adminController.filterApplication));
 router.post("/fees", authToken, feeValidation, asyncHandler(adminController.addFees)); 
 router.get("/fees", authToken, asyncHandler(adminController.fetchFees)); 
 router.put("/fees/:feeId", authToken, asyncHandler(adminController.updateFees)); 

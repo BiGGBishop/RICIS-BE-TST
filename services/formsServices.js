@@ -750,6 +750,28 @@ exports.createOperatorCertification = async (req) => {
   };
 };
 
+exports.updateOperatorCertification = async (req, id) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  const updatedCompetencyForm = await FormsRepo.updateOperatorCertification(id, req.body);
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Competency form updated successfully.",
+    DATA: updatedCompetencyForm,
+  };
+};
+
 exports.getAllOperatorCertifications = async () => {
   const certifications = await FormsRepo.findAllOperatorCertifications();
   return {
@@ -761,7 +783,7 @@ exports.getAllOperatorCertifications = async () => {
 };
 
 exports.getOperatorCertificationsByUserId = async (userId) => {
-  const certifications = await FormsRepo.findOperatorCertificationsByUserId(userId);
+  const certifications = await FormsRepo.findByUserIdOperatorCertificationsByUserId(userId);
   return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
@@ -800,62 +822,10 @@ exports.createCompetencyCertificationLifting = async (req) => {
       };
   }
 
-  const data = {
-      userId: userId,
-      date_received: req.body.date_received,
-      form_number: req.body.form_number,
-      approved_lift_installer: req.body.approved_lift_installer,
-      work_equipment_operator: req.body.work_equipment_operator,
-      rigger_signaler: req.body.rigger_signaler,
-      scaffolding_technician: req.body.scaffolding_technician,
-      abseiling_technician: req.body.abseiling_technician,
-      class_a: req.body.class_a,
-      class_b: req.body.class_b,
-      class_1: req.body.class_1,
-      class_2: req.body.class_2,
-      application_type: req.body.application_type,
-      training_start_date: req.body.training_start_date,
-      training_completion_date: req.body.training_completion_date,
-      documentation_available: req.body.documentation_available,
-      exemption_requested: req.body.exemption_requested,
-      employer_name: req.body.employer_name,
-      employer_address: req.body.employer_address,
-      employer_quality_certifications: req.body.employer_quality_certifications,
-      employer_contact_person: req.body.employer_contact_person,
-      employer_contact_phone: req.body.employer_contact_phone,
-      employer_contact_email: req.body.employer_contact_email,
-      training_organization_name: req.body.training_organization_name,
-      training_method: req.body.training_method,
-      training_organization_registration_number: req.body.training_organization_registration_number,
-      training_organization_location: req.body.training_organization_location,
-      training_organization_quality_certifications: req.body.training_organization_quality_certifications,
-      training_organization_contact_person: req.body.training_organization_contact_person,
-      training_organization_contact_email: req.body.training_organization_contact_email,
-      training_organization_contact_phone: req.body.training_organization_contact_phone,
-      applicant_name: req.body.applicant_name,
-      applicant_address: req.body.applicant_address,
-      applicant_date_of_birth: req.body.applicant_date_of_birth,
-      applicant_email: req.body.applicant_email,
-      applicant_phone: req.body.applicant_phone,
-      competence_category: req.body.competence_category,
-      competence_line_number: req.body.competence_line_number,
-      incidental_line_number: req.body.incidental_line_number,
-      high_school: req.body.high_school,
-      polytechnic: req.body.polytechnic,
-      university: req.body.university,
-      professional_qualifications: req.body.professional_qualifications,
-      experience_details: req.body.experience_details,
-      applicant_declaration_name: req.body.applicant_declaration_name,
-      applicant_declaration_date: req.body.applicant_declaration_date,
-      responsible_charge: req.body.responsible_charge,
-      declaration_date: req.body.declaration_date,
-      exam_registration_number: req.body.exam_registration_number,
-      certification_class_accepted: req.body.certification_class_accepted,
-      director_of_factories: req.body.director_of_factories,
-      director_signature_date: req.body.director_signature_date,
-      uploaded_documents: req.body.uploaded_documents,
-      is_draft: req.body.is_draft || false,
-  };
+ const data ={
+  user_id: userId,
+  ...req.body
+ }
 
   const newCertification = await FormsRepo.createCompetencyCertificationLifting(data);
 
@@ -903,6 +873,33 @@ exports.getCompetencyCertificationLiftingById = async (id) => {
       DATA: certification,
   };
 };
+exports.updateCompetencyCertificationLifting = async (req,id)=>{
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  
+  const updatedCertifications = await FormsRepo.updateCompetencyCertificationLifting(id, req.body);
+  console.log(updatedCertifications)
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Competency certifications updated successfully.",
+    DATA: updatedCertifications,
+};
+};
+
+
+
+//Certification Inspection
 
 
 
@@ -1131,56 +1128,9 @@ exports.createCompetencyCertificationWelder = async (req) => {
   }
 
   const data = {
-    userId: userId,
-    date_received: req.body.date_received,
-    form_type: req.body.form_type,
-    class_mw: req.body.class_mw,
-    class_sw: req.body.class_sw,
-    new_application: req.body.new_application,
-    re_application: req.body.re_application,
-    training_start_date: req.body.training_start_date,
-    training_completion_date: req.body.training_completion_date,
-    documentation_available_for_review: req.body.documentation_available_for_review,
-    exemption_requested: req.body.exemption_requested,
-    employer_name: req.body.employer_name,
-    employer_physical_address: req.body.employer_physical_address,
-    employer_authorization_number: req.body.employer_authorization_number,
-    employer_quality_certifications: req.body.employer_quality_certifications,
-    employer_contact_person: req.body.employer_contact_person,
-    employer_contact_telephone: req.body.employer_contact_telephone,
-    employer_contact_email_address: req.body.employer_contact_email_address,
-    training_organization_name: req.body.training_organization_name,
-    training_method: req.body.training_method,
-    training_organization_reg_number: req.body.training_organization_reg_number,
-    training_facility_location: req.body.training_facility_location,
-    training_organization_quality_certifications: req.body.training_organization_quality_certifications,
-    training_organization_contact_person: req.body.training_organization_contact_person,
-    training_organization_telephone: req.body.training_organization_telephone,
-    training_organization_email: req.body.training_organization_email,
-    applicant_name: req.body.applicant_name,
-    applicant_address: req.body.applicant_address,
-    applicant_date_of_birth: req.body.applicant_date_of_birth,
-    applicant_email_address: req.body.applicant_email_address,
-    applicant_telephone_number: req.body.applicant_telephone_number,
-    competence_category: req.body.competence_category,
-    competence_line_number: req.body.competence_line_number,
-    incidental_line_number: req.body.incidental_line_number,
-    high_school: req.body.high_school,
-    polytechnic: req.body.polytechnic,
-    university: req.body.university,
-    professional_qualification: req.body.professional_qualification,
-    experience: req.body.experience,
-    applicant_declaration_name: req.body.applicant_declaration_name,
-    applicant_declaration_date: req.body.applicant_declaration_date,
-    employer_responsible_charge: req.body.employer_responsible_charge,
-    employer_responsible_charge_date: req.body.employer_responsible_charge_date,
-    exam_registration_number: req.body.exam_registration_number,
-    certification_class_accepted: req.body.certification_class_accepted,
-    director_of_factories: req.body.director_of_factories,
-    director_signature_date: req.body.director_signature_date,
-    uploaded_documents: req.body.uploaded_documents,
-    is_draft: req.body.is_draft || false,
-  };
+    user_id:userId,
+    ...req.body
+  }
 
   const newCertification = await FormsRepo.createCompetencyCertificationWelder(data);
 
@@ -1213,6 +1163,55 @@ exports.getAllCompetencyCertificationWelder = async () => {
 };
 
 
+exports.updateCompetencyCertificationWelder = async (req,id)=>{
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  
+  const updatedCertifications = await FormsRepo.updateCompetencyCertificationWelder(id, req.body);
+  console.log(updatedCertifications)
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Competency certifications updated successfully.",
+    DATA: updatedCertifications,
+};
+}
+
+exports.getCompetencyCertificationWelderById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findCompetencyCertificationWelderById(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "competency record not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "competency record fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in competency service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch competency",
+    };
+  }
+};
   
 //lifiting registration
 exports.createLiftingEquipmentRegistration = async (req) => {

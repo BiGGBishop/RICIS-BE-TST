@@ -29,34 +29,77 @@ module.exports = (sequelize, DataTypes) => {
 
   CompetencyCertificationFormLiftOperator.init(
     {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
+      },
       user_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        references: {
+          model: "users",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+        allowNull: true,
       },
-      categoryId: DataTypes.INTEGER,
-      subcategoryId: DataTypes.INTEGER,
-      classificationId: DataTypes.INTEGER,
-     
+      categoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "categories",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+      },
+      subcategoryId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "subcategories",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+      },
+      classificationId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: "classifications",
+          key: "id",
+        },
+        onDelete: "SET NULL",
+      },
       feeId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "fees",
           key: "id",
         },
         onDelete: "SET NULL",
       },
+      date_received: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       paymentStatus: {
         type: DataTypes.ENUM("unpaid", "paid"),
+        defaultValue: "unpaid",
       },
       appStatus: {
         type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+        defaultValue: "pending",
       },
-      form_name:{
-				type: DataTypes.STRING,
-				allowNull: true,
-			},
-
+      form_number: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      form_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
 	  type_of_certification:{
 		type: DataTypes.ENUM("Technical Authority", "Appointed Person", "Approved Person"),
 	  },
@@ -122,6 +165,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
       },
       training_organization_telephone: {
+        type: DataTypes.STRING,
+      },
+      training_organization_approval: {
         type: DataTypes.STRING,
       },
       training_organization_email: {
@@ -229,11 +275,15 @@ module.exports = (sequelize, DataTypes) => {
       remark: {
         type: DataTypes.TEXT,
         allowNull: true,
-    },
-    feedback: {
+      },
+      feedback: {
         type: DataTypes.TEXT,
         allowNull: true,
-    },
+      },
+      certificate: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,

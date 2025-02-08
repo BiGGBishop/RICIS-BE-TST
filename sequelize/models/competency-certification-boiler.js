@@ -13,61 +13,77 @@ module.exports = (sequelize, DataTypes) => {
 
 	CompetencyCertificationFormBoiler.init(
 		{
-			userId: {
+			id: {
+				allowNull: false,
+				autoIncrement: true,
+				primaryKey: true,
+				type: DataTypes.INTEGER,
+			  },
+			  user_id: {
 				type: DataTypes.INTEGER,
 				references: {
-					model: "users", // Name of the users table
-					key: "id",
+				  model: "users",
+				  key: "id",
 				},
-				onDelete: "SET NULL", // What to do if the referenced users is deleted
+				onDelete: "SET NULL",
 				allowNull: true,
-			},
-			categoryId:{
+			  },
+			  categoryId: {
 				type: DataTypes.INTEGER,
-				allowNull: false, 
+				allowNull: true,
 				references: {
-				  model: 'categories',
-				  key: 'id',
+				  model: "categories",
+				  key: "id",
 				},
-				onDelete: 'SET NULL',	
-			},
-			subcategoryId:{
+				onDelete: "SET NULL",
+			  },
+			  subcategoryId: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: 'subcategories',
-					key: 'id',
+				  model: "subcategories",
+				  key: "id",
 				},
-				onDelete: 'SET NULL',
-				
-			},
-			classificationId:{
+				onDelete: "SET NULL",
+			  },
+			  classificationId: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-				  model: 'classifications',
-				  key: 'id',
+				  model: "classifications",
+				  key: "id",
 				},
-				onDelete: 'SET NULL',
-			},
-			feeId:{
+				onDelete: "SET NULL",
+			  },
+			  feeId: {
 				type: DataTypes.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: 'fees',
-					key: 'id',
+				  model: "fees",
+				  key: "id",
 				},
-				onDelete: 'SET NULL',
-			},
-            date_received: {
-              type:  DataTypes.DATE,
-              allowNull: true
-            },
-			form_number:{
+				onDelete: "SET NULL",
+			  },
+			  date_received: {
+				type: DataTypes.DATE,
+				allowNull: true,
+			  },
+			  paymentStatus: {
+				type: DataTypes.ENUM("unpaid", "paid"),
+				defaultValue: "unpaid",
+			  },
+			  appStatus: {
+				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+				defaultValue: "pending",
+			  },
+			  form_number: {
 				type: DataTypes.STRING,
 				allowNull: true,
-			} ,
-			form_type: DataTypes.STRING,
+			  },
+			  form_name: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			  },
       certification_type: DataTypes.ENUM(
 				"Power Engineer",
 				"Refrigeration Engineer",
@@ -272,6 +288,22 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.TEXT,
 				allowNull: true,
 			},
+			is_draft: {
+				type: DataTypes.BOOLEAN,
+				defaultValue: false,
+			  },
+			  remark: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			  },
+			  feedback: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			  },
+			  certificate: {
+				type: DataTypes.JSONB,
+				allowNull: true,
+			  },
 			},
 			{
 			  sequelize,

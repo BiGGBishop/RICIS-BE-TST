@@ -2,75 +2,79 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-	up: async (queryInterface, Sequelize) => {
-	
-	  
-	  
-			
-	  
+	up: async (queryInterface, Sequelize) => {	
 		await queryInterface.createTable("CompetencyCertificationFormBoiler", {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
 				type: Sequelize.INTEGER,
-			},
-			userId: {
+			  },
+			  user_id: {
 				type: Sequelize.INTEGER,
 				references: {
-					model: "users",
-					key: "id",
+				  model: "users",
+				  key: "id",
 				},
 				onDelete: "SET NULL",
 				allowNull: true,
-			},
-			categoryId: {
+			  },
+			  categoryId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: "categories",
-					key: "id",
+				  model: "categories",
+				  key: "id",
 				},
 				onDelete: "SET NULL",
-			},
-			subcategoryId: {
+			  },
+			  subcategoryId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: "subcategories",
-					key: "id",
+				  model: "subcategories",
+				  key: "id",
 				},
 				onDelete: "SET NULL",
-			},
-			classificationId: {
+			  },
+			  classificationId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: "classifications",
-					key: "id",
+				  model: "classifications",
+				  key: "id",
 				},
 				onDelete: "SET NULL",
-			},
-			feeId: {
+			  },
+			  feeId: {
 				type: Sequelize.INTEGER,
-				allowNull: false,
+				allowNull: true,
 				references: {
-					model: "fees",
-					key: "id",
+				  model: "fees",
+				  key: "id",
 				},
 				onDelete: "SET NULL",
-			},
-			date_received: {
+			  },
+			  date_received: {
 				type: Sequelize.DATE,
 				allowNull: true,
-			},
-			form_number: {
+			  },
+			  paymentStatus: {
+				type: Sequelize.ENUM("unpaid", "paid"),
+				defaultValue: "unpaid",
+			  },
+			  appStatus: {
+				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+				defaultValue: "pending",
+			  },
+			  form_number: {
 				type: Sequelize.STRING,
 				allowNull: true,
-			},
-			form_type: {
+			  },
+			  form_name: {
 				type: Sequelize.STRING,
-			},
+				allowNull: true,
+			  },
 			certification_type: {
 				type: Sequelize.ENUM(
 					"Power Engineer",
@@ -235,6 +239,26 @@ module.exports = {
 				type: Sequelize.TEXT,
 				allowNull: true,
 			},
+			is_draft: {
+				type: Sequelize.BOOLEAN,
+				defaultValue: false,
+			  },
+			  remark: {
+				type: Sequelize.TEXT,
+				allowNull: true,
+			  },
+			  feedback: {
+				type: Sequelize.TEXT,
+				allowNull: true,
+			  },
+			  certificate: {
+				type: Sequelize.JSONB,
+				allowNull: true,
+			  },
+			  createdAt: {
+				allowNull: false,
+				type: Sequelize.DATE,
+			  },
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

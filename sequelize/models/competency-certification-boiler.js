@@ -244,7 +244,8 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		
 			professional_qualification_institution: DataTypes.STRING,
-			date_of_issue: DataTypes.DATE
+			date_of_issue: DataTypes.DATE,
+			expiry_date: DataTypes.DATE
 			,
 			
 			experience_name_of_company:DataTypes.STRING,

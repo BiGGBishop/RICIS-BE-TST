@@ -130,12 +130,12 @@ router.put('/update-cfl/:id', authToken, formsController.updateCompetencyCertifc
 
 
 // Competency Certification Lifting Operator routes
-router.post("/competency-certification-lifing-08", authToken, formsController.createOperatorCertification);
-router.get("/competency-certification-lifing-08", authToken, formsController.getAllOperatorCertifications);
-router.get("/competency-certification-lifing-08/user", authToken, formsController.getOperatorCertificationsByUserId);
-router.get("/competency-certification-lifing-08/:id", authToken, formsController.getOperatorCertificationById);
-router.put("/competency-certification-lifing-08/:id", authToken, formsController.updateOperatorCertification);
-router.delete("/competency-certification-lifing-08/:id", authToken, formsController.deleteOperatorCertification);
+router.post("/competency-certification-operator-1", authToken, formsController.createOperatorCertification);
+router.get("/competency-certification-operator-1", authToken, formsController.getAllOperatorCertifications);
+router.get("/user-competency-certification-operator-1", authToken, formsController.getOperatorCertificationsByUserId);
+router.get("/competency-certification-operator-1/:id", authToken, formsController.getOperatorCertificationById);
+router.put("/competency-certification-operator-1/:id", authToken, formsController.updateOperatorCertification);
+router.delete("/competency-certification-operator-1/:id", authToken, formsController.deleteOperatorCertification);
 
 
 // Competency Certification Lifting Operator routes

@@ -735,54 +735,10 @@ exports.createOperatorCertification = async (req) => {
       };
   }
 
-  const data = {
-      userId: userId,
-      date_received: req.body.date_received,
-      form_number: req.body.form_number,
-      form_type: req.body.form_type,
-      certification_type: req.body.certification_type,
-      certification_class: req.body.certification_class,
-      application_type: req.body.application_type,
-      documentation_available: req.body.documentation_available,
-      exemption_requested: req.body.exemption_requested,
-      training_start_date: req.body.training_start_date,
-      training_completion_date: req.body.training_completion_date,
-      training_method: req.body.training_method,
-      training_organization_name: req.body.training_organization_name,
-      training_organization_registration_number: req.body.training_organization_registration_number,
-      training_organization_location: req.body.training_organization_location,
-      training_organization_quality_certifications: req.body.training_organization_quality_certifications,
-      training_organization_contact_person: req.body.training_organization_contact_person,
-      training_organization_contact_email: req.body.training_organization_contact_email,
-      training_organization_contact_phone: req.body.training_organization_contact_phone,
-      employer_name: req.body.employer_name,
-      employer_address: req.body.employer_address,
-      employer_quality_certifications: req.body.employer_quality_certifications,
-      employer_contact_person: req.body.employer_contact_person,
-      employer_contact_phone: req.body.employer_contact_phone,
-      employer_contact_email: req.body.employer_contact_email,
-      applicant_name: req.body.applicant_name,
-      applicant_address: req.body.applicant_address,
-      applicant_date_of_birth: req.body.applicant_date_of_birth,
-      applicant_email: req.body.applicant_email,
-      applicant_phone: req.body.applicant_phone,
-      competence_category: req.body.competence_category,
-      competence_line_number: req.body.competence_line_number,
-      incidental_line_number: req.body.incidental_line_number,
-      education_details: req.body.education_details,
-      professional_qualifications: req.body.professional_qualifications,
-      experience_details: req.body.experience_details,
-      applicant_declaration_name: req.body.applicant_declaration_name,
-      applicant_declaration_date: req.body.applicant_declaration_date,
-      responsible_charge: req.body.responsible_charge,
-      declaration_date: req.body.declaration_date,
-      exam_registration_number: req.body.exam_registration_number,
-      certification_class_accepted: req.body.certification_class_accepted,
-      director_of_factories: req.body.director_of_factories,
-      director_signature_date: req.body.director_signature_date,
-      uploaded_documents: req.body.uploaded_documents,
-      is_draft: req.body.is_draft || false,
-  };
+ const data = {
+  user_id:userId,
+  ...req.body
+ }
 
   const newCertification = await FormsRepo.createOperatorCertification(data);
 

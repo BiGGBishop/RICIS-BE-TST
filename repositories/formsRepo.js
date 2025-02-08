@@ -208,8 +208,21 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return CompetencyCertificationFormBoiler.findByPk(id);
   };
   
-  exports.updateCompetencyCertificationFormBoiler= async (id, update) => {
-    return CompetencyCertificationFormBoiler.update(update, { where: { id } });
+  exports.updateCompetencyCertificationFormBoiler= async (id, data) => {
+    try {
+      const [updatedRows] = await CompetencyCertificationFormBoiler.update(data,{
+        where: { id: id },
+     } );
+     
+      if (updatedRows === 0) {
+        return null; // Indicate that the record was not found
+      }
+  
+      return await CompetencyCertificationFormBoiler.findByPk(id); 
+    } catch (error) {
+      console.error("Error updating TrainingOrganizationForm:", error);
+      throw error;
+    }
   };
   
   exports.deleteCompetencyCertificationFormBoiler= async (id) => {
@@ -374,9 +387,13 @@ exports.updateCompetencyCertificationInspection = async (id, data) => {
     return { success: false, message: "An error occurred while updating the record", error: error.message };
   }
 };
-exports.findCompetencyCertificationInspectionByUserId  = async (userId) => {
-    return AuthorizedInspectorCertification.findAll({ where: { userId } });
+exports.findCompetencyCertificationInspectionByUserId  = async (userId ,options = {}) => {
+  return  AuthorizedInspectorCertification.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
 };
+
 
 exports.findCompetencyCertificationInspectionById  = async (id) => {
     return AuthorizedInspectorCertification.findByPk(id);

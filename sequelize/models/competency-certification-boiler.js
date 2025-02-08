@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 		static associate(models) {
      
       CompetencyCertificationFormBoiler.belongsTo(models.User, {
-				foreignKey: "userId", 
+				foreignKey: "user_id", 
 				as: "user", 
 			});
 		}

@@ -1007,7 +1007,17 @@ exports.updateCompetencyCertificationInspection = async (req,id)=>{
     MESSAGE: "Competency certifications updated successfully.",
     DATA: updatedCertifications,
 };
-}
+};
+exports.getCompetencyCertificationInspectionByUserId= async (userId) => {
+  const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certifications lifting fetched successfully.",
+      DATA: certifications,
+  };
+};
+
 
 exports.getAllCompetencyCertificationInspection = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationInspection();
@@ -1019,9 +1029,137 @@ exports.getAllCompetencyCertificationInspection = async () => {
   };
 };
 
+//competency certification form boiler
+exports.createCompetencyCertificationBoiler = async (req) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const data = {
+    user_id:userId,
+    ...req.body
+  }
+
+  const newCertification = await FormsRepo.createCompetencyCertificationFormBoiler(data);
+
+  return {
+    STATUS_CODE: StatusCodes.CREATED,
+    STATUS: true,
+    MESSAGE: "Competency certification Form Boiler created successfully.",
+    DATA: newCertification,
+  };
+};
+
+exports.getCompetencyCertificationBoiler = async (userId) => {
+  const certifications = await FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId);
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certifications lifting fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+exports.updateCompetencyCertificationBoiler = async (req,id)=>{
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  
+  const updatedCertifications = await FormsRepo.updateCompetencyCertificationFormBoiler(id, req.body);
+  console.log(updatedCertifications)
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Competency certifications updated successfully.",
+    DATA: updatedCertifications,
+};
+}
+
+exports.getAllCompetencyCertificationBoiler = async () => {
+  const certifications = await FormsRepo.findAllCompetencyCertificationFormBoiler();
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "certifications fetched successfully.",
+      DATA: certifications,
+  };
+};
+
+exports.getCompertencyCertificationBoilerById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findByIdCompetencyCertificationFormBoiler(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "competency record not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "competency record fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in competency service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch competency",
+    };
+  }
+};
+
+exports.getCompertencyCertificationBoilerByUserId = async (id) => {
+  try {
+    const authorization = await FormsRepo.findByUserIdCompetencyCertificationFormBoiler(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "competency record not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "competency record fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in competency service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch competency",
+    };
+  }
+};
 
 
 
+
+
+
+
+//competency certification welder
 exports.createCompetencyCertificationWelder = async (req) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({ id: userId });

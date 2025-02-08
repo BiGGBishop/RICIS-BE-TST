@@ -150,8 +150,17 @@ router.delete("/competency-certification-lifting-07/:id", authToken, asyncHandle
 // Competency Certification Lifting Operator routes
 router.post("/competency-certification-inspection", authToken, asyncHandler(formsController.createCompetencyCertificationInspection));
 router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspection));
-router.get("/user-competency-certification-inspection", authToken, asyncHandler(formsController.getCompetencyCertificationInspectionByUserId));
+router.get("/user-competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspectionByUserId));
 router.put("/update-cci/:id",authToken, asyncHandler(formsController.updateCompetencyCertificationInspection))
+
+
+//Competenmcy form boiler
+router.post("/competency-certification-boiler", authToken, asyncHandler(formsController.createCompetencyCertificationBoiler));
+router.get("/competency-certification-boiler", authToken, asyncHandler(formsController.getAllCompetencyCertificationBoiler));
+router.get("/competency-certification-boiler/:id", authToken, asyncHandler(formsController.getAllCompetencyCertificationBoilerById));
+router.get("/user-competency-certification-boiler", authToken, asyncHandler(formsController.getAllCompetencyCertificationBoilerByUserId));
+router.put("/update-ccb/:id",authToken, asyncHandler(formsController.updateCompetencyCertificationBoiler))
+
 
 
 // Competency Certification Welder routes

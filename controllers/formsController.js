@@ -412,7 +412,7 @@ exports.getAllCompetencyCertificationInspection = async (req, res) => {
 exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
     try {
       const userId = req.user.id;
-      const response = await FormsService.getAllCompetencyCertificationInspectionByUserId(userId);
+      const response = await FormsService.getCompetencyCertificationInspectionByUserId(userId);
       res.status(response.STATUS_CODE).json(response);
     } catch (error) {
       console.error("Error fetching renewal forms by user ID:", error);
@@ -429,6 +429,62 @@ exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
 exports.updateCompetencyCertificationInspection = async (req,res)=>{
   const { id } = req.params;
   const response = await FormsService.updateCompetencyCertificationInspection(req, id);
+  console.log(response);
+  res.status(response.STATUS_CODE).json(response);
+}
+
+
+
+// CompetencyCertificationInspection Controller Functions
+exports.createCompetencyCertificationBoiler = async (req, res) => {
+  const response = await FormsService.createCompetencyCertificationBoiler(req);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationBoiler = async (req, res) => {
+  const response = await FormsService.getAllCompetencyCertificationBoiler()
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.getAllCompetencyCertificationBoilerByUserId = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const response = await FormsService.getCompertencyCertificationBoilerByUserId(userId);
+      res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+      console.error("Error fetching renewal forms by user ID:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+          STATUS: false,
+          MESSAGE: "Error fetching renewal forms by user ID",
+        });
+    }
+};
+
+
+exports.getAllCompetencyCertificationBoilerById = async (req, res) => {
+
+  const {id} = req.params
+  try {
+    
+    const response = await FormsService.getCompertencyCertificationBoilerById(id);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching renewal forms by user ID:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching renewal forms by user ID",
+      });
+  }
+};
+exports.updateCompetencyCertificationBoiler = async (req,res)=>{
+  const { id } = req.params;
+  const response = await FormsService.updateCompetencyCertificationBoiler(req, id);
   console.log(response);
   res.status(response.STATUS_CODE).json(response);
 }

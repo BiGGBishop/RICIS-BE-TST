@@ -120,12 +120,12 @@ router.get(
 
 
 // Competency Certification Form Routes
-router.post('/competency-form-lifting', authToken,validateReqBody(competencyCertificationFormLiftOperatorSchema), formsController.createCompetencyCertificationLiftOperator);
-router.get('/competency-form-lifting-operator', authToken, formsController.getAllCompetencyCertificationLiftOperator);
-router.get('/competency-form/user/:userId', authToken, formsController.getCompetencyFormByUserId);
-router.get('/competency-form/:id', authToken, formsController.getCompetencyFormById);
-router.put('/competency-form/:id', authToken, formsController.updateCompetencyForm);
-router.delete('/competency-form/:id', authToken, formsController.deleteCompetencyForm);
+router.post('/competency-form-lifting', authToken, formsController.createCompetencyCertificationLiftOperator);
+router.get('/competency-form-lifting', authToken, formsController.getAllCompetencyCertificationLiftOperator);
+router.get('/user-competency-form-lifting', authToken, formsController.getCompetencyCertificationLiftOperatorByUserId);
+router.get('/competency-form-lifting/:id', authToken, formsController.getCompetencyCertifcationLiftOperatorById);
+router.put('/update-cfl/:id', authToken, formsController.updateCompetencyCertifcationLiftOperator);
+// router.delete('/delete-competency-form-lifting/:id', authToken, formsController.deleteCompetencyCertifcationLiftOperator);
 
 
 

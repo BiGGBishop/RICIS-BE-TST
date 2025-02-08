@@ -243,9 +243,9 @@ exports.getAllCompetencyCertificationLiftOperator = async (req, res) => {
   });
 };
 
-exports.getCompetencyFormByUserId = async (req, res) => {
-  const { userId } = req.params;
-  const data = await FormsService.getCompetencyFormByUserId(userId);
+exports.getCompetencyCertificationLiftOperatorByUserId = async (req, res) => {
+  const userId = req?.user?.id
+  const data = await FormsService.getCompetencyCertificationLiftOperatorByUserId(userId);
   return res.status(data.STATUS_CODE).json({
       status: data.STATUS,
       message: data.MESSAGE,
@@ -257,9 +257,9 @@ exports.getCompetencyFormByUserId = async (req, res) => {
 
 //competency form
 
-exports.getCompetencyFormById = async (req, res) => {
+exports.getCompetencyCertifcationLiftOperatorById = async (req, res) => {
 const { id } = req.params;
-const data = await FormsService.getCompetencyFormById(id);
+const data = await FormsService.getCompetencyCertificationLiftOperatorFormById(id);
 return res.status(data.STATUS_CODE).json({
   status: data.STATUS,
   message: data.MESSAGE,
@@ -267,9 +267,9 @@ return res.status(data.STATUS_CODE).json({
 });
 };
 
-exports.updateCompetencyForm = async (req, res) => {
+exports.updateCompetencyCertifcationLiftOperator = async (req, res) => {
 const { id } = req.params;
-const data = await FormsService.updateCompetencyForm(req, id);
+const data = await FormsService.updateCompetencyCertificationLiftOperator(req, id);
 return res.status(data.STATUS_CODE).json({
   status: data.STATUS,
   message: data.MESSAGE,
@@ -277,14 +277,14 @@ return res.status(data.STATUS_CODE).json({
 });
 };
 
-exports.deleteCompetencyForm = async (req, res) => {
-const { id } = req.params;
-const data = await FormsService.deleteCompetencyForm(id);
-return res.status(data.STATUS_CODE).json({
-  status: data.STATUS,
-  message: data.MESSAGE,
-});
-};
+// exports.deleteCompetencyCertifcationLiftOperator = async (req, res) => {
+// const { id } = req.params;
+// const data = await FormsService.deleteCompetencyCertifcationLiftOperator(id);
+// return res.status(data.STATUS_CODE).json({
+//   status: data.STATUS,
+//   message: data.MESSAGE,
+// });
+// };
 
 
 exports.createRenewalForm = async (req, res) => {

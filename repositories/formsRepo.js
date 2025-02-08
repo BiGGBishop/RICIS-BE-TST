@@ -187,8 +187,31 @@ exports.createBoilerRegistrationRepo = async (data) => {
     });
   };
 
-  //certififcation form boiler
+  exports.findCompetencyCertificationLiftFormById = async (id) => {
+    return CompetencyCertificationFormLiftOperator.findByPk(id);
+  }
 
+  exports.updateCompetencyCertificationLiftForm= async (id, data) => {
+    try {
+      const [updatedRows] = await CompetencyCertificationFormLiftOperator.update(data,{
+        where: { id: id },
+     } );
+     
+      if (updatedRows === 0) {
+        return null; // Indicate that the record was not found
+      }
+  
+      return await CompetencyCertificationFormLiftOperator.findByPk(id); 
+    } catch (error) {
+      console.error("Error updating cerification:", error);
+      throw error;
+    }
+  };
+
+
+  
+
+  //certififcation form boiler
   exports.createCompetencyCertificationFormBoiler = async (data) => {
     return CompetencyCertificationFormBoiler.create(data);
   };

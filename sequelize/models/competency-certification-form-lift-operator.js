@@ -80,10 +80,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "SET NULL",
       },
-      date_received: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
+      
       paymentStatus: {
         type: DataTypes.ENUM("unpaid", "paid"),
         defaultValue: "unpaid",
@@ -167,9 +164,7 @@ module.exports = (sequelize, DataTypes) => {
       training_organization_telephone: {
         type: DataTypes.STRING,
       },
-      training_organization_approval: {
-        type: DataTypes.STRING,
-      },
+     
       training_organization_email: {
         type: DataTypes.STRING,
       },

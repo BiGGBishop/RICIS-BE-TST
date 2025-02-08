@@ -539,8 +539,8 @@ exports.getAuthorizationTrainingById = async (id) => {
       };
   };
   
-  exports.getCompetencyFormByUserId = async (userId) => {
-      const competencyForms = await FormsRepo.findCompetencyFormByUserId(userId);
+  exports.getCompetencyCertificationLiftOperatorByUserId = async (userId) => {
+      const competencyForms = await FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId);
       return {
           STATUS_CODE: StatusCodes.OK,
           STATUS: true,
@@ -549,8 +549,8 @@ exports.getAuthorizationTrainingById = async (id) => {
       };
   };
   
-  exports.getCompetencyFormById = async (id) => {
-    const competencyForm = await FormsRepo.findCompetencyFormById(id);
+  exports.getCompetencyCertificationLiftOperatorFormById = async (id) => {
+    const competencyForm = await FormsRepo.findCompetencyCertificationLiftFormById(id);
     if (!competencyForm) {
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
@@ -566,7 +566,7 @@ exports.getAuthorizationTrainingById = async (id) => {
     };
   };
   
-  exports.updateCompetencyForm = async (req, id) => {
+  exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
     const userId = req?.user?.id;
     const userExist = await UserRepo.findUser({
       id: userId,
@@ -579,7 +579,7 @@ exports.getAuthorizationTrainingById = async (id) => {
         MESSAGE: "User not authenticated.",
       };
     }
-    const updatedCompetencyForm = await FormsRepo.updateCompetencyForm(id, req.body);
+    const updatedCompetencyForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, req.body);
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
@@ -588,24 +588,26 @@ exports.getAuthorizationTrainingById = async (id) => {
     };
   };
   
-  exports.deleteCompetencyForm = async (id) => {
-    const deletedCompetencyForm = await FormsRepo.deleteCompetencyForm(id);
-    if (deletedCompetencyForm === 0) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Competency form not found.",
-      };
-    }
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "Competency form deleted successfully.",
-    };
-  };
+  // exports.deleteCompetencyCertificationLiftOperator= async (id) => {
+  //   const deletedCompetencyForm = await FormsRepo.deleteCompetencyLiftOperator(id);
+  //   if (deletedCompetencyForm === 0) {
+  //     return {
+  //       STATUS_CODE: StatusCodes.NOT_FOUND,
+  //       STATUS: false,
+  //       MESSAGE: "Competency form not found.",
+  //     };
+  //   }
+  //   return {
+  //     STATUS_CODE: StatusCodes.OK,
+  //     STATUS: true,
+  //     MESSAGE: "Competency form deleted successfully.",
+  //   };
+  // };
   
    
 // New functions for RenewalForm
+
+
 exports.createRenewalForm = async (req) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({

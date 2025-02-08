@@ -189,6 +189,9 @@ module.exports = {
 			  } ,
 					date_of_issue: {
 				type:Sequelize.DATE
+			  },
+			  expiry_date: {
+				type:Sequelize.DATE
 			  }
 					,
 					experience_name_of_company:{

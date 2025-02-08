@@ -285,6 +285,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.TEXT,
 				allowNull: true,
 			},
+			training_organization_approval: {
+				type: DataTypes.TEXT,
+				allowNull: true,
+			},
 			employment_letter: {
 				type: DataTypes.TEXT,
 				allowNull: true,

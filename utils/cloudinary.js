@@ -16,6 +16,7 @@ async function uploadSingleFile(media) {
                 chunk_size: 6000000
             },);
             media = uploadedResponse.secure_url;
+            console.log(media)
             return media
         }else{
             throw new Error('No media provided');

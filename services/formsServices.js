@@ -661,10 +661,10 @@ exports.createRenewalForm = async (req) => {
     id: req.user?.id,
   });
   let {
-    
+    company_documentation,
+    supervisor_documentation,
     inspector_documentation,
-    documentation_available,
-    exemption_requested,
+    
     log_book,
     application_letter,
     personnel_leia,

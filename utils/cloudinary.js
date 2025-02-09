@@ -7,20 +7,25 @@ cloudinary.config({
 });
 
 async function uploadSingleFile(media) {
+    
     try{
-        if (media){
-            const uploadedResponse = await cloudinary.uploader.upload(media, {
-                public_id: "ricis",
-                resource_type: 'auto',
-                timeout: 600000,
-                chunk_size: 6000000
-            },);
-            media = uploadedResponse.secure_url;
-            console.log(media)
-            return media
-        }else{
-            throw new Error('No media provided');
+        if (!media){
+            return null;
         }
+        if (typeof media !== 'string') {
+            return null;
+        }
+        
+        const uploadedResponse = await cloudinary.uploader.upload(media, {
+            public_id: "ricis",
+            resource_type: 'auto',
+            timeout: 600000,
+            chunk_size: 6000000
+        },);
+        media = uploadedResponse.secure_url;
+        console.log(media)
+        return media
+
     }catch(error){
        
         console.error("Cloudinary upload error:", error);
@@ -29,7 +34,6 @@ async function uploadSingleFile(media) {
         
     
 }
-
 async function uploadMultiple(files) {
     if (!files || files.length === 0) {
         return [];

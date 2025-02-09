@@ -21,7 +21,7 @@ async function uploadSingleFile(media) {
             throw new Error('No media provided');
         }
     }catch(error){
-        cloudinary.uploader.destroy(user.media.split('/').pop().split('.')[0]);
+       
         console.error("Cloudinary upload error:", error);
         throw error;
     }

@@ -6,7 +6,24 @@ module.exports = (sequelize, DataTypes) => {
 			BoilerRegistration.belongsTo(models.User, {
 				foreignKey: "user_id",
 				as: "user",
-			});
+			  });
+		  BoilerRegistration.belongsTo(models.Classification, {
+			foreignKey: "classificationId",
+			as: "classification",
+		  });
+		  BoilerRegistration.belongsTo(models.Categories, {
+			foreignKey: "categoryId",
+			as: "category",
+		});
+		BoilerRegistration.belongsTo(models.SubCategories, {
+			foreignKey: "subcategoryId",
+			as: "subcategory",
+		});
+	  
+		BoilerRegistration.belongsTo(models.Fee, {
+			foreignKey: "feeId",
+			as: "fee",
+		});
 		}
 	}
 
@@ -31,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
 						},
 						onDelete: 'SET NULL',	
 					},
-					subcategoryId:{
+			subcategoryId:{
 						type: DataTypes.INTEGER,
 						allowNull: true,
 						references: {
@@ -41,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
 						onDelete: 'SET NULL',
 						
 					},
-					classificationId:{
+				classificationId:{
 						type: DataTypes.INTEGER,
 						allowNull: true,
 						references: {
@@ -50,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
 						},
 						onDelete: 'SET NULL',
 					},
-					feeId:{
+				feeId:{
 						type: DataTypes.INTEGER,
 						allowNull: true,
 						references: {
@@ -59,16 +76,16 @@ module.exports = (sequelize, DataTypes) => {
 						},
 						onDelete: 'SET NULL',
 					},
-					date_received: {
+			date_received: {
 					  type:  DataTypes.DATE,
 					  allowNull: true
 					},
-					paymentStatus: {
+				paymentStatus: {
 					  type: DataTypes.ENUM("unpaid", "paid"),
 					  defaultValue:"unpaid"
 					   
 					  },
-					  appStatus: {
+				appStatus: {
 					  type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
 					   defaultValue:"pending"
 					  },

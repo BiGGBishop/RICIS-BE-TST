@@ -1356,8 +1356,9 @@ exports.getAllUsersForms = async (req) => {
                 { model: Categories, as: 'category', attributes: ['name'] },
                 { model: SubCategories, as: 'subcategory', attributes: ['name'] },
                 { model: Fee, as: 'fee', attributes: ['fee_type'] },
-              ],     
+              ],    
             }),
+
             FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId,{
               include: [
                 {
@@ -1375,108 +1376,108 @@ exports.getAllUsersForms = async (req) => {
                 { model: Fee, as: 'fee', attributes: ['fee_type'] },
               ],     
             }),
-          //  FormsRepo.findByUserIdOperatorCertificationsByUserId(userId,{
-          //     include: [
-          //       {
-          //         model: Classification,
-          //         as: "classification",
-          //         attributes: ["id", "classification_name"],
-          //         include: {
-          //           model: ClassificationFees,
-          //           as: "classificationFees", // Changed alias to match the association
-          //           attributes: ["amount"],
-          //         },
-          //       },
-          //       { model: Categories, as: 'category', attributes: ['name'] },
-          //       { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-          //       { model: Fee, as: 'fee', attributes: ['fee_type'] },
-          //     ],     
-          //   }),
-          //  FormsRepo.findCompetencyCertificationLiftingByUserId(userId,{
-          //     include: [
-          //       {
-          //         model: Classification,
-          //         as: "classification",
-          //         attributes: ["id", "classification_name"],
-          //         include: {
-          //           model: ClassificationFees,
-          //           as: "classificationFees", // Changed alias to match the association
-          //           attributes: ["amount"],
-          //         },
-          //       },
-          //       { model: Categories, as: 'category', attributes: ['name'] },
-          //       { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-          //       { model: Fee, as: 'fee', attributes: ['fee_type'] },
-          //     ],     
-          //   }),
-          //   FormsRepo.findCompetencyCertificationInspectionByUserId(userId,{
-          //     include: [
-          //       {
-          //         model: Classification,
-          //         as: "classification",
-          //         attributes: ["id", "classification_name"],
-          //         include: {
-          //           model: ClassificationFees,
-          //           as: "classificationFees", // Changed alias to match the association
-          //           attributes: ["amount"],
-          //         },
-          //       },
-          //       { model: Categories, as: 'category', attributes: ['name'] },
-          //       { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-          //       { model: Fee, as: 'fee', attributes: ['fee_type'] },
-          //     ],     
-          //   }),
-            // FormsRepo.findCompetencyCertificationWelderByUserId(userId,{
-            //   include: [
-            //     {
-            //       model: Classification,
-            //       as: "classification",
-            //       attributes: ["id", "classification_name"],
-            //       include: {
-            //         model: ClassificationFees,
-            //         as: "classificationFees", // Changed alias to match the association
-            //         attributes: ["amount"],
-            //       },
-            //     },
-            //     { model: Categories, as: 'category', attributes: ['name'] },
-            //     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-            //     { model: Fee, as: 'fee', attributes: ['fee_type'] },
-            //   ],     
-            // }),
-            // FormsRepo.findRenewalFormsById(userId,{
-            //   include: [
-            //     {
-            //       model: Classification,
-            //       as: "classification",
-            //       attributes: ["id", "classification_name"],
-            //       include: {
-            //         model: ClassificationFees,
-            //         as: "classificationFees", // Changed alias to match the association
-            //         attributes: ["amount"],
-            //       },
-            //     },
-            //     { model: Categories, as: 'category', attributes: ['name'] },
-            //     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-            //     { model: Fee, as: 'fee', attributes: ['fee_type'] },
-            //   ],     
-            // }),
-            // FormsRepo.findByUserIdLiftingEquipmentRegistration(userId,{
-            //   include: [
-            //     {
-            //       model: Classification,
-            //       as: "classification",
-            //       attributes: ["id", "classification_name"],
-            //       include: {
-            //         model: ClassificationFees,
-            //         as: "classificationFees", // Changed alias to match the association
-            //         attributes: ["amount"],
-            //       },
-            //     },
-            //     { model: Categories, as: 'category', attributes: ['name'] },
-            //     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-            //     { model: Fee, as: 'fee', attributes: ['fee_type'] },
-            //   ],     
-            // }),                                     
+           FormsRepo.findByUserIdOperatorCertificationsByUserId(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),
+           FormsRepo.findCompetencyCertificationLiftingByUserId(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),
+            FormsRepo.findCompetencyCertificationInspectionByUserId(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),
+            FormsRepo.findCompetencyCertificationWelderByUserId(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),
+            FormsRepo.findRenewalFormsById(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),
+            FormsRepo.findByUserIdLiftingEquipmentRegistration(userId,{
+              include: [
+                {
+                  model: Classification,
+                  as: "classification",
+                  attributes: ["id", "classification_name"],
+                  include: {
+                    model: ClassificationFees,
+                    as: "classificationFees", // Changed alias to match the association
+                    attributes: ["amount"],
+                  },
+                },
+                { model: Categories, as: 'category', attributes: ['name'] },
+                { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+                { model: Fee, as: 'fee', attributes: ['fee_type'] },
+              ],     
+            }),                                     
           
       ]);
       const userForms = results.map((forms) => forms || []);

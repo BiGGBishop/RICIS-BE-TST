@@ -167,10 +167,10 @@ exports.createBoilerRegistrationRepo = async (data) => {
       return await BoilerRegistration.findAll();
   };
   
-  exports.findByUserIdBoilerRegistrationRepos = async (userId, options =  {}) => {
-      return  BoilerRegistration.findAll({ where: { user_id: userId,
+  exports.findByUserIdBoilerRegistrationRepos = async (userId, options={}) => {
+      return  await BoilerRegistration.findAll({ where: { user_id: userId},
         ...options
-       } });
+       });
   };
 
   exports.updateBoilerRegistration = async(id,data)=>{

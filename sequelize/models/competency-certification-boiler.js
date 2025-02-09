@@ -4,10 +4,26 @@ module.exports = (sequelize, DataTypes) => {
 	class CompetencyCertificationFormBoiler extends Model {
 		static associate(models) {
      
-      CompetencyCertificationFormBoiler.belongsTo(models.User, {
-				foreignKey: "user_id", 
-				as: "user", 
-			});
+			CompetencyCertificationFormBoiler.belongsTo(models.User, {
+				foreignKey: "user_id",
+				as: "user",
+			  });
+			  CompetencyCertificationFormBoiler.belongsTo(models.Fee, {
+				foreignKey: "feeId",
+				as: "fee",
+			  });
+			  CompetencyCertificationFormBoiler.belongsTo(models.Classification, {
+				foreignKey: "classificationId",
+				as: "classification",
+			  });
+			  CompetencyCertificationFormBoiler.belongsTo(models.SubCategories, {
+				foreignKey: "subcategoryId",
+				as: "subcategory",
+			  });
+			  CompetencyCertificationFormBoiler.belongsTo(models.Categories, {
+				foreignKey: "categoryId",
+				as: "category",
+			  });
 		}
 	}
 

@@ -12,7 +12,8 @@ const {AuthorizedInspectorCertification} = require("../sequelize/models");
 const {CompetencyCertificationWelder} = require("../sequelize/models");
 const {LiftingEquipmentRegistration} = require("../sequelize/models");
 const {CompetencyCertificationFormLiftOperator}= require("../sequelize/models/");
-const {Report} = require ("../sequelize/models")
+const {Report} = require ("../sequelize/models");
+const boilerregistration = require("../sequelize/models/boilerregistration");
 
 
 exports.create = async (data) => {
@@ -166,9 +167,32 @@ exports.createBoilerRegistrationRepo = async (data) => {
       return await BoilerRegistration.findAll();
   };
   
-  exports.findByUserIdBoilerRegistrationRepos = async (userId) => {
-      return  BoilerRegistration.findAll({ where: { user_id: userId } });
+  exports.findByUserIdBoilerRegistrationRepos = async (userId, options =  {}) => {
+      return  BoilerRegistration.findAll({ where: { user_id: userId,
+        ...options
+       } });
   };
+
+  exports.updateBoilerRegistration = async(id,data)=>{
+    try {
+      const [updatedRows] = await BoilerRegistration.update(data,{
+        where: { id: id },
+     } );
+     
+      if (updatedRows === 0) {
+        return null; // Indicate that the record was not found
+      }
+  
+      return await BoilerRegistration.findByPk(id); 
+    } catch (error) {
+      console.error("Error updating TrainingOrganizationForm:", error);
+      throw error;
+    }
+  };
+
+  exports.findBoilerRegistrationById = async (id) => {
+    return BoilerRegistration.findByPk(id);
+  }
 
 
   //competencyFormLiftOperationCertification
@@ -263,41 +287,34 @@ exports.createRenewalForm = async (data) => {
   }
 };
 
+
 exports.findAllRenewalForms = async () => {
-  try {
-    const response = await RenewalForm.findAll({
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'email', 'first_name', 'last_name'],
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
-    return response;
-  } catch (error) {
-    console.error("Error fetching renewal forms:", error);
-    throw error;
-  }
+  return RenewalForm.findAll();
+};
+exports.findRenewalFormsByUserId= async (userId,options = {}) => {
+  return await RenewalForm.findAll({
+    where: { user_id: userId },
+    ...options,
+  });
+};
+ 
+exports.findRenewalFormsById = async (id) => {
+  return RenewalForm.findByPk(id);
 };
 
-exports.findByUserIdRenewalForm = async (userId) => {
+exports.updateRenewalForms= async (id, data) => {
   try {
-    const response = await RenewalForm.findAll({
-      where: { userId: userId },
-      include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: ['id', 'email', 'first_name', 'last_name'],
-        },
-      ],
-      order: [['createdAt', 'DESC']],
-    });
-    return response;
+    const [updatedRows] = await RenewalForm.update(data,{
+      where: { id: id },
+   } );
+   
+    if (updatedRows === 0) {
+      return null; // Indicate that the record was not found
+    }
+
+    return await RenewalForm.findByPk(id); 
   } catch (error) {
-    console.error("Error fetching renewal forms by user ID:", error);
+    console.error("Error updating Renewal:", error);
     throw error;
   }
 };
@@ -417,7 +434,7 @@ exports.findCompetencyCertificationInspectionByUserId  = async (userId ,options 
   });
 };
 
-
+  
 exports.findCompetencyCertificationInspectionById  = async (id) => {
     return AuthorizedInspectorCertification.findByPk(id);
 };
@@ -434,7 +451,8 @@ exports.findAllCompetencyCertificationWelder = async () => {
 
 exports.findCompetencyCertificationWelderByUserId  = async (userId,options={}) => {
     return CompetencyCertificationWelder.findAll({ where: { user_id:userId },
-    ...options});
+    ...options,
+  });
 };
 
 exports.findCompetencyCertificationWelderById  = async (id) => {
@@ -486,7 +504,7 @@ exports.createLiftingEquipmentRegistration = async (data) => {
 };
 
 exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) => {
-  return await TrainingOrganizationForm.findAll({
+  return await LiftingEquipmentRegistration.findAll({
     where: { user_id: userId },
     ...options,
   });
@@ -495,6 +513,46 @@ exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) =
 exports.findAllLiftingEquipmentRegistration = async () => {
   return LiftingEquipmentRegistration.findAll();
 };
+
+
+exports.findLiftingEquipmentRegsitrationById = async (id) => {
+  return LiftingEquipmentRegistration.findByPk(id);
+};
+exports.updateLiftingEquipmentRegsitration= async (id, data) => {
+  console.log("Updating Lifting Equipment Registration with id:", id);
+  try{
+    const [updatedRows] = await LiftingEquipmentRegistration.update(data, {
+      where: { id },
+    });
+  if (updatedRows === 0) {
+    console.log(`No Lifting Equipment Registration with id: ${id}`);
+    return { success: false, message: "Record not found" };
+  }
+  
+  // Retry logic for fetching the updated record
+  let updatedRecord = null;
+  for (let i = 0; i < 3; i++) { 
+    updatedRecord = await LiftingEquipmentRegistration.findByPk(id);
+    if (updatedRecord) {
+      break; 
+    }
+    await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms before retrying
+  }
+
+  if (!updatedRecord) {
+    console.log(`Failed to retrieve updated record with id: ${id} after multiple retries`);
+    return { success: false, message: "Failed to retrieve updated record" };
+  }
+
+  console.log(`Successfully updated CompetencyCertificationWelder with id: ${id}`);
+  return { success: true, data: updatedRecord };
+}
+  catch (error) {
+    console.error("Error updating CompetencyCertificationInspection:", error);
+    return { success: false, message: "An error occurred while updating the record", error: error.message };
+  }
+};
+      
 
 
 //report functions

@@ -100,6 +100,8 @@ router.get(
   asyncHandler(formsController.getAuthorizationTrainingByUserId)
 );
 
+
+//boiler registration
 router.post(
   "/boiler-registration",
   authToken,
@@ -113,10 +115,23 @@ router.get(
 );
 
 router.get(
-    "/boiler-registration/:userId",
+    "/user-boiler-registration",
     authToken,
     asyncHandler(formsController.getBoilerRegistrationByUserId)
 );
+
+router.put(
+  "/update-br/:id",
+  authToken,
+  asyncHandler(formsController.updateBoilerRegistration)
+);
+
+router.get(
+  "/boiler-registration/:id",
+  authToken,
+  asyncHandler(formsController.getBoilerRegistrationById)
+);
+
 
 
 // Competency Certification Form Routes
@@ -175,13 +190,17 @@ router.put("/update-ccw/:id", authToken, asyncHandler(formsController.updateComp
 //renewal  
 router.post("/renewal-form", authToken, formsController.createRenewalForm);
 router.get("/renewal-form", authToken, formsController.getAllRenewalForms);
-router.get("/renewal-form/user", authToken, formsController.getRenewalFormByUserId);
+router.get("/user-renewal-form", authToken, formsController.getRenewalFormByUserId);
+router.get("/renewal-form/:id", authToken, formsController.getRenewalFormById);
+router.put("/update-rf/:id", authToken, formsController.updateRenewalForm);
 
 
 //lfting equpment reg
 router.post("/lifting-equipment-registration", authToken, formsController.createLiftingEquipmentRegistration);
 router.get("/lifting-equipment-registration", authToken, formsController.getAllLiftingEquipmentRegistration);
-router.get("/lifting-equipment-registration/user", authToken, formsController.getLiftingEquipmentRegistrationByUserId);
+router.get("/user-lifting-equipment-registration", authToken, formsController.getLiftingEquipmentRegistrationByUserId);
+router.get("/lifting-equipment-registration/:id", authToken, formsController.getLiftingEquipmentRegistrationById);
+router.put("/update-ler/:id", authToken, formsController.updateLiftingEquipmentRegistration);
 
 // Report Routes    
 router.post("/create-reports", authToken,asyncHandler(formsController.createReport));

@@ -424,7 +424,7 @@ exports.getAuthorizationTrainingById = async (id) => {
   };
 
   
-  exports.createBoilerRegistration = async (req) => {
+exports.createBoilerRegistration = async (req) => {
     const userId = req?.user?.id;
     const userExist = await UserRepo.findUser({ id: userId });
   
@@ -458,7 +458,7 @@ exports.getAuthorizationTrainingById = async (id) => {
     }
   };
   
-  exports.getAllBoilerRegistrations = async () => {
+exports.getAllBoilerRegistrations = async () => {
     try {
       const allRegistrations = await FormsRepo.findAllBoilerRegistrationRepos();
       return {
@@ -480,7 +480,7 @@ exports.getAuthorizationTrainingById = async (id) => {
   
   exports.getBoilerRegistrationsByUserId = async (userId) => {
       try {
-        const registrations = await FormsRepo.findBoilerRegistrationReposByUserId(userId);
+        const registrations = await FormsRepo.findByUserIdBoilerRegistrationRepos(userId);
         return {
           STATUS_CODE: StatusCodes.OK,
           STATUS: true,
@@ -497,7 +497,47 @@ exports.getAuthorizationTrainingById = async (id) => {
       }
     };
 
+    exports.getBoilerRegistrationsById = async (id) => {
+      const competencyForm = await FormsRepo.findBoilerRegistrationById(id);
+      if (!competencyForm) {
+        return {
+          STATUS_CODE: StatusCodes.NOT_FOUND,
+          STATUS: false,
+          MESSAGE: "boiler reigistartion form not found.",
+        };
+      }
+      return {
+        STATUS_CODE: StatusCodes.OK,
+        STATUS: true,
+        MESSAGE: "boiler registration form fetched successfully.",
+        DATA: competencyForm,
+      };
+    };
+    
+    exports.updateBoilerregistration = async (req, id) => {
+      const userId = req?.user?.id;
+      const userExist = await UserRepo.findUser({
+        id: userId,
+      });
+    
+      if (!userExist) {
+        return {
+          STATUS_CODE: StatusCodes.UNAUTHORIZED,
+          STATUS: false,
+          MESSAGE: "User not authenticated.",
+        };
+      }
+      const updatedCompetencyForm = await FormsRepo.updateBoilerRegistration(id, req.body);
+      return {
+        STATUS_CODE: StatusCodes.OK,
+        STATUS: true,
+        MESSAGE: "Competency form updated successfully.",
+        DATA: updatedCompetencyForm,
+      };
+    };
 
+
+    //competency from lift operator
  exports.createCompetencyFormLiftOperator = async (req) => {
   console.log("working..")
       const userId = req?.user?.id;
@@ -623,47 +663,9 @@ exports.createRenewalForm = async (req) => {
   }
 
   const data = {
-    userId: userId,
-    date_received: req.body.date_received,
-    form_number: req.body.form_number,
-    form_type: req.body.form_type,
-    equipment_registration: req.body.equipment_registration,
-    certificate_of_competence: req.body.certificate_of_competence,
-    certificate_of_authorization: req.body.certificate_of_authorization,
-    documentation_available: req.body.documentation_available,
-    exemption_requested: req.body.exemption_requested,
-    company_name: req.body.company_name,
-    company_address: req.body.company_address,
-    company_cac_registration_number: req.body.company_cac_registration_number,
-    year_of_commencement: req.body.year_of_commencement,
-    number_of_employees: req.body.number_of_employees,
-    nagobin_membership: req.body.nagobin_membership,
-    leia_membership: req.body.leia_membership,
-    other_memberships: req.body.other_memberships,
-    quality_certifications: req.body.quality_certifications,
-    previous_authorization_certificate_number:
-      req.body.previous_authorization_certificate_number,
-    previous_authorization_date_of_issue:
-      req.body.previous_authorization_date_of_issue,
-    previous_authorization_expiry_date:
-      req.body.previous_authorization_expiry_date,
-    renewal_reason: req.body.renewal_reason,
-    competence_category: req.body.competence_category,
-    competence_line_number: req.body.competence_line_number,
-    incidental_line_number: req.body.incidental_line_number,
-    contact_person_name: req.body.contact_person_name,
-    contact_person_email: req.body.contact_person_email,
-    contact_person_phone: req.body.contact_person_phone,
-    responsible_charge_name: req.body.responsible_charge_name,
-    declaration_date: req.body.declaration_date,
-    approval_category: req.body.approval_category,
-    approval_class: req.body.approval_class,
-    contractor_number: req.body.contractor_number,
-    director_of_factories: req.body.director_of_factories,
-    director_signature_date: req.body.director_signature_date,
-    uploaded_documents: await uploadMultiple(req.body.uploaded_documents),
-    is_draft: req.body.is_draft,
-  };
+    user_id: userId,
+    ...req.body
+  }
 
   try {
     const newRenewalForm = await FormsRepo.createRenewalForm(data);
@@ -704,7 +706,7 @@ exports.getAllRenewalForms = async () => {
 
 exports.getRenewalFormByUserId = async (userId) => {
   try {
-    const renewalForms = await FormsRepo.findRenewalFormByUserId(userId);
+    const renewalForms = await FormsRepo.findRenewalFormsByUserId(userId);
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
@@ -720,6 +722,48 @@ exports.getRenewalFormByUserId = async (userId) => {
     };
   }
 };
+
+ exports.getRenewalFormId = async (id) => {
+    const renewalForm = await FormsRepo.findRenewalFormsById(id);
+    if (!renewalForm) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Renewal form not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Renewal form fetched successfully.",
+      DATA:renewalForm,
+    };
+  };
+
+
+  exports.updateRenewalForm = async (req, id) => {
+    const userId = req?.user?.id;
+    const userExist = await UserRepo.findUser({
+      id: userId,
+    });
+  
+    if (!userExist) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+    const updatedRenewalForm = await FormsRepo.updateRenewalForms(id, req.body);
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency form updated successfully.",
+      DATA: updatedRenewalForm,
+    };
+  };
+  
+
 
 
 // New functions for OperatorCertification
@@ -1225,65 +1269,10 @@ exports.createLiftingEquipmentRegistration = async (req) => {
       MESSAGE: "User not authenticated.",
     };
   }
-
   const data = {
-    userId: userId,
-    date_received: req.body.date_received,
-    form_number: req.body.form_number,
-    type_of_installation: req.body.type_of_installation,
-    type_of_facility: req.body.type_of_facility,
-    object_use: req.body.object_use,
-    object_use_other: req.body.object_use_other,
-    installation_type: req.body.installation_type,
-    installation_start_date: req.body.installation_start_date,
-    installation_completion_date: req.body.installation_completion_date,
-    data_reports_available: req.body.data_reports_available,
-    variance_requested: req.body.variance_requested,
-    installer_name: req.body.installer_name,
-    installer_address: req.body.installer_address,
-    installer_authorization_number: req.body.installer_authorization_number,
-    installer_quality_certifications: req.body.installer_quality_certifications,
-    installer_contact_person: req.body.installer_contact_person,
-    installer_contact_telephone: req.body.installer_contact_telephone,
-    installer_contact_email: req.body.installer_contact_email,
-    owner_name: req.body.owner_name,
-    nature_of_facility: req.body.nature_of_facility,
-    factory_registration_number: req.body.factory_registration_number,
-    owner_location: req.body.owner_location,
-    owner_quality_certifications: req.body.owner_quality_certifications,
-    owner_contact_person: req.body.owner_contact_person,
-    owner_contact_telephone: req.body.owner_contact_telephone,
-    owner_contact_email: req.body.owner_contact_email,
-    manufacturer: req.body.manufacturer,
-    manufacture_year_and_place: req.body.manufacture_year_and_place,
-    code_of_construction: req.body.code_of_construction,
-    intended_use: req.body.intended_use,
-    equipment_condition: req.body.equipment_condition,
-    inspection_agency: req.body.inspection_agency,
-    inspection_authorization_number: req.body.inspection_authorization_number,
-    date_of_test: req.body.date_of_test,
-    tested_capacity: req.body.tested_capacity,
-    design_capacity: req.body.design_capacity,
-    swl: req.body.swl,
-    equipment_type: req.body.equipment_type,
-    equipment_distinctive_number: req.body.equipment_distinctive_number,
-    operating_environment: req.body.operating_environment,
-    equipment_category: req.body.equipment_category,
-    equipment_sub_category: req.body.equipment_sub_category,
-    equipment_classification: req.body.equipment_classification,
-    equipment_line_number: req.body.equipment_line_number,
-    equipment_incidental_number: req.body.equipment_incidental_number,
-    equipment_owner: req.body.equipment_owner,
-    responsible_charge_name: req.body.responsible_charge_name,
-    declaration_date: req.body.declaration_date,
-    application_category: req.body.application_category,
-    registered_number: req.body.registered_number,
-    director_of_factories: req.body.director_of_factories,
-    director_signature_date: req.body.director_signature_date,
-    uploaded_documents: req.body.uploaded_documents,
-    is_draft: req.body.is_draft || false,
-  };
-
+    user_id:userId,
+    ...req.body
+  }
   const newRegistration = await FormsRepo.createLiftingEquipmentRegistration(data);
 
   return {
@@ -1296,14 +1285,16 @@ exports.createLiftingEquipmentRegistration = async (req) => {
 
 
 exports.getLiftingEquipmentRegistrationByUserId = async (userId) => {
-  const registrations = await FormsRepo.findLiftingEquipmentRegistrationByUserId(userId);
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdLiftingEquipmentRegistration(userId);
+  console.log(registrations)
   return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       MESSAGE: "Lifting equipment registrations fetched successfully.",
       DATA: registrations,
   };
-};
+};                         
 
 exports.getAllLiftingEquipmentRegistration = async () => {
   const registrations = await FormsRepo.findAllLiftingEquipmentRegistration();
@@ -1313,6 +1304,56 @@ exports.getAllLiftingEquipmentRegistration = async () => {
       MESSAGE: "Lifting equipment registrations fetched successfully.",
       DATA: registrations,
   };
+};
+
+exports.updateLiftingEquipmentRegistration = async (req,id)=>{
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({
+    id: userId,
+  });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  
+  const updatedCertifications = await FormsRepo.updateLiftingEquipmentRegsitration(id, req.body);
+  console.log(updatedCertifications)
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Equipment registration updated successfully.",
+    DATA: updatedCertifications,
+};
+}
+
+exports.getLiftingEquipmentRegistrationById = async (id) => {
+  try {
+    const authorization = await FormsRepo.findLiftingEquipmentRegsitrationById(id);
+    if (!authorization) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "registration record not found.",
+      };
+    }
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "registration record fetched successfully.",
+      DATA: authorization,
+    };
+  } catch (error) {
+    console.error("Error in registration service:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to fetch competency",
+    };
+  }
 };
 
 

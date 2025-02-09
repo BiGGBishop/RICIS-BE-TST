@@ -7,6 +7,22 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "user_id",
         as: "user",
       });
+      AuthorizedInspectorCertification.belongsTo(models.Fee, {
+        foreignKey: "feeId",
+        as: "fee",
+      });
+      AuthorizedInspectorCertification.belongsTo(models.Classification, {
+        foreignKey: "classificationId",
+        as: "classification",
+      });
+      AuthorizedInspectorCertification.belongsTo(models.SubCategories, {
+        foreignKey: "subcategoryId",
+        as: "subcategory",
+      });
+      AuthorizedInspectorCertification.belongsTo(models.Categories, {
+        foreignKey: "categoryId",
+        as: "category",
+      });
     }
   }
 

@@ -6,7 +6,23 @@ module.exports = (sequelize, DataTypes) => {
 			CompetencyCertificationWelder.belongsTo(models.User, {
 				foreignKey: "user_id",
 				as: "user",
-			});
+			  });
+			  CompetencyCertificationWelder.belongsTo(models.Fee, {
+				foreignKey: "feeId",
+				as: "fee",
+			  });
+			  CompetencyCertificationWelder.belongsTo(models.Classification, {
+				foreignKey: "classificationId",
+				as: "classification",
+			  });
+			  CompetencyCertificationWelder.belongsTo(models.SubCategories, {
+				foreignKey: "subcategoryId",
+				as: "subcategory",
+			  });
+			  CompetencyCertificationWelder.belongsTo(models.Categories, {
+				foreignKey: "categoryId",
+				as: "category",
+			  });
 		}
 	}
 

@@ -3,12 +3,30 @@ const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
 	class OperatorCertification extends Model {
 		static associate(models) {
-      // Define associations here
+      // Define associations here if required in the future
       OperatorCertification.belongsTo(models.User, {
-				foreignKey: "user_id", // This will create the foreign key in the 'User' table
-				as: "user", // Alias for the association
-			});
-		}
+		foreignKey: "user_id", // This will create the foreign key in the 'User' table
+		as: "user", // Alias for the association
+	});       
+
+OperatorCertification.belongsTo(models.Categories, {
+	foreignKey: "categoryId",
+	as: "category",
+	});
+OperatorCertification.belongsTo(models.SubCategories, {
+		foreignKey: "subcategoryId",
+		as: "subcategory",
+	});
+OperatorCertification.belongsTo(models.Classification, {
+		foreignKey: "classificationId",
+		as: "classification",
+	});
+OperatorCertification.belongsTo(models.Fee, {
+		foreignKey: "feeId",
+		as: "fee",
+	});          
+} 
+				   
 	}
 
 	OperatorCertification.init(
@@ -91,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
 			),
 			certification_class: DataTypes.ENUM(
 				"Below 50 tons",
-				"51 – 100 tons",
+				"51 - 100 tons",
 				"Above 100 tons"
 			),
 			application_type: DataTypes.ENUM("New Application", "Re-Application"),

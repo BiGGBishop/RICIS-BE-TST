@@ -4,8 +4,24 @@ module.exports = (sequelize, DataTypes) => {
     class CompetencyCertificationLifting extends Model {
         static associate(models) {
           CompetencyCertificationLifting.belongsTo(models.User, {
-            foreignKey: 'user_id',
-            as: 'user',
+            foreignKey: "user_id",
+            as: "user",
+          });
+          CompetencyCertificationLifting.belongsTo(models.Fee, {
+            foreignKey: "feeId",
+            as: "fee",
+          });
+          CompetencyCertificationLifting.belongsTo(models.Classification, {
+            foreignKey: "classificationId",
+            as: "classification",
+          });
+          CompetencyCertificationLifting.belongsTo(models.SubCategories, {
+            foreignKey: "subcategoryId",
+            as: "subcategory",
+          });
+          CompetencyCertificationLifting.belongsTo(models.Categories, {
+            foreignKey: "categoryId",
+            as: "category",
           });
         
         }

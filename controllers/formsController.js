@@ -219,6 +219,31 @@ exports.getAllAuthorizationTraining = async (req, res) => {
       return res.status(200).json({ status: true, message: "Fetched successfully", data });
   };
 
+  exports.getBoilerRegistrationById = async (req, res) => {
+    const { id } = req.params;
+    const data = await FormsService.getBoilerRegistrationsById(id);
+    return res.status(data.STATUS_CODE).json(data);
+  };
+
+  exports.updateBoilerRegistration = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await FormsService.updateBoilerregistration(req, id);
+  
+      return res.status(data.STATUS_CODE).json({
+        status: data.STATUS,
+        message: data.MESSAGE,
+        data: data.DATA,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        status: false,
+        message: "Internal Server Error",
+      });
+    }
+  };
+
 
   // New functions for CompetencyCertificationForm
 exports.createCompetencyCertificationLiftOperator = async (req, res) => {
@@ -333,6 +358,21 @@ exports.getRenewalFormByUserId = async (req, res) => {
   }
 };
 
+exports.getRenewalFormById = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.getRenewalFormId(id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+exports.updateRenewalForm = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.updateRenewalForm(req, id);
+  res.status(response.STATUS_CODE).json(response);
+};
+
+
+
+//create operator certification
 exports.createOperatorCertification = async (req, res) => {
   const response = await FormsService.createOperatorCertification(req);
   res.status(response.STATUS_CODE).json(response);
@@ -587,6 +627,31 @@ exports.getAllLiftingEquipmentRegistration = async (req, res) => {
         });
     }
 };
+
+exports.updateLiftingEquipmentRegistration = async (req,res)=>{
+  const { id } = req.params;
+  const response = await FormsService.updateLiftingEquipmentRegistration(req, id);
+  console.log(response);
+  res.status(response.STATUS_CODE).json(response);
+}
+exports.getLiftingEquipmentRegistrationById = async (req, res) => {
+
+  const {id} = req.params
+  try {
+    const response = await FormsService.getLiftingEquipmentRegistrationById(id);
+    res.status(response.STATUS_CODE).json(response);
+  } catch (error) {
+    console.error("Error fetching equpment registration forms by ID:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching fetching equpment registration  forms by user ID",
+      });
+  }
+};
+
 
 //report controller logic
 // Report Controller Functions

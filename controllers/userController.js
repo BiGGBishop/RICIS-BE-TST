@@ -440,7 +440,7 @@ if(!userId){
                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
                  ],     
                }),
-               FormsRepo.findRenewalFormsById(userId,{
+               FormsRepo.findRenewalFormsByUserId(userId,{
                  include: [
                    {
                      model: Classification,

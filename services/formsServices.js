@@ -4,6 +4,8 @@ const AdminRepo = require("../repositories/adminRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
  
+
+//Authourization Approved
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
   const userExist = await UserRepo.findUser({
@@ -99,7 +101,7 @@ exports.createAuthorizationApproved = async (req) => {
     MESSAGE: "An error occurred while creating authorization.",
   };
 };
-}        
+}     
 
 exports.getAllAuthorizationApproved = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
@@ -227,6 +229,8 @@ exports.getAClassifications = async (classId, userId) => {
   }
 };
 
+//Authorization Manufacfturer
+
 exports.createAuthorizationManufacturer = async (req) => {
   const userId = req?.user?.id;
 
@@ -265,10 +269,72 @@ exports.createAuthorizationManufacturer = async (req) => {
       MESSAGE: "Access denied. This action is restricted to users.",
     };
   }
-  const data = {
-    ...req.body,
-    user_id: userId,
-  }
+  let {
+    member_nagobin,
+  member_leia,
+  member_indt,
+    companyQualityManual,
+    operationalProcedures,
+    companyDocumentation,
+    documentationQuality,
+    designerDocumentation,
+    weldingDocumentation,
+    ndtDocumentation,
+    indtDocumentation,
+    isoCertification,
+    ...rest
+  } = req.body;
+  
+  // Upload files in parallel
+  try {
+    const [
+      member_nagobin_url,
+    member_leia_url,
+    member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+    ] = await Promise.all([
+      uploadSingleFile(member_nagobin),
+      uploadSingleFile(member_leia),
+      uploadSingleFile(member_indt),
+      uploadSingleFile(companyQualityManual),
+      uploadSingleFile(operationalProcedures),
+      uploadSingleFile(companyDocumentation),
+      uploadSingleFile(documentationQuality),
+      uploadSingleFile(designerDocumentation),
+      uploadSingleFile(weldingDocumentation),
+      uploadSingleFile(ndtDocumentation),
+      uploadSingleFile(indtDocumentation),
+      uploadSingleFile(isoCertification),
+    ]);
+  
+    
+  
+    const data = {
+      member_nagobin: member_nagobin_url,
+    member_leia: member_leia_url,
+    member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      user_id: userId,
+      ...rest,
+    };
+  
+
 
   const newAuthorizationManufacturer = await FormsRepo.createAuthorizationManufacturer(data);
 
@@ -278,7 +344,15 @@ exports.createAuthorizationManufacturer = async (req) => {
     MESSAGE: "Authorization successfully created.",
     DATA: newAuthorizationManufacturer,
   };
-};
+}catch(error){
+  console.error("Error creating authorization manufacturer:", error);
+  return {
+    STATUS_CODE: StatusCodes.SERVER_ERROR,
+    STATUS: false,
+    MESSAGE: "An error occurred while creating authorization manufacturer.",
+  };
+}
+}
 
 exports.getAllAuthorizationManufacturer = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationManufacturer();

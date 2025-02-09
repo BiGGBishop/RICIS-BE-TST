@@ -140,7 +140,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			year_of_commencing_business: {
-				type: DataTypes.STRING,
+				type: DataTypes.DATE,
 				allowNull: true,
 			  },
 			  number_of_employees: {
@@ -160,11 +160,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			  date_of_issue: {
-				type: DataTypes.STRING, // Consider DATE if you want to store actual dates
+				type: DataTypes.DATE, 
 				allowNull: true,
 			  },
 			  expiring_date: {
-				type: DataTypes.STRING, // Consider DATE if you want to store actual dates
+				type: DataTypes.DATE, 
 				allowNull: true,
 			  },
 			  reason_for_renewal_reinstatement: {
@@ -211,11 +211,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			personnel_year_of_commencing_business: {
-				type: DataTypes.STRING,
+				type: DataTypes.DATE,
 				allowNull: true,
 			  },
 			  personnel_number_of_employees: {
-				type: DataTypes.STRING, // Consider INTEGER if it's strictly a number
+				type: DataTypes.STRING,
 				allowNull: true,
 			  },
 			 personnel_membership_of_other_professional_bodies: {
@@ -231,11 +231,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			  personnel_date_of_issue: {
-				type: DataTypes.STRING, // Consider DATE if you want to store actual dates
+				type: DataTypes.DATE, 
 				allowNull: true,
 			  },
 			 personnel_expiring_date: {
-				type: DataTypes.STRING, // Consider DATE if you want to store actual dates
+				type: DataTypes.DATE, 
 				allowNull: true,
 			  },
 			  personnel_reason_for_renewal_reinstatement: {

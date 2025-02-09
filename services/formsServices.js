@@ -696,7 +696,7 @@ exports.createRenewalForm = async (req) => {
   }
 
   const data = {
-    documentation_available, exemption_requested,
+   
     company_documentation,
     supervisor_documentation,
     inspector_documentation,

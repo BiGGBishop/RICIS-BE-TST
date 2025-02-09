@@ -1369,6 +1369,10 @@ exports.createReport = async (req) => {
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
+  let {certificate_image} = req.body;
+
+  certificate_image = certificate_image?await uploadSingleFile(certificate_image): null
+  console.log(certificate_image)
   
   if (!userExist) {
     console.log("working")
@@ -1380,6 +1384,7 @@ exports.createReport = async (req) => {
   }
   const data = {
     ...req.body,
+    certificate_image,
     user_id: userId, // Or any other relevant data
   };
   const newReport = await FormsRepo.createReport(data);

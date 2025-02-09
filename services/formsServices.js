@@ -660,6 +660,34 @@ exports.createRenewalForm = async (req) => {
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
+  let {
+    company_documentation,
+    supervisor_documentation,
+    inspector_documentation,
+    documentation_available,
+    exemption_requested,
+    log_book,
+    application_letter,
+    personnel_leia,
+    personnel_nagobin,
+    company_leia,
+    company_nagobin
+  } = req.body;
+
+documentation_available = documentation_available ? await uploadSingleFile(documentation_available) : null;
+exemption_requested = exemption_requested ? await uploadSingleFile(exemption_requested) : null;
+  company_documentation = company_documentation ? await uploadSingleFile(company_documentation) : null;
+  supervisor_documentation = supervisor_documentation ? await uploadSingleFile(supervisor_documentation) : null;
+  inspector_documentation = inspector_documentation ? await uploadSingleFile(inspector_documentation) : null;
+  log_book = log_book ? await uploadSingleFile(log_book) : null;
+  application_letter = application_letter ? await uploadSingleFile(application_letter) : null;
+  personnel_leia = personnel_leia ? await uploadSingleFile(personnel_leia) : null;
+  personnel_nagobin = personnel_nagobin ? await uploadSingleFile(personnel_nagobin) : null;
+  company_leia = company_leia ? await uploadSingleFile(company_leia) : null;
+  company_nagobin = company_nagobin ? await uploadSingleFile(company_nagobin) : null;
+
+
+  
 
   if (!userExist) {
     return {
@@ -670,6 +698,16 @@ exports.createRenewalForm = async (req) => {
   }
 
   const data = {
+    documentation_available, exemption_requested,
+    company_documentation,
+    supervisor_documentation,
+    inspector_documentation,
+    log_book,
+    application_letter,
+    personnel_leia,
+    personnel_nagobin,
+    company_leia,
+    company_nagobin,
     user_id: userId,
     ...req.body
   }

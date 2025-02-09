@@ -9,6 +9,12 @@ exports.createAuthorizationApproved = async (req) => {
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
+  let {
+    companyQualityManual,
+    
+  } = req.body;
+  companyQualityManual = companyQualityManual ? await uploadSingleFile(companyQualityManual) : null;
+  console.log(companyQualityManual)
   
   if (!userExist) {
     return {
@@ -21,6 +27,7 @@ exports.createAuthorizationApproved = async (req) => {
   // Step 3: Save the AuthorizationApproved record
   const data = {
     ...req.body,
+    companyQualityManual,
     user_id: userId,
   };
 

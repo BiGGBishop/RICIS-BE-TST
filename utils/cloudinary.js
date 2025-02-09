@@ -6,25 +6,29 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-async function uploadSingleFile(file) {
-    console.log(file)
-    try {
-                const uploadedResponse = await cloudinary.uploader.upload(file, {
-                    public_id: "ricis",
-                    resource_type: 'auto',
-                    timeout: 600000,
-                    chunk_size: 6000000
-                }),
-                file = uploadedResponse.secure_url;
-                console.log(file)
-
-                return file;
-    
- } catch (error) {
-      console.error("Error uploading file to Cloudinary:", error);
-      return new Error("Failed to upload file");      
+async function uploadSingleFile(media) {
+    try{
+        if (media){
+            const uploadedResponse = await cloudinary.uploader.upload(media, {
+                public_id: "ricis",
+                resource_type: 'auto',
+                timeout: 600000,
+                chunk_size: 6000000
+            },);
+            media = uploadedResponse.secure_url;
+            return media
+        }else{
+            throw new Error('No media provided');
+        }
+    }catch(error){
+        cloudinary.uploader.destroy(user.media.split('/').pop().split('.')[0]);
+        console.error("Cloudinary upload error:", error);
+        throw error;
     }
-  };
+        
+    
+}
+
 async function uploadMultiple(files) {
     if (!files || files.length === 0) {
         return [];

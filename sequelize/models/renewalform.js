@@ -6,7 +6,23 @@ module.exports = (sequelize, DataTypes) => {
 			RenewalForm.belongsTo(models.User, {
 				foreignKey: "user_id",
 				as: "user",
-			});
+			  });
+			  RenewalForm.belongsTo(models.Fee, {
+				foreignKey: "feeId",
+				as: "fee",
+			  });
+			  RenewalForm.belongsTo(models.Classification, {
+				foreignKey: "classificationId",
+				as: "classification",
+			  });
+			  RenewalForm.belongsTo(models.SubCategories, {
+				foreignKey: "subcategoryId",
+				as: "subcategory",
+			  });
+			  RenewalForm.belongsTo(models.Categories, {
+				foreignKey: "categoryId",
+				as: "category",
+			  });
 		}
 	}
 
@@ -250,9 +266,23 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: true,
 			  },
-
+			  personnel_leia:{
+				type: DataTypes.TEXT,
+                allowNull: true,
+              },
+              personnel_nagobin:{
+				type: DataTypes.TEXT,
+                allowNull: true,
+              },
+			  company_leia:{
+				type: DataTypes.TEXT,
+                allowNull: true,
+              },
+              company_nagobin:{
+				type: DataTypes.TEXT,
+                allowNull: true,
+              },
 			  
-			
 			// Declaration
 			responsible_charge_name:{
 				type: DataTypes.STRING,

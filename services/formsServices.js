@@ -674,15 +674,15 @@ exports.createRenewalForm = async (req) => {
   } = req.body;
 
 
-  company_documentation = company_documentation ? await uploadSingleFile(company_documentation) : null;
-  supervisor_documentation = supervisor_documentation ? await uploadSingleFile(supervisor_documentation) : null;
-  inspector_documentation = inspector_documentation ? await uploadSingleFile(inspector_documentation) : null;
-  log_book = log_book ? await uploadSingleFile(log_book) : null;
-  application_letter = application_letter ? await uploadSingleFile(application_letter) : null;
-  personnel_leia = personnel_leia ? await uploadSingleFile(personnel_leia) : null;
-  personnel_nagobin = personnel_nagobin ? await uploadSingleFile(personnel_nagobin) : null;
-  company_leia = company_leia ? await uploadSingleFile(company_leia) : null;
-  company_nagobin = company_nagobin ? await uploadSingleFile(company_nagobin) : null;
+  company_documentation = await uploadSingleFile(company_documentation);
+  supervisor_documentation =  await uploadSingleFile(supervisor_documentation) ;
+  inspector_documentation =  await uploadSingleFile(inspector_documentation) ;
+  log_book =  await uploadSingleFile(log_book);
+  application_letter =  await uploadSingleFile(application_letter) ;
+  personnel_leia =  await uploadSingleFile(personnel_leia);
+  personnel_nagobin = await uploadSingleFile(personnel_nagobin) ;
+  company_leia = await uploadSingleFile(company_leia);
+  company_nagobin = await uploadSingleFile(company_nagobin);
 
 
   

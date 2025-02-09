@@ -457,10 +457,72 @@ exports.createTrainingAuthorization = async (req) => {
     };
   }
 
-  const data = {
-    ...req.body,
-    user_id: userId,
-  }
+  // Upload files in parallel
+  try {
+    let {
+      member_nagobin,
+    member_leia,
+    member_indt,
+      companyQualityManual,
+      operationalProcedures,
+      companyDocumentation,
+      documentationQuality,
+      designerDocumentation,
+      weldingDocumentation,
+      ndtDocumentation,
+      indtDocumentation,
+      isoCertification,
+      ...rest
+    } = req.body;
+    
+    const [
+      member_nagobin_url,
+    member_leia_url,
+    member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+    ] = await Promise.all([
+      uploadSingleFile(member_nagobin),
+      uploadSingleFile(member_leia),
+      uploadSingleFile(member_indt),
+      uploadSingleFile(companyQualityManual),
+      uploadSingleFile(operationalProcedures),
+      uploadSingleFile(companyDocumentation),
+      uploadSingleFile(documentationQuality),
+      uploadSingleFile(designerDocumentation),
+      uploadSingleFile(weldingDocumentation),
+      uploadSingleFile(ndtDocumentation),
+      uploadSingleFile(indtDocumentation),
+      uploadSingleFile(isoCertification),
+    ]);
+  
+    
+  
+    const data = {
+      member_nagobin: member_nagobin_url,
+    member_leia: member_leia_url,
+    member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      user_id: userId,
+      ...rest,
+    };
+  
+
 
   const newTrainingAuthorization = await FormsRepo.createTrainingAuthorization(data);
 
@@ -470,7 +532,15 @@ exports.createTrainingAuthorization = async (req) => {
     MESSAGE: "Training authorization created successfully.",
     DATA: newTrainingAuthorization,
   };
-};
+}catch(error){
+  console.error("Error creating training authorization:", error);
+  return {
+    STATUS_CODE: StatusCodes.SERVER_ERROR,
+    STATUS: false,
+    MESSAGE: "An error occurred while creating training authorization.",
+  };
+}
+}
 
 exports.getAllAuthorizationTraining = async () => {
     const allAuthorizations = await FormsRepo.findAllTrainingAuthorization();

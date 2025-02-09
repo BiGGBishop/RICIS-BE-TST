@@ -7,12 +7,19 @@ cloudinary.config({
 });
 
 async function uploadSingleFile(media) {
+    function isValidDataURI(str) {
+        return typeof str === 'string' && str.startsWith('data:');
+    }
     
     try{
         if (!media){
             return null;
         }
-        if (typeof media !== 'string') {
+        if (typeof media !== 'string' ) {
+            return null;
+        }
+        if (!isValidDataURI(media)) {
+            console.log("Invalid file format or path");
             return null;
         }
         

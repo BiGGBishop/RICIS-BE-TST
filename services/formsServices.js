@@ -10,28 +10,77 @@ exports.createAuthorizationApproved = async (req) => {
     id: req.user?.id,
   });
   let {
+    member_nagobin,
+  member_leia,
+  member_indt,
     companyQualityManual,
-    
+    operationalProcedures,
+    companyDocumentation,
+    documentationQuality,
+    designerDocumentation,
+    weldingDocumentation,
+    ndtDocumentation,
+    indtDocumentation,
+    isoCertification,
+    ...rest
   } = req.body;
-  companyQualityManual = companyQualityManual ? await uploadSingleFile(companyQualityManual) : null;
-  console.log(companyQualityManual)
   
-  if (!userExist) {
-    return {
-      STATUS_CODE: StatusCodes.UNAUTHORIZED,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
+  // Upload files in parallel
+  try {
+    const [
+      member_nagobin_url,
+    member_leia_url,
+    member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+    ] = await Promise.all([
+      uploadSingleFile(member_nagobin),
+      uploadSingleFile(member_leia),
+      uploadSingleFile(member_indt),
+      uploadSingleFile(companyQualityManual),
+      uploadSingleFile(operationalProcedures),
+      uploadSingleFile(companyDocumentation),
+      uploadSingleFile(documentationQuality),
+      uploadSingleFile(designerDocumentation),
+      uploadSingleFile(weldingDocumentation),
+      uploadSingleFile(ndtDocumentation),
+      uploadSingleFile(indtDocumentation),
+      uploadSingleFile(isoCertification),
+    ]);
+  
+    if (!userExist) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+  
+    const data = {
+      member_nagobin: member_nagobin_url,
+    member_leia: member_leia_url,
+    member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      user_id: userId,
+      ...rest,
     };
-  }
-
-  // Step 3: Save the AuthorizationApproved record
-  const data = {
-    ...req.body,
-    companyQualityManual,
-    user_id: userId,
-  };
-
-  console.log(data)
+  
+  
 
   const newAuthorizationSubmit = await FormsRepo.create(data);
   console.log("new submit",newAuthorizationSubmit)
@@ -42,7 +91,15 @@ exports.createAuthorizationApproved = async (req) => {
     MESSAGE: "Authorization successfully created.",
     DATA: newAuthorizationSubmit,
   };
-};        
+}catch(error){
+  console.error("Error creating authorization:", error);
+  return {
+    STATUS_CODE: StatusCodes.SERVER_ERROR,
+    STATUS: false,
+    MESSAGE: "An error occurred while creating authorization.",
+  };
+};
+}        
 
 exports.getAllAuthorizationApproved = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();

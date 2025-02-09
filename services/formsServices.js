@@ -661,8 +661,7 @@ exports.createRenewalForm = async (req) => {
     id: req.user?.id,
   });
   let {
-    company_documentation,
-    supervisor_documentation,
+    
     inspector_documentation,
     documentation_available,
     exemption_requested,
@@ -674,8 +673,7 @@ exports.createRenewalForm = async (req) => {
     company_nagobin
   } = req.body;
 
-documentation_available = documentation_available ? await uploadSingleFile(documentation_available) : null;
-exemption_requested = exemption_requested ? await uploadSingleFile(exemption_requested) : null;
+
   company_documentation = company_documentation ? await uploadSingleFile(company_documentation) : null;
   supervisor_documentation = supervisor_documentation ? await uploadSingleFile(supervisor_documentation) : null;
   inspector_documentation = inspector_documentation ? await uploadSingleFile(inspector_documentation) : null;

@@ -660,43 +660,8 @@ exports.createRenewalForm = async (req) => {
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
   });
+
   let {
-    company_documentation,
-    supervisor_documentation,
-    inspector_documentation,
-    
-    log_book,
-    application_letter,
-    personnel_leia,
-    personnel_nagobin,
-    company_leia,
-    company_nagobin
-  } = req.body;
-
-
-  company_documentation = await uploadSingleFile(company_documentation);
-  supervisor_documentation =  await uploadSingleFile(supervisor_documentation) ;
-  inspector_documentation =  await uploadSingleFile(inspector_documentation) ;
-  log_book =  await uploadSingleFile(log_book);
-  application_letter =  await uploadSingleFile(application_letter) ;
-  personnel_leia =  await uploadSingleFile(personnel_leia);
-  personnel_nagobin = await uploadSingleFile(personnel_nagobin) ;
-  company_leia = await uploadSingleFile(company_leia);
-  company_nagobin = await uploadSingleFile(company_nagobin);
-
-
-  
-
-  if (!userExist) {
-    return {
-      STATUS_CODE: StatusCodes.UNAUTHORIZED,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
-    };
-  }
-
-  const data = {
-   
     company_documentation,
     supervisor_documentation,
     inspector_documentation,
@@ -706,11 +671,55 @@ exports.createRenewalForm = async (req) => {
     personnel_nagobin,
     company_leia,
     company_nagobin,
-    user_id: userId,
-    ...req.body
-  }
+     ...rest
+  } = req.body;
 
+  // Upload files in parallel
   try {
+    const [
+      company_documentation_url,
+      supervisor_documentation_url,
+      inspector_documentation_url,
+      log_book_url,
+      application_letter_url,
+      personnel_leia_url,
+      personnel_nagobin_url,
+      company_leia_url,
+      company_nagobin_url,
+    ] = await Promise.all([
+      uploadSingleFile(company_documentation),
+      uploadSingleFile(supervisor_documentation),
+      uploadSingleFile(inspector_documentation),
+      uploadSingleFile(log_book),
+      uploadSingleFile(application_letter),
+      uploadSingleFile(personnel_leia),
+      uploadSingleFile(personnel_nagobin),
+      uploadSingleFile(company_leia),
+      uploadSingleFile(company_nagobin),
+    ]);
+
+    if (!userExist) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+
+    const data = {
+      company_documentation: company_documentation_url,
+      supervisor_documentation: supervisor_documentation_url,
+      inspector_documentation: inspector_documentation_url,
+      log_book: log_book_url,
+      application_letter: application_letter_url,
+      personnel_leia: personnel_leia_url,
+      personnel_nagobin: personnel_nagobin_url,
+      company_leia: company_leia_url,
+      company_nagobin: company_nagobin_url,
+      user_id: userId,
+     ...rest,
+    };
+
     const newRenewalForm = await FormsRepo.createRenewalForm(data);
     return {
       STATUS_CODE: StatusCodes.CREATED,

@@ -1,12 +1,18 @@
 const FormsRepo = require("../repositories/formsRepo");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
-const {AuthorizationApproved} = require("../sequelize/models")
+const {Feedback} = require("../sequelize/models")
 const StatusCodes = require("../utils/statusCodes");
+const {User} = require("../sequelize/models")
 const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
  
 
 //Authourization Approved
+
+exports.getAuthorizationApprovedByUserId = async (userId) => {
+  return FormsRepo.findByUserIdAuthorizationApproved(userId);
+};
+
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
   const userExist = await UserRepo.findUser({
@@ -108,7 +114,6 @@ exports.createAuthorizationApproved = async (req) => {
   };
 };
 }     
-
 
 exports.updateAuthorizationApproved = async (req, id) => {
   const userId = req?.user?.id;
@@ -224,7 +229,6 @@ exports.updateAuthorizationApproved = async (req, id) => {
   }
 };
 
-
 exports.getAllAuthorizationApproved = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
 
@@ -235,7 +239,6 @@ exports.getAllAuthorizationApproved = async () => {
     DATA: allAuthorizations,
   }; 
 };
-
 
 exports.getAuthorizationApprovedById = async (id) => {
   try {
@@ -2848,8 +2851,7 @@ exports.getReportId = async (req)=> {
   }
 };
 
-
-// for user
+//user
 exports.updateUserReport = async (req) => {
   const userExist = await UserRepo.findUser({
     id: req.user?.id,
@@ -2977,3 +2979,91 @@ exports.updateReport = async (req) => {
 exports.deleteReport = async (id) => {
   return FormsRepo.deleteReport(id);
 };
+
+exports.createFeedback = async (feedbackData, userId) => {
+  const userExist = await UserRepo.findUser({ id: userId });
+  if (!userExist) {
+    return {
+      STATUS_CODE: 401,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+  //check user role
+  const role = await UserRepo.findRole({ id: userId });
+  try {
+    const { formId, formType, message } = feedbackData;
+    if (role?.name === "user") {
+      const newFeedback = await Feedback.create({
+        userId: userId, 
+        formId: formId,
+        formType: formType,
+        message: message,
+        isAdmin: false, 
+      });
+      return {
+        STATUS_CODE: 201,
+        STATUS: true,
+        MESSAGE: "Feedback created successfully",
+        DATA: newFeedback,
+      };
+    }else{
+      const newFeedback = await Feedback.create({
+        userId: userId, 
+        formId: formId,
+        formType: formType,
+        message: message,
+        isAdmin: true, 
+      });
+      
+      return {
+        STATUS_CODE: 201,
+        STATUS: true,
+        MESSAGE: "Feedback created successfully",
+        DATA: newFeedback,
+      };
+    }
+  } catch (error) {
+    console.error("Error creating feedback:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Error creating feedback",
+    };
+  }
+};
+
+
+exports.getFeedback = async (formType, formId) => {
+  try {
+    const feedback = await Feedback.findAll({
+      where: {
+        formId: formId,
+        formType: formType,
+      },
+      include: [
+        {
+          model:User,
+          as: "user",
+          attributes: ["id", "email", "first_name", "last_name"],
+        },
+      ],
+      order: [["createdAt", "ASC"]],
+    });
+    return {
+      STATUS_CODE: 200,
+      STATUS: true,
+      MESSAGE: "Feedback retrieved successfully",
+      DATA: feedback,
+    };
+  } catch (error) {
+    console.error("Error retrieving feedback:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Error retrieving feedback",
+    };
+  }
+};
+
+//THE END

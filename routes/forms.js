@@ -212,4 +212,8 @@ router.put("/edit-reports/:id",authToken,  formsController.updateUserReport);
 router.delete("/reports/:id",authToken, 
    formsController.deleteReport);
 
+//Feedback
+router.post("/feedback", authToken, asyncHandler(formsController.createFeedback));
+router.get("/feedback/:formType/:formId", authToken, asyncHandler(formsController.getFeedback));
+
 module.exports = router;

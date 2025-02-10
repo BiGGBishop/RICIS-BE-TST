@@ -18,6 +18,12 @@ exports.createAuthorizationApproved = async (req, res) => {
 };
 
 
+exports.getAuthorizationApprovedById = async (req, res) => {
+  const { id } = req.params;
+  const data = await FormsService.getAuthorizationApprovedById(id);
+  return res.status(data.STATUS_CODE).json(data);
+};
+
 
 exports.getAllAuthorizationApproved = async (req, res) => {
   try {
@@ -47,6 +53,12 @@ exports.updateAuthorizationApproved = async (req, res) => {
   });
 };
 
+
+exports.getAuthorizationApprovedByUserId = async (req, res) => {
+  const { userId } = req.params;
+  const data = await FormsService.getAuthorizationApprovedByUserId(userId);
+  return res.status(200).json({ status: true, message: "Fetched successfully", data });
+};
 //get a classification
 
 exports.getAClassifications = async (req, res) => {
@@ -732,4 +744,15 @@ exports.deleteReport = async (req, res) => {
     console.error("Error in controller deleting report:", error);
     res.status(500).json({ message: "Failed to delete report", error: error.message });
   }
+};
+
+exports.createFeedback = async (req, res) => {
+  const data = await FormsService.createFeedback(req.body, req.user.id); 
+  return res.status(data.STATUS_CODE).json(data);
+};
+
+exports.getFeedback = async (req, res) => {
+  const { formType, formId } = req.params;
+  const data = await FormsService.getFeedback(formType, formId);
+  return res.status(data.STATUS_CODE).json(data);
 };

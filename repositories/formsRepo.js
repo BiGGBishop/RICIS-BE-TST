@@ -134,8 +134,8 @@ exports.findAllTrainingAuthorization = async () => {
 
   exports.updateTrainingAuthorization = async(id,data)=>{
     try {
-      const [updatedRows] = await TrainingOrganizationForm.update({data,
-        where: { id: id },
+      const [updatedRows] = await TrainingOrganizationForm.update(data,
+      {  where: { id: id },
       });
      
       if (updatedRows === 0) {

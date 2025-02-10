@@ -228,7 +228,7 @@ exports.getAllAuthorizationTraining = async (req, res) => {
   exports.updateBoilerRegistration = async (req, res) => {
     try {
       const { id } = req.params;
-      const data = await FormsService.updateBoilerregistration(req, id);
+      const data = await FormsService.updateBoilerRegistration(req, id);
   
       return res.status(data.STATUS_CODE).json({
         status: data.STATUS,

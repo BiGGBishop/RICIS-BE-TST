@@ -1,6 +1,7 @@
 const FormsRepo = require("../repositories/formsRepo");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
+const {AuthorizationApproved} = require("../sequelize/models")
 const StatusCodes = require("../utils/statusCodes");
 const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
  
@@ -24,9 +25,11 @@ exports.createAuthorizationApproved = async (req) => {
     ndtDocumentation,
     indtDocumentation,
     isoCertification,
+  
     ...rest
   } = req.body;
-  
+
+
   // Upload files in parallel
   try {
     const [
@@ -42,6 +45,7 @@ exports.createAuthorizationApproved = async (req) => {
       ndtDocumentationUrl,
       indtDocumentationUrl,
       isoCertificationUrl,
+  
     ] = await Promise.all([
       uploadSingleFile(member_nagobin),
       uploadSingleFile(member_leia),
@@ -55,6 +59,7 @@ exports.createAuthorizationApproved = async (req) => {
       uploadSingleFile(ndtDocumentation),
       uploadSingleFile(indtDocumentation),
       uploadSingleFile(isoCertification),
+
     ]);
   
     if (!userExist) {
@@ -78,6 +83,7 @@ exports.createAuthorizationApproved = async (req) => {
       ndtDocumentation: ndtDocumentationUrl,
       indtDocumentation: indtDocumentationUrl,
       isoCertification: isoCertificationUrl,
+     
       user_id: userId,
       ...rest,
     };
@@ -103,24 +109,11 @@ exports.createAuthorizationApproved = async (req) => {
 };
 }     
 
-exports.getAllAuthorizationApproved = async () => {
-  const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
-
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Authorizations fetched successfully.",
-    DATA: allAuthorizations,
-  }; 
-};
-
 
 exports.updateAuthorizationApproved = async (req, id) => {
   const userId = req?.user?.id;
 
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -131,18 +124,89 @@ exports.updateAuthorizationApproved = async (req, id) => {
   }
 
   try {
-    const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(
-      id,
-      req.body
-    );
-
-    if (!updatedAuthorization) {
+    // Fetch the existing authorization data
+    const existingAuthorization = await FormsRepo.findAuthorizationApprovedById(id);
+    if (!existingAuthorization) {
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
         MESSAGE: "Authorization not found.",
       };
     }
+
+    let {
+      member_nagobin,
+      member_leia,
+      member_indt,
+      companyQualityManual,
+      operationalProcedures,
+      companyDocumentation,
+      documentationQuality,
+      designerDocumentation,
+      weldingDocumentation,
+      ndtDocumentation,
+      indtDocumentation,
+      isoCertification,
+      certificate,
+      ...rest
+    } = req.body;
+
+    let certificate_image = certificate?.certificate_image;
+    let remain = { ...certificate };
+    delete remain.certificate_image;
+
+    
+    const [
+      member_nagobin_url,
+      member_leia_url,
+      member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+      certificate_image_url,
+    ] = await Promise.all([
+      member_nagobin ? uploadSingleFile(member_nagobin) : existingAuthorization.member_nagobin,
+      member_leia ? uploadSingleFile(member_leia) : existingAuthorization.member_leia,
+      member_indt ? uploadSingleFile(member_indt) : existingAuthorization.member_indt,
+      companyQualityManual ? uploadSingleFile(companyQualityManual) : existingAuthorization.companyQualityManual,
+      operationalProcedures ? uploadSingleFile(operationalProcedures) : existingAuthorization.operationalProcedures,
+      companyDocumentation ? uploadSingleFile(companyDocumentation) : existingAuthorization.companyDocumentation,
+      documentationQuality ? uploadSingleFile(documentationQuality) : existingAuthorization.documentationQuality,
+      designerDocumentation ? uploadSingleFile(designerDocumentation) : existingAuthorization.designerDocumentation,
+      weldingDocumentation ? uploadSingleFile(weldingDocumentation) : existingAuthorization.weldingDocumentation,
+      ndtDocumentation ? uploadSingleFile(ndtDocumentation) : existingAuthorization.ndtDocumentation,
+      indtDocumentation ? uploadSingleFile(indtDocumentation) : existingAuthorization.indtDocumentation,
+      isoCertification ? uploadSingleFile(isoCertification) : existingAuthorization.isoCertification,
+      certificate_image ? uploadSingleFile(certificate_image) : existingAuthorization.certificate?.certificate_image,
+    ]);
+
+    const updatedData = {
+      member_nagobin: member_nagobin_url,
+      member_leia: member_leia_url,
+      member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      certificate: {
+        certificate_image: certificate_image_url,
+        ...remain,
+      },
+      ...rest,
+    };
+
+    const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(id, updatedData);
 
     return {
       STATUS_CODE: StatusCodes.OK,
@@ -159,6 +223,19 @@ exports.updateAuthorizationApproved = async (req, id) => {
     };
   }
 };
+
+
+exports.getAllAuthorizationApproved = async () => {
+  const allAuthorizations = await FormsRepo.findAllAuthorizationApproved();
+
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Authorizations fetched successfully.",
+    DATA: allAuthorizations,
+  }; 
+};
+
 
 exports.getAuthorizationApprovedById = async (id) => {
   try {
@@ -282,12 +359,14 @@ exports.createAuthorizationManufacturer = async (req) => {
     ndtDocumentation,
     indtDocumentation,
     isoCertification,
+
     ...rest
   } = req.body;
-  
-  // Upload files in parallel
+ 
+
   try {
     const [
+    
       member_nagobin_url,
     member_leia_url,
     member_indt_url,
@@ -300,7 +379,9 @@ exports.createAuthorizationManufacturer = async (req) => {
       ndtDocumentationUrl,
       indtDocumentationUrl,
       isoCertificationUrl,
+      
     ] = await Promise.all([
+    
       uploadSingleFile(member_nagobin),
       uploadSingleFile(member_leia),
       uploadSingleFile(member_indt),
@@ -330,6 +411,8 @@ exports.createAuthorizationManufacturer = async (req) => {
       ndtDocumentation: ndtDocumentationUrl,
       indtDocumentation: indtDocumentationUrl,
       isoCertification: isoCertificationUrl,
+     
+
       user_id: userId,
       ...rest,
     };
@@ -353,6 +436,126 @@ exports.createAuthorizationManufacturer = async (req) => {
   };
 }
 }
+exports.updateAuthorizationManufacturer = async (req, id) => {
+  const userId = req?.user?.id;
+
+  if (!userId) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const existingAuthorization = await FormsRepo.findAuthorizationManufacturerById(id);
+
+  if (!existingAuthorization) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Authorization not found.",
+    };
+  }
+
+  let {
+    member_nagobin,
+    member_leia,
+    member_indt,
+    companyQualityManual,
+    operationalProcedures,
+    companyDocumentation,
+    documentationQuality,
+    designerDocumentation,
+    weldingDocumentation,
+    ndtDocumentation,
+    indtDocumentation,
+    isoCertification,
+    certificate,
+    ...rest
+  } = req.body;
+  let certificate_image = certificate?.certificate_image;
+  let remain = { ...certificate };
+  delete remain.certificate_image;
+
+  try {
+    const [
+      certificate_image_url,
+      member_nagobin_url,
+      member_leia_url,
+      member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+    ] = await Promise.all([
+      certificate_image ? uploadSingleFile(certificate_image) : existingAuthorization?.certificate?.certificate_image,
+      member_nagobin ? uploadSingleFile(member_nagobin) : existingAuthorization.member_nagobin,
+      member_leia ? uploadSingleFile(member_leia) : existingAuthorization.member_leia,
+      member_indt ? uploadSingleFile(member_indt) : existingAuthorization.member_indt,
+      companyQualityManual ? uploadSingleFile(companyQualityManual) : existingAuthorization.companyQualityManual,
+      operationalProcedures ? uploadSingleFile(operationalProcedures) : existingAuthorization.operationalProcedures,
+      companyDocumentation ? uploadSingleFile(companyDocumentation) : existingAuthorization.companyDocumentation,
+      documentationQuality ? uploadSingleFile(documentationQuality) : existingAuthorization.documentationQuality,
+      designerDocumentation ? uploadSingleFile(designerDocumentation) : existingAuthorization.designerDocumentation,
+      weldingDocumentation ? uploadSingleFile(weldingDocumentation) : existingAuthorization.weldingDocumentation,
+      ndtDocumentation ? uploadSingleFile(ndtDocumentation) : existingAuthorization.ndtDocumentation,
+      indtDocumentation ? uploadSingleFile(indtDocumentation) : existingAuthorization.indtDocumentation,
+      isoCertification ? uploadSingleFile(isoCertification) : existingAuthorization.isoCertification,
+    ]);
+
+    const data = {
+      member_nagobin: member_nagobin_url,
+      member_leia: member_leia_url,
+      member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      certificate: {
+        certificate_image: certificate_image_url,
+        ...remain,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedAuthorizationManufacturer = await FormsRepo.updateAuthorizationManufacturer(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorization successfully updated.",
+      DATA: updatedAuthorizationManufacturer,
+    };
+  } catch (error) {
+    console.error("Error updating authorization:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update authorization.",
+    };
+  }
+};
 
 exports.getAllAuthorizationManufacturer = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationManufacturer();
@@ -393,50 +596,7 @@ exports.getAuthorizationManufacturerById = async (id) => {
   }
 };
 
-exports.updateAuthorizationManufacturer = async (req, id) => {
-  const userId = req?.user?.id;
 
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
-
-  if (!userExist) {
-    return {
-      STATUS_CODE: StatusCodes.UNAUTHORIZED,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
-    };
-  }
-
-  try {
-    const updatedAuthorizationManufacturer = await FormsRepo.updateAuthorizationManufacturer(
-      id,
-      req.body
-    );
-
-    if (!updatedAuthorizationManufacturer) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Authorization not found.",
-      };
-    }
-
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "Authorization successfully updated.",
-      DATA: updatedAuthorizationManufacturer,
-    };
-  } catch (error) {
-    console.error("Error updating authorization:", error);
-    return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-      STATUS: false,
-      MESSAGE: "Failed to update authorization.",
-    };
-  }
-};
 
 exports.getAuthorizationManufacturerByUserId = async (userId) => {
   return FormsRepo.findByUserIdAuthorizationManufacturer(userId);
@@ -472,9 +632,10 @@ exports.createTrainingAuthorization = async (req) => {
       ndtDocumentation,
       indtDocumentation,
       isoCertification,
+     
       ...rest
     } = req.body;
-    
+
     const [
       member_nagobin_url,
     member_leia_url,
@@ -489,6 +650,7 @@ exports.createTrainingAuthorization = async (req) => {
       indtDocumentationUrl,
       isoCertificationUrl,
     ] = await Promise.all([
+
       uploadSingleFile(member_nagobin),
       uploadSingleFile(member_leia),
       uploadSingleFile(member_indt),
@@ -503,9 +665,9 @@ exports.createTrainingAuthorization = async (req) => {
       uploadSingleFile(isoCertification),
     ]);
   
-    
   
     const data = {
+      
       member_nagobin: member_nagobin_url,
     member_leia: member_leia_url,
     member_indt: member_indt_url,
@@ -542,25 +704,18 @@ exports.createTrainingAuthorization = async (req) => {
 }
 }
 
-exports.getAllAuthorizationTraining = async () => {
-    const allAuthorizations = await FormsRepo.findAllTrainingAuthorization();
-  
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "Authorizations fetched successfully.",
-      DATA: allAuthorizations,
-    };
-  };
-
-
-
-exports.updateAuthorizationTraining= async (req, id) => {
+exports.updateAuthorizationTraining = async (req, id) => {
   const userId = req?.user?.id;
 
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  if (!userId) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -570,19 +725,89 @@ exports.updateAuthorizationTraining= async (req, id) => {
     };
   }
 
-  try {
-    const updatedAuthorizationTraining = await FormsRepo.updateAuthorizationTraining(
-      id,
-      req.body
-    );
+  const existingAuthorization = await FormsRepo.findTrainingAuthorizationById(id);
 
-    if (!updatedAuthorizationTraining) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Authorization not found.",
-      };
-    }
+  if (!existingAuthorization) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Authorization not found.",
+    };
+  }
+
+  let {
+    member_nagobin,
+    member_leia,
+    member_indt,
+    companyQualityManual,
+    operationalProcedures,
+    companyDocumentation,
+    documentationQuality,
+    designerDocumentation,
+    weldingDocumentation,
+    ndtDocumentation,
+    indtDocumentation,
+    isoCertification,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let certificate_image = certificate?.certificate_image;
+  let remain = certificate ? { ...certificate } : {};
+
+  try {
+    const [
+      certificate_image_url,
+      member_nagobin_url,
+      member_leia_url,
+      member_indt_url,
+      companyQualityManualUrl,
+      operationalProceduresUrl,
+      companyDocumentationUrl,
+      documentationQualityUrl,
+      designerDocumentationUrl,
+      weldingDocumentationUrl,
+      ndtDocumentationUrl,
+      indtDocumentationUrl,
+      isoCertificationUrl,
+    ] = await Promise.all([
+      certificate_image ? uploadSingleFile(certificate_image) : existingAuthorization?.certificate?.certificate_image,
+      member_nagobin ? uploadSingleFile(member_nagobin) : existingAuthorization.member_nagobin,
+      member_leia ? uploadSingleFile(member_leia) : existingAuthorization.member_leia,
+      member_indt ? uploadSingleFile(member_indt) : existingAuthorization.member_indt,
+      companyQualityManual ? uploadSingleFile(companyQualityManual) : existingAuthorization.companyQualityManual,
+      operationalProcedures ? uploadSingleFile(operationalProcedures) : existingAuthorization.operationalProcedures,
+      companyDocumentation ? uploadSingleFile(companyDocumentation) : existingAuthorization.companyDocumentation,
+      documentationQuality ? uploadSingleFile(documentationQuality) : existingAuthorization.documentationQuality,
+      designerDocumentation ? uploadSingleFile(designerDocumentation) : existingAuthorization.designerDocumentation,
+      weldingDocumentation ? uploadSingleFile(weldingDocumentation) : existingAuthorization.weldingDocumentation,
+      ndtDocumentation ? uploadSingleFile(ndtDocumentation) : existingAuthorization.ndtDocumentation,
+      indtDocumentation ? uploadSingleFile(indtDocumentation) : existingAuthorization.indtDocumentation,
+      isoCertification ? uploadSingleFile(isoCertification) : existingAuthorization.isoCertification,
+    ]);
+
+    const data = {
+      member_nagobin: member_nagobin_url,
+      member_leia: member_leia_url,
+      member_indt: member_indt_url,
+      companyQualityManual: companyQualityManualUrl,
+      operationalProcedures: operationalProceduresUrl,
+      companyDocumentation: companyDocumentationUrl,
+      documentationQuality: documentationQualityUrl,
+      designerDocumentation: designerDocumentationUrl,
+      weldingDocumentation: weldingDocumentationUrl,
+      ndtDocumentation: ndtDocumentationUrl,
+      indtDocumentation: indtDocumentationUrl,
+      isoCertification: isoCertificationUrl,
+      certificate: {
+        certificate_image: certificate_image_url,
+        ...remain,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedAuthorizationTraining = await FormsRepo.updateTrainingAuthorization(id, data);
 
     return {
       STATUS_CODE: StatusCodes.OK,
@@ -599,6 +824,18 @@ exports.updateAuthorizationTraining= async (req, id) => {
     };
   }
 };
+
+
+exports.getAllAuthorizationTraining = async () => {
+    const allAuthorizations = await FormsRepo.findAllTrainingAuthorization();
+  
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Authorizations fetched successfully.",
+      DATA: allAuthorizations,
+    };
+  };
 
 
 exports.getAuthorizationTrainingById = async (id) => {
@@ -645,10 +882,54 @@ exports.createBoilerRegistration = async (req) => {
     }
   
     try {
+      let {
+        manufacturers_data_report,
+        construction_drawings,
+        design_calculation,
+        test_parameters_data,
+        accreditation_documents,
+        installation_plan,
+        quality_assurance_program,
+ 
+        ...rest
+      } = req.body;
+  
+     
+  
+      // Upload all files in parallel
+      const [
+        manufacturersDataReportUrl,
+        constructionDrawingsUrl,
+        designCalculationUrl,
+        testParametersDataUrl,
+        accreditationDocumentsUrl,
+        installationPlanUrl,
+        qualityAssuranceProgramUrl,
+ 
+      ] = await Promise.all([
+        uploadSingleFile(manufacturers_data_report),
+        uploadSingleFile(construction_drawings),
+        uploadSingleFile(design_calculation),
+        uploadSingleFile(test_parameters_data),
+        uploadSingleFile(accreditation_documents),
+        uploadSingleFile(installation_plan),
+        uploadSingleFile(quality_assurance_program),
+       
+      ]);
+  
       const data = {
-        ...req.body,
+        manufacturers_data_report: manufacturersDataReportUrl,
+        construction_drawings: constructionDrawingsUrl,
+        design_calculation: designCalculationUrl,
+        test_parameters_data: testParametersDataUrl,
+        accreditation_documents: accreditationDocumentsUrl,
+        installation_plan: installationPlanUrl,
+        quality_assurance_program: qualityAssuranceProgramUrl,
+      
         user_id: userId,
+        ...rest
       };
+  
       const newRegistration = await FormsRepo.createBoilerRegistrationRepo(data);
       return {
         STATUS_CODE: StatusCodes.CREATED,
@@ -722,11 +1003,18 @@ exports.getAllBoilerRegistrations = async () => {
       };
     };
     
-    exports.updateBoilerregistration = async (req, id) => {
+    exports.updateBoilerRegistration = async (req, id) => {
       const userId = req?.user?.id;
-      const userExist = await UserRepo.findUser({
-        id: userId,
-      });
+    
+      if (!userId) {
+        return {
+          STATUS_CODE: StatusCodes.UNAUTHORIZED,
+          STATUS: false,
+          MESSAGE: "User not authenticated.",
+        };
+      }
+    
+      const userExist = await UserRepo.findUser({ id: userId });
     
       if (!userExist) {
         return {
@@ -735,24 +1023,93 @@ exports.getAllBoilerRegistrations = async () => {
           MESSAGE: "User not authenticated.",
         };
       }
-      const updatedCompetencyForm = await FormsRepo.updateBoilerRegistration(id, req.body);
-      return {
-        STATUS_CODE: StatusCodes.OK,
-        STATUS: true,
-        MESSAGE: "Competency form updated successfully.",
-        DATA: updatedCompetencyForm,
-      };
+    
+      const existingRegistration = await FormsRepo.findBoilerRegistrationById(id);
+    
+      if (!existingRegistration) {
+        return {
+          STATUS_CODE: StatusCodes.NOT_FOUND,
+          STATUS: false,
+          MESSAGE: "Boiler registration not found.",
+        };
+      }
+    
+      let {
+        manufacturers_data_report,
+        construction_drawings,
+        design_calculation,
+        test_parameters_data,
+        accreditation_documents,
+        installation_plan,
+        quality_assurance_program,
+        certificate,
+        ...rest
+      } = req.body;
+    
+      let { certificate_image, ...certificateRest } = certificate || {};
+    
+      try {
+        const [
+          manufacturersDataReportUrl,
+          constructionDrawingsUrl,
+          designCalculationUrl,
+          testParametersDataUrl,
+          accreditationDocumentsUrl,
+          installationPlanUrl,
+          qualityAssuranceProgramUrl,
+          certificateImageUrl,
+        ] = await Promise.all([
+          manufacturers_data_report ? uploadSingleFile(manufacturers_data_report) : existingRegistration.manufacturers_data_report,
+          construction_drawings ? uploadSingleFile(construction_drawings) : existingRegistration.construction_drawings,
+          design_calculation ? uploadSingleFile(design_calculation) : existingRegistration.design_calculation,
+          test_parameters_data ? uploadSingleFile(test_parameters_data) : existingRegistration.test_parameters_data,
+          accreditation_documents ? uploadSingleFile(accreditation_documents) : existingRegistration.accreditation_documents,
+          installation_plan ? uploadSingleFile(installation_plan) : existingRegistration.installation_plan,
+          quality_assurance_program ? uploadSingleFile(quality_assurance_program) : existingRegistration.quality_assurance_program,
+          certificate_image ? uploadSingleFile(certificate_image) : existingRegistration.certificate?.certificate_image,
+        ]);
+    
+        const data = {
+          manufacturers_data_report: manufacturersDataReportUrl,
+          construction_drawings: constructionDrawingsUrl,
+          design_calculation: designCalculationUrl,
+          test_parameters_data: testParametersDataUrl,
+          accreditation_documents: accreditationDocumentsUrl,
+          installation_plan: installationPlanUrl,
+          quality_assurance_program: qualityAssuranceProgramUrl,
+          certificate: {
+            certificate_image: certificateImageUrl,
+            ...certificateRest,
+          },
+          user_id: userId,
+          ...rest,
+        };
+    
+        const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, data);
+    
+        return {
+          STATUS_CODE: StatusCodes.OK,
+          STATUS: true,
+          MESSAGE: "Boiler registration updated successfully.",
+          DATA: updatedRegistration,
+        };
+      } catch (error) {
+        console.error("Error updating boiler registration:", error);
+        return {
+          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+          STATUS: false,
+          MESSAGE: "Failed to update boiler registration.",
+        };
+      }
     };
-
+    
 
     //competency from lift operator
- exports.createCompetencyFormLiftOperator = async (req) => {
-  console.log("working..")
+ 
+    exports.createCompetencyFormLiftOperator = async (req) => {
       const userId = req?.user?.id;
-      const userExist = await UserRepo.findUser({
-        id: userId,
-      });
-  
+      const userExist = await UserRepo.findUser({ id: userId });
+    
       if (!userExist) {
         return {
           STATUS_CODE: StatusCodes.UNAUTHORIZED,
@@ -760,22 +1117,60 @@ exports.getAllBoilerRegistrations = async () => {
           MESSAGE: "User not authenticated.",
         };
       }
-  
-      const data = {
-          ...req.body,
-          userId: userId
-      };
-
-      const newCompetencyForm = await FormsRepo.createCompetencyCertificationLiftOperator(data);
-  
-      return {
+    
+      try {
+        let {
+          applicant_cv,
+          higher_education_certifications,
+          training_certificate,
+          employment_letter,
+          ...rest
+        } = req.body;
+    
+        
+    
+        // Upload all files in parallel
+        const [
+          applicantCvUrl,
+          higherEducationCertificationsUrl,
+          trainingCertificateUrl,
+          employmentLetterUrl,
+         
+        ] = await Promise.all([
+          uploadSingleFile(applicant_cv),
+          uploadSingleFile(higher_education_certifications),
+          uploadSingleFile(training_certificate),
+          uploadSingleFile(employment_letter),
+          
+        ]);
+    
+        const data = {
+          applicant_cv: applicantCvUrl,
+          higher_education_certifications: higherEducationCertificationsUrl,
+          training_certificate: trainingCertificateUrl,
+          employment_letter: employmentLetterUrl,
+          
+          user_id: userId,
+          ...rest
+        };
+    
+        const newCompetencyForm = await FormsRepo.createCompetencyCertificationLiftOperator(data);
+        return {
           STATUS_CODE: StatusCodes.CREATED,
           STATUS: true,
           MESSAGE: "Competency form created successfully.",
           DATA: newCompetencyForm,
-      };
-  };
-  
+        };
+      } catch (error) {
+        console.error("Error in createCompetencyFormLiftOperator service:", error);
+        return {
+          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+          STATUS: false,
+          MESSAGE: "Failed to create competency form.",
+        };
+      }
+    };
+    
   exports.getAllCompetencyCertificationLiftOperator = async () => {
       const allCompetencyCertificationLiftOperator = await FormsRepo.findAllCompetencyCertificationLiftOperator();
   
@@ -815,10 +1210,19 @@ exports.getAllBoilerRegistrations = async () => {
   };
   
   exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
+    console.log("Updating competency form...");
+  
     const userId = req?.user?.id;
-    const userExist = await UserRepo.findUser({
-      id: userId,
-    });
+  
+    if (!userId) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+  
+    const userExist = await UserRepo.findUser({ id: userId });
   
     if (!userExist) {
       return {
@@ -827,13 +1231,72 @@ exports.getAllBoilerRegistrations = async () => {
         MESSAGE: "User not authenticated.",
       };
     }
-    const updatedCompetencyForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, req.body);
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "Competency form updated successfully.",
-      DATA: updatedCompetencyForm,
-    };
+  
+    const existingForm = await FormsRepo.findCompetencyCertificationLiftFormById(id);
+  
+    if (!existingForm) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Competency form not found.",
+      };
+    }
+  
+    let {
+      applicant_cv,
+      higher_education_certifications,
+      training_certificate,
+      employment_letter,
+      certificate,
+      ...rest
+    } = req.body;
+  
+    let { certificate_image, ...certificateRest } = certificate || {};
+  
+    try {
+      const [
+        applicantCvUrl,
+        higherEducationCertificationsUrl,
+        trainingCertificateUrl,
+        employmentLetterUrl,
+        certificateImageUrl,
+      ] = await Promise.all([
+        applicant_cv ? uploadSingleFile(applicant_cv) : existingForm.applicant_cv,
+        higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingForm.higher_education_certifications,
+        training_certificate ? uploadSingleFile(training_certificate) : existingForm.training_certificate,
+        employment_letter ? uploadSingleFile(employment_letter) : existingForm.employment_letter,
+        certificate_image ? uploadSingleFile(certificate_image) : existingForm.certificate?.certificate_image,
+      ]);
+  
+      const data = {
+        applicant_cv: applicantCvUrl,
+        higher_education_certifications: higherEducationCertificationsUrl,
+        training_certificate: trainingCertificateUrl,
+        employment_letter: employmentLetterUrl,
+        certificate: {
+          certificate_image: certificateImageUrl,
+          ...certificateRest,
+        },
+        user_id: userId,
+        ...rest,
+      };
+  
+      const updatedForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, data);
+  
+      return {
+        STATUS_CODE: StatusCodes.OK,
+        STATUS: true,
+        MESSAGE: "Competency form updated successfully.",
+        DATA: updatedForm,
+      };
+    } catch (error) {
+      console.error("Error updating competency form:", error);
+      return {
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Failed to update competency form.",
+      };
+    }
   };
   
   // exports.deleteCompetencyCertificationLiftOperator= async (id) => {
@@ -872,12 +1335,14 @@ exports.createRenewalForm = async (req) => {
     personnel_nagobin,
     company_leia,
     company_nagobin,
+    
      ...rest
   } = req.body;
-
+  
   // Upload files in parallel
   try {
     const [
+    
       company_documentation_url,
       supervisor_documentation_url,
       inspector_documentation_url,
@@ -996,9 +1461,16 @@ exports.getRenewalFormByUserId = async (userId) => {
 
   exports.updateRenewalForm = async (req, id) => {
     const userId = req?.user?.id;
-    const userExist = await UserRepo.findUser({
-      id: userId,
-    });
+  
+    if (!userId) {
+      return {
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+        STATUS: false,
+        MESSAGE: "User not authenticated.",
+      };
+    }
+  
+    const userExist = await UserRepo.findUser({ id: userId });
   
     if (!userExist) {
       return {
@@ -1007,51 +1479,99 @@ exports.getRenewalFormByUserId = async (userId) => {
         MESSAGE: "User not authenticated.",
       };
     }
-    const updatedRenewalForm = await FormsRepo.updateRenewalForms(id, req.body);
-    return {
-      STATUS_CODE: StatusCodes.OK,
-      STATUS: true,
-      MESSAGE: "Competency form updated successfully.",
-      DATA: updatedRenewalForm,
-    };
+  
+    const existingRenewalForm = await FormsRepo.findRenewalFormsById(id);
+  
+    if (!existingRenewalForm) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Renewal form not found.",
+      };
+    }
+  
+    let {
+      company_documentation,
+      supervisor_documentation,
+      inspector_documentation,
+      log_book,
+      application_letter,
+      personnel_leia,
+      personnel_nagobin,
+      company_leia,
+      company_nagobin,
+      certificate,
+      ...rest
+    } = req.body;
+  
+    let { certificate_image, ...certificateRest } = certificate || {};
+  
+    try {
+      const [
+        certificate_image_url,
+        company_documentation_url,
+        supervisor_documentation_url,
+        inspector_documentation_url,
+        log_book_url,
+        application_letter_url,
+        personnel_leia_url,
+        personnel_nagobin_url,
+        company_leia_url,
+        company_nagobin_url,
+      ] = await Promise.all([
+        certificate_image ? uploadSingleFile(certificate_image) : existingRenewalForm.certificate?.certificate_image,
+        company_documentation ? uploadSingleFile(company_documentation) : existingRenewalForm.company_documentation,
+        supervisor_documentation ? uploadSingleFile(supervisor_documentation) : existingRenewalForm.supervisor_documentation,
+        inspector_documentation ? uploadSingleFile(inspector_documentation) : existingRenewalForm.inspector_documentation,
+        log_book ? uploadSingleFile(log_book) : existingRenewalForm.log_book,
+        application_letter ? uploadSingleFile(application_letter) : existingRenewalForm.application_letter,
+        personnel_leia ? uploadSingleFile(personnel_leia) : existingRenewalForm.personnel_leia,
+        personnel_nagobin ? uploadSingleFile(personnel_nagobin) : existingRenewalForm.personnel_nagobin,
+        company_leia ? uploadSingleFile(company_leia) : existingRenewalForm.company_leia,
+        company_nagobin ? uploadSingleFile(company_nagobin) : existingRenewalForm.company_nagobin,
+      ]);
+  
+      const data = {
+        company_documentation: company_documentation_url,
+        supervisor_documentation: supervisor_documentation_url,
+        inspector_documentation: inspector_documentation_url,
+        log_book: log_book_url,
+        application_letter: application_letter_url,
+        personnel_leia: personnel_leia_url,
+        personnel_nagobin: personnel_nagobin_url,
+        company_leia: company_leia_url,
+        company_nagobin: company_nagobin_url,
+        user_id: userId,
+        certificate: {
+          certificate_image: certificate_image_url,
+          ...certificateRest,
+        },
+        ...rest,
+      };
+  
+      const updatedRenewalForm = await FormsRepo.updateRenewalForms(id, data);
+  
+      return {
+        STATUS_CODE: StatusCodes.OK,
+        STATUS: true,
+        MESSAGE: "Renewal form updated successfully.",
+        DATA: updatedRenewalForm,
+      };
+    } catch (error) {
+      console.error("Error updating renewal form:", error);
+      return {
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Failed to update renewal form.",
+      };
+    }
   };
   
-
-
-
+  
 // New functions for OperatorCertification
 exports.createOperatorCertification = async (req) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({ id: userId });
-
-  if (!userExist) {
-      return {
-          STATUS_CODE: StatusCodes.UNAUTHORIZED,
-          STATUS: false,
-          MESSAGE: "User not authenticated.",
-      };
-  }
-
- const data = {
-  user_id:userId,
-  ...req.body
- }
-
-  const newCertification = await FormsRepo.createOperatorCertification(data);
-
-  return {
-      STATUS_CODE: StatusCodes.CREATED,
-      STATUS: true,
-      MESSAGE: "Operator certification created successfully.",
-      DATA: newCertification,
-  };
-};
-
-exports.updateOperatorCertification = async (req, id) => {
-  const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
 
   if (!userExist) {
     return {
@@ -1060,14 +1580,144 @@ exports.updateOperatorCertification = async (req, id) => {
       MESSAGE: "User not authenticated.",
     };
   }
-  const updatedCompetencyForm = await FormsRepo.updateOperatorCertification(id, req.body);
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Competency form updated successfully.",
-    DATA: updatedCompetencyForm,
-  };
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    leia_certificate,
+    training_certificate,
+    employment_letter,
+    ...rest
+  } = req.body;
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      leiaCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : null,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : null,
+      leia_certificate ? uploadSingleFile(leia_certificate) : null,
+      training_certificate ? uploadSingleFile(training_certificate) : null,
+      employment_letter ? uploadSingleFile(employment_letter) : null,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      leia_certificate: leiaCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      user_id: userId,
+      ...rest,
+    };
+
+    const newCertification = await FormsRepo.createOperatorCertification(data);
+
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Operator certification created successfully.",
+      DATA: newCertification,
+    };
+  } catch (error) {
+    console.error("Error creating operator certification:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating operator certification.",
+    };
+  }
 };
+
+exports.updateOperatorCertification = async (req, id) => {
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const existingCertification = await FormsRepo.findOperatorCertificationById(id);
+
+  if (!existingCertification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Operator certification not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    leia_certificate,
+    training_certificate,
+    employment_letter,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      leiaCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
+      higher_education_certifications
+        ? uploadSingleFile(higher_education_certifications)
+        : existingCertification.higher_education_certifications,
+      leia_certificate ? uploadSingleFile(leia_certificate) : existingCertification.leia_certificate,
+      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
+      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingCertification?.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      leia_certificate: leiaCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedCertification = await FormsRepo.updateOperatorCertification(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Operator certification updated successfully.",
+      DATA: updatedCertification,
+    };
+  } catch (error) {
+    console.error("Error updating operator certification:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating operator certification.",
+    };
+  }
+};
+
 
 exports.getAllOperatorCertifications = async () => {
   const certifications = await FormsRepo.findAllOperatorCertifications();
@@ -1112,27 +1762,71 @@ exports.createCompetencyCertificationLifting = async (req) => {
   const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
-      return {
-          STATUS_CODE: StatusCodes.UNAUTHORIZED,
-          STATUS: false,
-          MESSAGE: "User not authenticated.",
-      };
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
   }
 
- const data ={
-  user_id: userId,
-  ...req.body
- }
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    leia_certificate,
+    training_certificate,
+    employment_letter,
 
-  const newCertification = await FormsRepo.createCompetencyCertificationLifting(data);
+    ...rest
+  } = req.body;
 
-  return {
+
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      leiaCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+   
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : null,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : null,
+      leia_certificate ? uploadSingleFile(leia_certificate) : null,
+      training_certificate ? uploadSingleFile(training_certificate) : null,
+      employment_letter ? uploadSingleFile(employment_letter) : null,
+   
+    ]);
+
+    const data = {
+      user_id: userId,
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      leia_certificate: leiaCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+     
+      ...rest,
+    };
+
+    const newCertification = await FormsRepo.createCompetencyCertificationLifting(data);
+
+    return {
       STATUS_CODE: StatusCodes.CREATED,
       STATUS: true,
       MESSAGE: "Competency certification lifting created successfully.",
       DATA: newCertification,
-  };
+    };
+  } catch (error) {
+    console.error("Error creating competency certification lifting:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating competency certification lifting.",
+    };
+  }
 };
+
 
 exports.getAllCompetencyCertificationLiftings = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationLifting();
@@ -1170,11 +1864,9 @@ exports.getCompetencyCertificationLiftingById = async (id) => {
       DATA: certification,
   };
 };
-exports.updateCompetencyCertificationLifting = async (req,id)=>{
+exports.updateCompetencyCertificationLifting = async (req, id) => {
   const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -1183,16 +1875,78 @@ exports.updateCompetencyCertificationLifting = async (req,id)=>{
       MESSAGE: "User not authenticated.",
     };
   }
-  
-  const updatedCertifications = await FormsRepo.updateCompetencyCertificationLifting(id, req.body);
-  console.log(updatedCertifications)
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Competency certifications updated successfully.",
-    DATA: updatedCertifications,
+
+  const existingCertification = await FormsRepo.findCompetencyCertificationLiftingById(id);
+
+  if (!existingCertification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Competency certification lifting not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    leia_certificate,
+    training_certificate,
+    employment_letter,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      leiaCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      leia_certificate ? uploadSingleFile(leia_certificate) : existingCertification.leia_certificate,
+      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
+      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      leia_certificate: leiaCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedCertifications = await FormsRepo.updateCompetencyCertificationLifting(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certification lifting updated successfully.",
+      DATA: updatedCertifications,
+    };
+  } catch (error) {
+    console.error("Error updating competency certification lifting:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating competency certification lifting.",
+    };
+  }
 };
-};
+
 
 
 
@@ -1212,20 +1966,63 @@ exports.createCompetencyCertificationInspection = async (req) => {
     };
   }
 
-  const data = {
-    user_id:userId,
-    ...req.body
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    nagobin_experience_certificate,
+    training_certificate,
+    other_certifications,
+    employment_letter,
+    ...rest
+  } = req.body;
+
+  try {
+    // Upload files in parallel if they exist
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      nagobinExperienceCertificateUrl,
+      trainingCertificateUrl,
+      otherCertificationsUrl,
+      employmentLetterUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : null,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : null,
+      nagobin_experience_certificate ? uploadSingleFile(nagobin_experience_certificate) : null,
+      training_certificate ? uploadSingleFile(training_certificate) : null,
+      other_certifications ? uploadSingleFile(other_certifications) : null,
+      employment_letter ? uploadSingleFile(employment_letter) : null,
+    ]);
+
+    const data = {
+      user_id: userId,
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      nagobin_experience_certificate: nagobinExperienceCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      other_certifications: otherCertificationsUrl,
+      employment_letter: employmentLetterUrl,
+      ...rest,
+    };
+
+    const newCertification = await FormsRepo.createCompetencyCertificationInspection(data);
+
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Authorized inspector certification created successfully.",
+      DATA: newCertification,
+    };
+  } catch (error) {
+    console.error("Error creating competency certification inspection:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating competency certification inspection.",
+    };
   }
-
-  const newCertification = await FormsRepo.createCompetencyCertificationInspection(data);
-
-  return {
-    STATUS_CODE: StatusCodes.CREATED,
-    STATUS: true,
-    MESSAGE: "Authorized inspector certification created successfully.",
-    DATA: newCertification,
-  };
 };
+
 
 exports.getCompetencyCertificationInspection = async (userId) => {
   const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
@@ -1237,11 +2034,9 @@ exports.getCompetencyCertificationInspection = async (userId) => {
   };
 };
 
-exports.updateCompetencyCertificationInspection = async (req,id)=>{
+exports.updateCompetencyCertificationInspection = async (req, id) => {
   const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -1250,16 +2045,82 @@ exports.updateCompetencyCertificationInspection = async (req,id)=>{
       MESSAGE: "User not authenticated.",
     };
   }
-  
-  const updatedCertifications = await FormsRepo.updateCompetencyCertificationInspection(id, req.body);
-  console.log(updatedCertifications)
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Competency certifications updated successfully.",
-    DATA: updatedCertifications,
+
+  const existingCertification = await FormsRepo.findCompetencyCertificationInspectionById(id);
+
+  if (!existingCertification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Competency certification inspection not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    nagobin_experience_certificate,
+    training_certificate,
+    other_certifications,
+    employment_letter,
+    certificate, // Certificate field
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      nagobinExperienceCertificateUrl,
+      trainingCertificateUrl,
+      otherCertificationsUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      nagobin_experience_certificate ? uploadSingleFile(nagobin_experience_certificate) : existingCertification.nagobin_experience_certificate,
+      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
+      other_certifications ? uploadSingleFile(other_certifications) : existingCertification.other_certifications,
+      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      nagobin_experience_certificate: nagobinExperienceCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      other_certifications: otherCertificationsUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedCertification = await FormsRepo.updateCompetencyCertificationInspection(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certification inspection updated successfully.",
+      DATA: updatedCertification,
+    };
+  } catch (error) {
+    console.error("Error updating competency certification inspection:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating competency certification inspection.",
+    };
+  }
 };
-};
+
 exports.getCompetencyCertificationInspectionByUserId= async (userId) => {
   const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
   return {
@@ -1294,19 +2155,52 @@ exports.createCompetencyCertificationBoiler = async (req) => {
     };
   }
 
-  const data = {
-    user_id:userId,
-    ...req.body
+  const { 
+    applicant_cv, 
+    higher_education_certifications, 
+    training_certificate, 
+    employment_letter, 
+    ...rest 
+  } = req.body;
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : null,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : null,
+      training_certificate ? uploadSingleFile(training_certificate) : null,
+      employment_letter ? uploadSingleFile(employment_letter) : null,
+    ]);
+
+    const data = {
+      user_id: userId,
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      ...rest,
+    };
+
+    const newCertification = await FormsRepo.createCompetencyCertificationFormBoiler(data);
+
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Competency certification Form Boiler created successfully.",
+      DATA: newCertification,
+    };
+  } catch (error) {
+    console.error("Error creating competency certification Form Boiler:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating competency certification Form Boiler.",
+    };
   }
-
-  const newCertification = await FormsRepo.createCompetencyCertificationFormBoiler(data);
-
-  return {
-    STATUS_CODE: StatusCodes.CREATED,
-    STATUS: true,
-    MESSAGE: "Competency certification Form Boiler created successfully.",
-    DATA: newCertification,
-  };
 };
 
 exports.getCompetencyCertificationBoiler = async (userId) => {
@@ -1319,11 +2213,9 @@ exports.getCompetencyCertificationBoiler = async (userId) => {
   };
 };
 
-exports.updateCompetencyCertificationBoiler = async (req,id)=>{
+exports.updateCompetencyCertificationBoiler = async (req, id) => {
   const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -1332,16 +2224,77 @@ exports.updateCompetencyCertificationBoiler = async (req,id)=>{
       MESSAGE: "User not authenticated.",
     };
   }
-  
-  const updatedCertifications = await FormsRepo.updateCompetencyCertificationFormBoiler(id, req.body);
-  console.log(updatedCertifications)
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Competency certifications updated successfully.",
-    DATA: updatedCertifications,
+
+  const existingCertification = await FormsRepo.findByIdCompetencyCertificationFormBoiler(id);
+
+  if (!existingCertification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Competency certification Form Boiler not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    training_certificate,
+    employment_letter,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
+      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
+    ]);
+
+    // Handle certificate separately
+    const certificateData = {
+      certificate_image: certificateImageUrl,
+      ...certificateRest,
+    };
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: certificateData,
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedCertifications = await FormsRepo.updateCompetencyCertificationFormBoiler(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certification Form Boiler updated successfully.",
+      DATA: updatedCertifications,
+    };
+  } catch (error) {
+    console.error("Error updating competency certification Form Boiler:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating competency certification Form Boiler.",
+    };
+  }
 };
-}
+
 
 exports.getAllCompetencyCertificationBoiler = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationFormBoiler();
@@ -1404,13 +2357,7 @@ exports.getCompertencyCertificationBoilerByUserId = async (id) => {
     };
   }
 };
-
-
-
-
-
-
-
+ 
 //competency certification welder
 exports.createCompetencyCertificationWelder = async (req) => {
   const userId = req?.user?.id;
@@ -1424,20 +2371,58 @@ exports.createCompetencyCertificationWelder = async (req) => {
     };
   }
 
-  const data = {
-    user_id:userId,
-    ...req.body
+  const {
+    applicant_cv,
+    higher_education_certifications,
+    other_certificate,
+    training_certificate,
+    employment_letter,
+    ...rest
+  } = req.body;
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      otherCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : null,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : null,
+      other_certificate ? uploadSingleFile(other_certificate) : null,
+      training_certificate ? uploadSingleFile(training_certificate) : null,
+      employment_letter ? uploadSingleFile(employment_letter) : null,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      other_certificate: otherCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      user_id: userId,
+      ...rest,
+    };
+
+    const newCertification = await FormsRepo.createCompetencyCertificationWelder(data);
+
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Competency certification welder created successfully.",
+      DATA: newCertification,
+    };
+  } catch (error) {
+    console.error("Error creating competency certification welder:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating competency certification welder.",
+    };
   }
-
-  const newCertification = await FormsRepo.createCompetencyCertificationWelder(data);
-
-  return {
-    STATUS_CODE: StatusCodes.CREATED,
-    STATUS: true,
-    MESSAGE: "Competency certification welder created successfully.",
-    DATA: newCertification,
-  };
 };
+
 
 exports.getCompetencyCertificationWelderByUserId= async (userId) => {
   const certifications = await FormsRepo.findCompetencyCertificationWelderByUserId(userId);
@@ -1460,7 +2445,7 @@ exports.getAllCompetencyCertificationWelder = async () => {
 };
 
 
-exports.updateCompetencyCertificationWelder = async (req,id)=>{
+exports.updateCompetencyCertificationWelder = async (req, id) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({
     id: userId,
@@ -1473,16 +2458,78 @@ exports.updateCompetencyCertificationWelder = async (req,id)=>{
       MESSAGE: "User not authenticated.",
     };
   }
-  
-  const updatedCertifications = await FormsRepo.updateCompetencyCertificationWelder(id, req.body);
-  console.log(updatedCertifications)
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Competency certifications updated successfully.",
-    DATA: updatedCertifications,
+
+  const existingCertification = await FormsRepo.findCompetencyCertificationWelderById(id);
+
+  if (!existingCertification) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Competency certification welder not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    other_certificate,
+    training_certificate,
+    employment_letter,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      otherCertificateUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      other_certificate ? uploadSingleFile(other_certificate) : existingCertification.other_certificate,
+      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
+      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      other_certificate: otherCertificateUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedCertifications = await FormsRepo.updateCompetencyCertificationWelder(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency certification welder updated successfully.",
+      DATA: updatedCertifications,
+    };
+  } catch (error) {
+    console.error("Error updating competency certification welder:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating competency certification welder.",
+    };
+  }
 };
-}
+
 
 exports.getCompetencyCertificationWelderById = async (id) => {
   try {
@@ -1522,18 +2569,65 @@ exports.createLiftingEquipmentRegistration = async (req) => {
       MESSAGE: "User not authenticated.",
     };
   }
-  const data = {
-    user_id:userId,
-    ...req.body
-  }
-  const newRegistration = await FormsRepo.createLiftingEquipmentRegistration(data);
 
-  return {
-    STATUS_CODE: StatusCodes.CREATED,
-    STATUS: true,
-    MESSAGE: "Lifting equipment registration created successfully.",
-    DATA: newRegistration,
-  };
+  const {
+    manufacturers_report_certificate,
+    construction_drawings_lifting_equipment,
+    design_calculation,
+    test_parameters_data,
+    accreditation_documents_manufacturer,
+    installation,
+    quality_assurance_program,
+    ...rest
+  } = req.body;
+
+  try {
+    const [
+      manufacturersReportCertificateUrl,
+      constructionDrawingsLiftingEquipmentUrl,
+      designCalculationUrl,
+      testParametersDataUrl,
+      accreditationDocumentsManufacturerUrl,
+      installationUrl,
+      qualityAssuranceProgramUrl,
+    ] = await Promise.all([
+      manufacturers_report_certificate ? uploadSingleFile(manufacturers_report_certificate) : null,
+      construction_drawings_lifting_equipment ? uploadSingleFile(construction_drawings_lifting_equipment) : null,
+      design_calculation ? uploadSingleFile(design_calculation) : null,
+      test_parameters_data ? uploadSingleFile(test_parameters_data) : null,
+      accreditation_documents_manufacturer ? uploadSingleFile(accreditation_documents_manufacturer) : null,
+      installation ? uploadSingleFile(installation) : null,
+      quality_assurance_program ? uploadSingleFile(quality_assurance_program) : null,
+    ]);
+
+    const data = {
+      user_id: userId,
+      manufacturers_report_certificate: manufacturersReportCertificateUrl,
+      construction_drawings_lifting_equipment: constructionDrawingsLiftingEquipmentUrl,
+      design_calculation: designCalculationUrl,
+      test_parameters_data: testParametersDataUrl,
+      accreditation_documents_manufacturer: accreditationDocumentsManufacturerUrl,
+      installation: installationUrl,
+      quality_assurance_program: qualityAssuranceProgramUrl,
+      ...rest,
+    };
+
+    const newRegistration = await FormsRepo.createLiftingEquipmentRegistration(data);
+
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "Lifting equipment registration created successfully.",
+      DATA: newRegistration,
+    };
+  } catch (error) {
+    console.error("Error creating lifting equipment registration:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error creating lifting equipment registration.",
+    };
+  }
 };
 
 
@@ -1559,11 +2653,9 @@ exports.getAllLiftingEquipmentRegistration = async () => {
   };
 };
 
-exports.updateLiftingEquipmentRegistration = async (req,id)=>{
+exports.updateLiftingEquipmentRegistration = async (req, id) => {
   const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -1572,16 +2664,85 @@ exports.updateLiftingEquipmentRegistration = async (req,id)=>{
       MESSAGE: "User not authenticated.",
     };
   }
-  
-  const updatedCertifications = await FormsRepo.updateLiftingEquipmentRegsitration(id, req.body);
-  console.log(updatedCertifications)
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "Equipment registration updated successfully.",
-    DATA: updatedCertifications,
+
+  const existingRegistration = await FormsRepo.findLiftingEquipmentRegsitrationById(id);
+
+  if (!existingRegistration) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Lifting equipment registration not found.",
+    };
+  }
+
+  const {
+    manufacturers_report_certificate,
+    construction_drawings_lifting_equipment,
+    design_calculation,
+    test_parameters_data,
+    accreditation_documents_manufacturer,
+    installation,
+    quality_assurance_program,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      manufacturersReportCertificateUrl,
+      constructionDrawingsLiftingEquipmentUrl,
+      designCalculationUrl,
+      testParametersDataUrl,
+      accreditationDocumentsManufacturerUrl,
+      installationUrl,
+      qualityAssuranceProgramUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      manufacturers_report_certificate ? uploadSingleFile(manufacturers_report_certificate) : existingRegistration.manufacturers_report_certificate,
+      construction_drawings_lifting_equipment ? uploadSingleFile(construction_drawings_lifting_equipment) : existingRegistration.construction_drawings_lifting_equipment,
+      design_calculation ? uploadSingleFile(design_calculation) : existingRegistration.design_calculation,
+      test_parameters_data ? uploadSingleFile(test_parameters_data) : existingRegistration.test_parameters_data,
+      accreditation_documents_manufacturer ? uploadSingleFile(accreditation_documents_manufacturer) : existingRegistration.accreditation_documents_manufacturer,
+      installation ? uploadSingleFile(installation) : existingRegistration.installation,
+      quality_assurance_program ? uploadSingleFile(quality_assurance_program) : existingRegistration.quality_assurance_program,
+      certificate_image ? uploadSingleFile(certificate_image) : existingRegistration.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      manufacturers_report_certificate: manufacturersReportCertificateUrl,
+      construction_drawings_lifting_equipment: constructionDrawingsLiftingEquipmentUrl,
+      design_calculation: designCalculationUrl,
+      test_parameters_data: testParametersDataUrl,
+      accreditation_documents_manufacturer: accreditationDocumentsManufacturerUrl,
+      installation: installationUrl,
+      quality_assurance_program: qualityAssuranceProgramUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+    };
+
+    const updatedRegistration = await FormsRepo.updateLiftingEquipmentRegsitration(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Lifting equipment registration updated successfully.",
+      DATA: updatedRegistration,
+    };
+  } catch (error) {
+    console.error("Error updating lifting equipment registration:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Error updating lifting equipment registration.",
+    };
+  }
 };
-}
 
 exports.getLiftingEquipmentRegistrationById = async (id) => {
   try {
@@ -1611,29 +2772,30 @@ exports.getLiftingEquipmentRegistrationById = async (id) => {
 
 
 exports.createReport = async (req) => {
-  const userId = req?.user?.id
-  const userExist = await UserRepo.findUser({
-    id: req.user?.id,
-  });
-  let {certificate_image} = req.body;
+  const userId = req?.user?.id;
+  const userExist = await UserRepo.findUser({ id: userId });
 
-  certificate_image = certificate_image?await uploadSingleFile(certificate_image): null
-  console.log(certificate_image)
-  
   if (!userExist) {
-    console.log("working")
     return {
       STATUS_CODE: StatusCodes.UNAUTHORIZED,
       STATUS: false,
       MESSAGE: "User not authenticated.",
     };
   }
+
+  let { report } = req.body;
+  
+  // Check if a report is provided, and upload it if so
+  report = report ? await uploadSingleFile(report) : null;
+
   const data = {
     ...req.body,
-    certificate_image,
+    report, // Include the report URL if uploaded
     user_id: userId, // Or any other relevant data
   };
+
   const newReport = await FormsRepo.createReport(data);
+
   return {
     STATUS_CODE: StatusCodes.CREATED,
     STATUS: true,
@@ -1641,6 +2803,7 @@ exports.createReport = async (req) => {
     DATA: newReport,
   };
 };
+
 
 exports.getAllReports = async () => {
   return FormsRepo.findAllReports();
@@ -1701,17 +2864,32 @@ exports.updateUserReport = async (req) => {
   }
 
   const { id } = req.params;
-  const update = req.body;
 
   try {
-    const updatedReport = await FormsRepo.updateReport(id, update);
-    if (!updatedReport) {
+    
+    const existingReport = await FormsRepo.findReportById(id);
+
+    if (!existingReport) {
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
         MESSAGE: "Report not found",
       };
     }
+
+    let { report, ...update } = req.body;
+    if (report) {
+      report = await uploadSingleFile(report); 
+    }
+
+    const updatedData = {
+      report: report || existingReport.report,
+      ...update,
+    };
+
+  
+    const updatedReport = await FormsRepo.updateReport(id, updatedData);
+
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
@@ -1727,7 +2905,7 @@ exports.updateUserReport = async (req) => {
     };
   }
 };
- 
+
 //for admin
 exports.updateReport = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({
@@ -1753,17 +2931,32 @@ exports.updateReport = async (req) => {
   }
 
   const { id } = req.params;
-  const update = req.body;
 
   try {
-    const updatedReport = await FormsRepo.updateReport(id, update);
-    if (!updatedReport) {
+    const existingReport = await FormsRepo.findReportById(id);
+
+    if (!existingReport) {
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
         MESSAGE: "Report not found",
       };
     }
+    let certificate_image = req.body?.certificate_image;
+
+    if (certificate_image) {
+      certificate_image = await uploadSingleFile(certificate_image);
+    } else {
+      certificate_image = existingReport.certificate_image;
+    }
+    const updatedData = {
+      ...req.body,
+      certificate_image,
+    };
+
+   
+    const updatedReport = await FormsRepo.updateReport(id, updatedData);
+
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
@@ -1779,6 +2972,7 @@ exports.updateReport = async (req) => {
     };
   }
 };
+
 
 exports.deleteReport = async (id) => {
   return FormsRepo.deleteReport(id);

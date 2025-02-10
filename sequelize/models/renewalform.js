@@ -1,4 +1,4 @@
-const { Model } = require("sequelize");
+const { Model, JSONB } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
 	class RenewalForm extends Model {
@@ -320,6 +320,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes,
 				defaultValue: false,
 			},
+			certificate:{
+				type: DataTypes.JSONB,
+				allowNull: true,
+			}
 		},
 		{
 			sequelize,

@@ -147,7 +147,7 @@ module.exports = (sequelize, DataTypes) => {
 			cac_registration_number:DataTypes.STRING,
 			physical_address: DataTypes.TEXT,
 			year_of_commencing_business: DataTypes.STRING,
-			number_of_employee: DataTypes.INTEGER,
+			number_of_employee: DataTypes.STRING,
 
 
 			member_nagobin:{

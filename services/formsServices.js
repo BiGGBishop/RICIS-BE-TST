@@ -4,7 +4,7 @@ const AdminRepo = require("../repositories/adminRepo");
 const {Feedback} = require("../sequelize/models")
 const StatusCodes = require("../utils/statusCodes");
 const {User} = require("../sequelize/models")
-const { uploadMultiple, uploadSingleFile } = require('../utils/cloudinary');
+const { uploadSingleFile } = require('../utils/cloudinary');
  
 
 //Authourization Approved
@@ -2027,8 +2027,8 @@ exports.createCompetencyCertificationInspection = async (req) => {
 };
 
 
-exports.getCompetencyCertificationInspection = async (userId) => {
-  const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
+exports.getCompetencyCertificationInspectionById = async (userId) => {
+  const certifications = await FormsRepo.findCompetencyCertificationInspectionById(userId);
   return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,

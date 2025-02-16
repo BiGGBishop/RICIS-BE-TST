@@ -2,9 +2,6 @@ const express = require("express");
 const { asyncHandler } = require("../middlewares/handler");
 const formsController = require("../controllers/formsController");
 const { authToken } = require("../utils/AunthenticateUser");
-const {validateReqBody} = require("../validations/reqValidator");
-     const {authorizationApprovedSchema,authorizationManufacturerSchema,competencyCertificationFormLiftOperatorSchema} = require("../validations/formValidator");
-const { route } = require("./users");
 
 
 const router = express.Router();
@@ -167,6 +164,7 @@ router.post("/competency-certification-inspection", authToken, asyncHandler(form
 router.get("/competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspection));
 router.get("/user-competency-certification-inspection", authToken, asyncHandler(formsController.getAllCompetencyCertificationInspectionByUserId));
 router.put("/update-cci/:id",authToken, asyncHandler(formsController.updateCompetencyCertificationInspection))
+router.get("/competency-certification-inspection/:id", authToken, asyncHandler(formsController.getCompetencyCertificationInspectionById));
 
 
 //Competenmcy form boiler

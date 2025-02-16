@@ -4,10 +4,26 @@ module.exports = (sequelize, DataTypes) => {
 	class ManufacturerRepairer extends Model {
 		static associate(models) {
       // Define associations here, if necessary
-      ManufacturerRepairer.belongsTo(models.User, {
-				foreignKey: "userId", // This will create the foreign key in the 'User' table
-				as: "user", // Alias for the association
-			});
+	  ManufacturerRepairer.belongsTo(models.User, {
+        foreignKey: "user_id",
+        as: "user",
+      });
+      ManufacturerRepairer.belongsTo(models.Fee, {
+        foreignKey: "feeId",
+        as: "fee",
+      });
+      ManufacturerRepairer.belongsTo(models.Classification, {
+        foreignKey: "classificationId",
+        as: "classification",
+      });
+      ManufacturerRepairer.belongsTo(models.SubCategories, {
+        foreignKey: "subcategoryId",
+        as: "subcategory",
+      });
+      ManufacturerRepairer.belongsTo(models.Categories, {
+        foreignKey: "categoryId",
+        as: "category",
+      });
 		}
 	}
 

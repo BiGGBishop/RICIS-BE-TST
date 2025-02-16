@@ -23,7 +23,7 @@ exports.getAuthorizationApprovedById = async (req, res) => {
   const data = await FormsService.getAuthorizationApprovedById(id);
   return res.status(data.STATUS_CODE).json(data);
 };
-
+   
 
 exports.getAllAuthorizationApproved = async (req, res) => {
   try {
@@ -454,8 +454,7 @@ exports.updateCompetencyCertificationLifting = async (req, res) => {
 
 // CompetencyCertificationInspection Controller Functions
 exports.createCompetencyCertificationInspection = async (req, res) => {
-  const response = await FormsService.createCompetencyCertificationInspection
-(req);
+  const response = await FormsService.createCompetencyCertificationInspection(req);
   res.status(response.STATUS_CODE).json(response);
 };
 
@@ -463,7 +462,11 @@ exports.getAllCompetencyCertificationInspection = async (req, res) => {
   const response = await FormsService.getAllCompetencyCertificationInspection()
   res.status(response.STATUS_CODE).json(response);
 };
-
+exports.getCompetencyCertificationInspectionById = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.getCompetencyCertificationInspectionById(id);
+  res.status(response.STATUS_CODE).json(response);
+};
 exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
     try {
       const userId = req.user.id;

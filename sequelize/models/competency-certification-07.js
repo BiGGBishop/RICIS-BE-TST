@@ -90,6 +90,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
           },
+          form_name: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
           type_of_certification: {
             type: DataTypes.ENUM(
               'Approved Lift Installer',

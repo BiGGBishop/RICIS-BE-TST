@@ -55,7 +55,7 @@ router.get(
 
 router.get(
   "/get-authorization-manufacturer/:id",
-  asyncHandler(formsController.getAllAuthorizationManufacturer)
+  asyncHandler(formsController.getAuthorizationManufacturerById)
 );
 router.put(
   "/update-authorization-manufacturer/:id",

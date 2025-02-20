@@ -77,23 +77,17 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				onDelete: 'SET NULL',
 			},
-            date_received: {
-              type:  DataTypes.DATE,
-              allowNull: true
-            },
 			paymentStatus: {
 				type: DataTypes.ENUM("unpaid", "paid"),
-				defaultValue:"unpaid"
-			   
+				defaultValue:"unpaid",
+			   allowNull: true
 			  },
 			  appStatus: {
 				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
-			   defaultValue:"pending"
+			   defaultValue:"pending",
+			   allowNull: true
 			  },
-			form_number:{
-				type: DataTypes.STRING,
-				allowNull: true,
-			} ,
+		
 			form_name:{
 				type: DataTypes.STRING,
 				allowNull: true,
@@ -120,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 			"Class IX",
 			"Class X"
 			),
-			defaultValue:""
+			defaultValue:"Class VI"
 		},
 			
       type_of_services:{
@@ -153,7 +147,7 @@ module.exports = (sequelize, DataTypes) => {
 			cac_registration_number:DataTypes.STRING,
 			physical_address: DataTypes.TEXT,
 			year_of_commencing_business: DataTypes.STRING,
-			number_of_employee: DataTypes.INTEGER,
+			number_of_employee: DataTypes.STRING,
 
 
 			member_nagobin:{

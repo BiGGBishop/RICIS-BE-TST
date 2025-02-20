@@ -3,7 +3,7 @@ const FormsRepo = require("../repositories/formsRepo");
 const UserRepo = require("../repositories/userRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { Op } = require("sequelize");
-const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories } = require('../sequelize/models');
+const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories,Users } = require('../sequelize/models');
 
 exports.getAdminDetails = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({ email: req.user?.email });
@@ -1500,3 +1500,90 @@ exports.getAllUsersForms = async (req) => {
     };
   }
 };
+
+
+// exports.getAllUsersForms = async (req) => {
+//   try {
+   
+//     const page = 2;
+//     const limit = 3 // Get pagination params from query
+//     const offset = (page - 1) * limit;
+    
+//     // Fetch paginated users
+//     const { count, rows: users } = await Users.findAndCountAll({
+//       limit: limit,
+//       offset: offset,
+//       order: [['createdAt', 'DESC']], // Optional: Order by creation date
+//     })
+//     if (!users || users.length === 0) {
+//       return {
+//         STATUS_CODE: StatusCodes.NOT_FOUND,
+//         STATUS: false,
+//         MESSAGE: "No users found.",
+//         DATA: [],
+//       };
+//     }
+
+//     const allForms = await Promise.all(
+//       users.map(async (user) => {
+//         const userId = user.id;
+//         const formQueries = [
+//           FormsRepo.findByUserIdAuthorizationApproved,
+//           FormsRepo.findByUserIdAuthorizationManufacturer,
+//           FormsRepo.findByUserIdTrainingAuthorization,
+//           FormsRepo.findByUserIdCompetencyCertificationLiftOperator,
+//           FormsRepo.findByUserIdBoilerRegistrationRepos,
+//           FormsRepo.findByUserIdCompetencyCertificationFormBoiler,
+//           FormsRepo.findByUserIdOperatorCertificationsByUserId,
+//           FormsRepo.findCompetencyCertificationLiftingByUserId,
+//           FormsRepo.findCompetencyCertificationInspectionByUserId,
+//           FormsRepo.findCompetencyCertificationWelderByUserId,
+//           FormsRepo.findRenewalFormsById,
+//           FormsRepo.findByUserIdLiftingEquipmentRegistration,
+//         ];
+
+//         const includeOptions = {
+//           include: [
+//             {
+//               model: Classification,
+//               as: "classification",
+//               attributes: ["id", "classification_name"],
+//               include: {
+//                 model: ClassificationFees,
+//                 as: "classificationFees",
+//                 attributes: ["amount"],
+//               },
+//             },
+//             { model: Categories, as: "category", attributes: ["name"] },
+//             { model: SubCategories, as: "subcategory", attributes: ["name"] },
+//             { model: Fee, as: "fee", attributes: ["fee_type"] },
+//           ],
+//         };
+
+//         const results = await Promise.all(
+//           formQueries.map((query) => query(userId, includeOptions))
+//         );
+//         return { userId, forms: results.flat() };
+//       })
+//     );
+
+//     return {
+//       STATUS_CODE: StatusCodes.OK,
+//       STATUS: true,
+//       MESSAGE: "All users forms fetched successfully.",
+//       DATA: allForms,
+//       pagination: {
+//         currentPage: Number(page),
+//         totalUsers: count,
+//         totalPages: Math.ceil(count / limit),
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching all users forms:", error);
+//     return {
+//       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+//       STATUS: false,
+//       MESSAGE: "Internal server error",
+//     };
+//   }
+// };

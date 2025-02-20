@@ -71,6 +71,7 @@ exports.findAuthorizationApprovedById = async (id) => {
   }
 };                                                                   
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
+  console.log("working...")
   return  AuthorizationApproved.findAll({
     where: { user_id: userId },
     ...options,

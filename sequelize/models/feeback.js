@@ -98,7 +98,7 @@ module.exports = (sequelize, DataTypes) => {
         as: "OperatorCertification",
         constraints: false,
          scope: {
-          formType: 'RenewalForm'
+          formType: 'OperatorCertification'
         }
       });
       Feedback.belongsTo(models.AuthorizationApproved, {
@@ -136,7 +136,6 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
-      sequelize,
       sequelize,
       modelName: "Feedback",
       tableName: "feedbacks",

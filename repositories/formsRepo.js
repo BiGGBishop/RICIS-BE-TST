@@ -150,7 +150,7 @@ exports.findAllTrainingAuthorization = async () => {
   };
 
 exports.findByUserIdTrainingAuthorization = async (userId ,options = {}) => {
-  return await AuthorizationManufacturer.findAll({
+  return await TrainingOrganizationForm.findAll({
     where: { user_id: userId },
     ...options,
   });

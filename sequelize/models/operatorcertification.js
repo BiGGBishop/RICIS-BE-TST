@@ -161,7 +161,7 @@ OperatorCertification.belongsTo(models.Fee, {
 				type: DataTypes.STRING,
 			  },
 			  training_method: {
-				type: DataTypes.ENUM("Online","Class Room", "Field"),
+				type: DataTypes.STRING
 			  },
 			  training_organization_registration_number: {
 				type: DataTypes.STRING,

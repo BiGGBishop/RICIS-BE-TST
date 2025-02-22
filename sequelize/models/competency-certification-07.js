@@ -95,20 +95,13 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
           },
           type_of_certification: {
-            type: DataTypes.ENUM(
-              'Approved Lift Installer',
-              'Work Equipment Operator',
-              'Rigger Signaler',
-              'Forklift Operator',
-              'Scaffolding Technician',
-              'Abseiling Technician'
-            ),
+            type: DataTypes.STRING
           },
           Class_Certification: {
-            type: DataTypes.ENUM('Class A','Class B', 'Class 1','Class 2'),
+            type: DataTypes.STRING,
           },
           application_type: {
-            type: DataTypes.ENUM('New Application', 'Re-Application'),
+            type: DataTypes.STRING,
           },
           training_start_date: {
             type: DataTypes.DATE,
@@ -149,7 +142,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
           },
           training_method: {
-            type: DataTypes.ENUM('Online', 'Class Room', 'Field'),
+            type: DataTypes.STRING
           },
           training_organization_registration_number: {
             type: DataTypes.STRING,

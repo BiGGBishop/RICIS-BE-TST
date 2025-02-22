@@ -155,6 +155,8 @@ exports.updateAuthorizationApproved = async (req, id) => {
       operationalProcedures,
       companyDocumentation,
       documentationQuality,
+      documentationSupervisor,
+      documentationInspection,
       designerDocumentation,
       weldingDocumentation,
       ndtDocumentation,
@@ -178,6 +180,8 @@ exports.updateAuthorizationApproved = async (req, id) => {
       companyDocumentationUrl,
       documentationQualityUrl,
       designerDocumentationUrl,
+      documentationSupervisorUrl,
+      documentationInspectionUrl,
       weldingDocumentationUrl,
       ndtDocumentationUrl,
       indtDocumentationUrl,
@@ -191,6 +195,8 @@ exports.updateAuthorizationApproved = async (req, id) => {
       operationalProcedures ? uploadSingleFile(operationalProcedures) : existingAuthorization.operationalProcedures,
       companyDocumentation ? uploadSingleFile(companyDocumentation) : existingAuthorization.companyDocumentation,
       documentationQuality ? uploadSingleFile(documentationQuality) : existingAuthorization.documentationQuality,
+      documentationSupervisor ? uploadSingleFile(documentationSupervisor) : existingAuthorization.documentationSupervisor,
+      documentationInspection? uploadSingleFile(documentationInspection) : existingAuthorization.documentationInspection,
       designerDocumentation ? uploadSingleFile(designerDocumentation) : existingAuthorization.designerDocumentation,
       weldingDocumentation ? uploadSingleFile(weldingDocumentation) : existingAuthorization.weldingDocumentation,
       ndtDocumentation ? uploadSingleFile(ndtDocumentation) : existingAuthorization.ndtDocumentation,
@@ -411,8 +417,8 @@ exports.createAuthorizationManufacturer = async (req) => {
   
     const data = {
       member_nagobin: member_nagobin_url,
-    member_leia: member_leia_url,
-    member_indt: member_indt_url,
+      member_leia: member_leia_url,
+      member_indt: member_indt_url,
       companyQualityManual: companyQualityManualUrl,
       operationalProcedures: operationalProceduresUrl,
       companyDocumentation: companyDocumentationUrl,
@@ -422,8 +428,6 @@ exports.createAuthorizationManufacturer = async (req) => {
       ndtDocumentation: ndtDocumentationUrl,
       indtDocumentation: indtDocumentationUrl,
       isoCertification: isoCertificationUrl,
-     
-
       user_id: userId,
       ...rest,
     };

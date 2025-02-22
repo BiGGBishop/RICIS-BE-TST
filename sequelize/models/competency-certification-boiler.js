@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.INTEGER,
 				allowNull: true,
 				references: {
-				  model: "fees",
+				  model: "fees",                                     
 				  key: "id",
 				},
 				onDelete: "SET NULL",
@@ -158,7 +158,8 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 			  },
 			  training_method: {
-				type: DataTypes.ENUM("Online","Class Room","Field"),
+				type: DataTypes.STRING,
+				allowNull:true
 			  },
 			  training_organization_registration_number: {
 				type: DataTypes.STRING,

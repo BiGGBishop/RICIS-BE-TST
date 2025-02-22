@@ -245,7 +245,6 @@ module.exports = (sequelize, DataTypes) => {
       supervisor_exit_date:DataTypes.STRING,
 
 
-
       //approved inspector
       approved_inspector_name: DataTypes.STRING,
       approved_inspector_address: DataTypes.TEXT,

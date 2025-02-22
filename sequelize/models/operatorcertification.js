@@ -101,14 +101,9 @@ OperatorCertification.belongsTo(models.Fee, {
         type: DataTypes.STRING,
         allowNull: true,
       },
-			certification_type: DataTypes.ENUM(
-				"Lifting Equipment Operator",
-				"Lifting Equipment Operator Assistance",
-				"Forklift Operator",
-				"Passenger Lift Technician"
-			),
+			certification_type: DataTypes.STRING,
 			certification_class: DataTypes.STRING,
-			application_type: DataTypes.ENUM("New Application", "Re-Application"),
+			application_type: DataTypes.STRING,
 			available_for_documentation_review: {
 				type: DataTypes.BOOLEAN,
 				allowNull: true,

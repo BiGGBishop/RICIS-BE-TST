@@ -107,11 +107,7 @@ OperatorCertification.belongsTo(models.Fee, {
 				"Forklift Operator",
 				"Passenger Lift Technician"
 			),
-			certification_class: DataTypes.ENUM(
-				"Below 50 tons",
-				"51 - 100 tons",
-				"Above 100 tons"
-			),
+			certification_class: DataTypes.STRING,
 			application_type: DataTypes.ENUM("New Application", "Re-Application"),
 			available_for_documentation_review: {
 				type: DataTypes.BOOLEAN,

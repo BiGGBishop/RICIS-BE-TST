@@ -3008,6 +3008,7 @@ exports.createFeedback = async (feedbackData, userId) => {
     const { formId, formType, message } = feedbackData;
     if (userExist.userroleId === 3) {
       const newFeedback = await Feedback.create({
+        userId:userId,
         userroleId:userExist.userroleId, 
         formId: formId,
         formType: formType,
@@ -3022,6 +3023,7 @@ exports.createFeedback = async (feedbackData, userId) => {
       };
     }else{
       const newFeedback = await Feedback.create({
+        userId:userId,
         userroleId: userExist.userroleId, 
         formId: formId,
         formType: formType,

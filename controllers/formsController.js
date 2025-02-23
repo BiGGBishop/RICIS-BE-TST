@@ -750,7 +750,7 @@ exports.deleteReport = async (req, res) => {
 };
 
 exports.createFeedback = async (req, res) => {
-  const data = await FormsService.createFeedback(req.body, req.user.id); 
+  const data = await FormsService.createFeedback(req.body, req.user.id,req.user?.email); 
   return res.status(data.STATUS_CODE).json(data);
 };
 

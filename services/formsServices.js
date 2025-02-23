@@ -2993,8 +2993,8 @@ exports.deleteReport = async (id) => {
 };
 
 
-exports.createFeedback = async (feedbackData, userId) => {
-  const userRole = await AdminRepo.findAdminUser({ id: userId });
+exports.createFeedback = async (feedbackData, userId,email) => {
+  const userRole = await AdminRepo.findAdminUser({ email: email });
   const isAdmin = userRole?.userroleId === 1 ?true:false
 
   try {

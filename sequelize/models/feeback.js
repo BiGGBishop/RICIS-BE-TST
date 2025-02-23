@@ -114,7 +114,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Feedback.init(
     {
-      userId: {
+      userroleId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

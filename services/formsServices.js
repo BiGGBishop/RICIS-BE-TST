@@ -2992,6 +2992,7 @@ exports.deleteReport = async (id) => {
   return FormsRepo.deleteReport(id);
 };
 
+
 exports.createFeedback = async (feedbackData, userId) => {
   const userExist = await UserRepo.findUser({ id: userId });
   if (!userExist) {
@@ -3007,7 +3008,7 @@ exports.createFeedback = async (feedbackData, userId) => {
     const { formId, formType, message } = feedbackData;
     if (userExist.userroleId === 3) {
       const newFeedback = await Feedback.create({
-        userroleId:3, 
+        userroleId:userExist.userroleId, 
         formId: formId,
         formType: formType,
         message: message,
@@ -3021,7 +3022,7 @@ exports.createFeedback = async (feedbackData, userId) => {
       };
     }else{
       const newFeedback = await Feedback.create({
-        userroleId: 1, 
+        userroleId: userExist.userroleId, 
         formId: formId,
         formType: formType,
         message: message,

@@ -3002,10 +3002,10 @@ exports.createFeedback = async (feedbackData, userId) => {
     };
   }
   //check user role
-  const role = await UserRepo.findRole({ id: userId });
+
   try {
     const { formId, formType, message } = feedbackData;
-    if (role?.name === "user") {
+    if (userExist.userroleId === 3) {
       const newFeedback = await Feedback.create({
         userId: userId, 
         formId: formId,

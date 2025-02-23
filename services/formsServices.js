@@ -2995,7 +2995,7 @@ exports.deleteReport = async (id) => {
 
 exports.createFeedback = async (feedbackData, userId) => {
   const userRole = await AdminRepo.findAdminUser({ id: userId });
-  const isAdmin = userRole?.role === 1 ?true:false
+  const isAdmin = userRole?.userroleId === 1 ?true:false
 
   try {
     const { formId, formType, message } = feedbackData;

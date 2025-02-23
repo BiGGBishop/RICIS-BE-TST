@@ -2994,18 +2994,17 @@ exports.deleteReport = async (id) => {
 
 
 exports.createFeedback = async (feedbackData, userId) => {
-  const userRole = await AdminRepo.findRole({ id: userId });
+  const userRole = await AdminRepo.findAdminUser({ id: userId });
+  const isAdmin = userRole?.role === 1 ?true:false
 
   try {
     const { formId, formType, message } = feedbackData;
-    if (userRole.userroleId === 3) {
       const newFeedback = await Feedback.create({
         userId:userId,
-        userroleId:userRole.userroleId, 
         formId: formId,
         formType: formType,
         message: message,
-        isAdmin: false, 
+        isAdmin: isAdmin
       });
       return {
         STATUS_CODE: 201,
@@ -3013,23 +3012,6 @@ exports.createFeedback = async (feedbackData, userId) => {
         MESSAGE: "Feedback created successfully",
         DATA: newFeedback,
       };
-    }else{
-      const newFeedback = await Feedback.create({
-        userId:userId,
-        userroleId: userRole.userroleId, 
-        formId: formId,
-        formType: formType,
-        message: message,
-        isAdmin: true, 
-      });
-      
-      return {
-        STATUS_CODE: 201,
-        STATUS: true,
-        MESSAGE: "Feedback created successfully",
-        DATA: newFeedback,
-      };
-    }
   } catch (error) {
     console.error("Error creating feedback:", error);
     return {

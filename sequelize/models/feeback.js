@@ -118,10 +118,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      userroleId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
       formId: { // Generic form ID
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -2994,22 +2994,14 @@ exports.deleteReport = async (id) => {
 
 
 exports.createFeedback = async (feedbackData, userId) => {
-  const userExist = await UserRepo.findUser({ id: userId });
-  if (!userExist) {
-    return {
-      STATUS_CODE: 401,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
-    };
-  }
-  //check user role
+  const userRole = await AdminRepo.findRole({ id: userId });
 
   try {
     const { formId, formType, message } = feedbackData;
-    if (userExist.userroleId === 3) {
+    if (userRole.userroleId === 3) {
       const newFeedback = await Feedback.create({
         userId:userId,
-        userroleId:userExist.userroleId, 
+        userroleId:userRole.userroleId, 
         formId: formId,
         formType: formType,
         message: message,
@@ -3024,7 +3016,7 @@ exports.createFeedback = async (feedbackData, userId) => {
     }else{
       const newFeedback = await Feedback.create({
         userId:userId,
-        userroleId: userExist.userroleId, 
+        userroleId: userRole.userroleId, 
         formId: formId,
         formType: formType,
         message: message,

@@ -1,11 +1,14 @@
 const { getClassificationsWithMerges,getClassificationWithIncidental } = require("../services/userServices");
 const axios = require('axios');
+const crypto = require('crypto');
+const dotenv = require('dotenv');
 const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
 //const StatusCodes = require("../utils/statusCodes")
 const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
 const {Op} = require('sequelize')
 
+dotenv.config();
 
 exports.getOTP = async (req, res) => {
   const data = await UserService.getOTP(req, res);
@@ -205,6 +208,68 @@ exports.getPaymentToken = async (req, res) => {
     message: "data.MESSAGE",
     data: dataresponse,
   });
+};
+
+const REMITA_MERCHANT_ID = process.env.REMITA_MERCHANT_ID;
+const REMITA_API_KEY = process.env.REMITA_API_KEY;
+const REMITA_CONSUMER_KEY = process.env.REMITA_CONSUMER_KEY;
+const REMITA_SERVICE_TYPE_ID = process.env.REMITA_SERVICE_TYPE_ID;
+const REMITA_BASE_URL = process.env.REMITA_BASE_URL;
+const RESPONSE_URL = process.env.RESPONSE_URL;
+
+exports.makePayment = async (req, res) => {
+  try {
+    const {
+      serviceTypeId = REMITA_SERVICE_TYPE_ID,
+      totalAmount,
+      payerName,
+      payerEmail,
+      payerPhone,
+      description,
+      lineItems
+    } = req.body;
+
+    const orderId = Date.now();
+
+    const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + totalAmount + REMITA_API_KEY;
+    const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`
+    };
+
+    const payload = {
+      serviceTypeId,
+      amount: totalAmount,
+      orderId,
+      payerName,
+      payerEmail,
+      payerPhone,
+      description,
+      responseUrl: RESPONSE_URL,
+      lineItems
+      // "expiryDate" can be added if required.
+    };
+
+    const response = await axios.post(REMITA_BASE_URL, payload, { headers });
+
+    let data;
+    if (typeof response.data === 'string') {
+      let resBody = response.data;
+      if (resBody.startsWith('jsonp')) {
+        resBody = resBody.substring(7, resBody.length - 1);
+      }
+      data = JSON.parse(resBody);
+    } else {
+      data = response.data;
+    }
+
+    res.json({ ...data, orderId });
+  } catch (error) {
+    console.error('Error processing Remita split payment:', error);
+    res.status(500).json({ error: 'Payment creation failed', details: error.message });
+  }
 };
 
 exports.hello = async (req, res) => {

@@ -4,14 +4,14 @@ const { UserRole } = require("../sequelize/models"); // Importing from the index
 const { AdminStaff } = require("../sequelize/models"); // Importing from the index file
 const { Classification } = require("../sequelize/models"); // Importing from the index file
 const { ClassificationMerge } = require("../sequelize/models"); // Importing from the index file
-
 const {ClassificationIncidentalMerge} = require("../sequelize/models");
 const { Categories } = require("../sequelize/models"); // Importing from the index file
 const { SubCategories } = require("../sequelize/models"); // Importing from the index file
 const { Conversation } = require("../sequelize/models"); // Importing from the index file
-const { Fee } = require("../sequelize/models"); // Importing from the index file
-const { ClassificationFees } = require("../sequelize/models"); // Importing from the index file
-const {Op} = require("sequelize")
+const { Fee } = require("../sequelize/models");//Importing from the index file
+const { ClassificationFees } = require("../sequelize/models");// Importing from the index file
+const {Blog} = require("../sequelize/models");
+// const {Op} = require("sequelize");
 
 
 exports.findOne = async (filter) => {
@@ -93,7 +93,6 @@ exports.addClassification = async (update) => {
 
 exports.addClassificationMerge = async (update) => {
   const { classificationId, incidentalClassificationIds } = update;
-
   try {
     const classificationMerge = await ClassificationMerge.create({
       classificationId,
@@ -104,9 +103,9 @@ exports.addClassificationMerge = async (update) => {
         classificationMergeId: classificationMerge.id,
         incidentalClassificationId,
       });
-    }
+  }
 
-    const primaryClassification = await Classification.findOne({
+  const primaryClassification = await Classification.findOne({
       where: { id: classificationId },
     });
 
@@ -114,7 +113,7 @@ exports.addClassificationMerge = async (update) => {
       where: { id: incidentalClassificationIds },
     });
 
-    const formattedIncidentalClassifications = incidentalClassifications.map(
+  const formattedIncidentalClassifications = incidentalClassifications.map(
       (incidental) => ({
         classification_name: incidental.classification_name,
         categoryId: incidental.categoryId,
@@ -611,4 +610,21 @@ exports.deleteFee = async (update) => {
       console.error("Error details:", error);
     }
 };
+exports.createBlog = async (user_id, data) => {
+  try {
+    if (!user_id) {
+      throw new Error("User ID is required.");
+    }
 
+    const blogInput = { 
+      ...data, // Spread `data` to avoid nesting issue
+      user_id 
+    };
+
+    const response = await Blog.create(blogInput);
+    return response;
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    return { error: "Failed to create blog", details: error.message };
+  }
+};

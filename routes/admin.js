@@ -52,6 +52,13 @@ router.delete("/fees/:feeId", authToken, asyncHandler(adminController.deleteFee)
 // conversation
 router.put("/application/msg/add", authToken, asyncHandler(adminController.addMsgToApplication)); 
 
+//blog
+router.post("/blog", authToken, asyncHandler(adminController.createBlog)); 
+router.get("/blog", authToken, asyncHandler(adminController.getAllBlogs)); 
+router.get("/blog/:id", authToken, asyncHandler(adminController.getBlogById)); 
+router.put("/blog/:id", authToken, asyncHandler(adminController.updateBlog)); 
+router.delete("/blog/:id", authToken, asyncHandler(adminController.deleteBlog)); 
+
 module.exports = router;
 
 

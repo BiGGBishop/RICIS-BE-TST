@@ -421,3 +421,48 @@ exports.getAllUsersForms = async (req, res) => {
     data: data.DATA,
   });
 };
+
+exports.createBlog = async (req) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return {
+        STATUS_CODE: userId.STATUS,
+        STATUS: false,
+        MESSAGE: "Unauthorized: User ID is required.",
+      };
+    }
+
+    const { title, description, image, status, published } = req.body;
+
+    // Optional: Validate required fields (modify as needed)
+    if (!title || !description) {
+      return {
+        STATUS: false,
+        MESSAGE: "Title and description are required.",
+      };
+    }
+
+    const blog = await AdminRepo.createBlog(userId, {
+      title,
+      description,
+      image,
+      status,
+      published,
+    });
+
+    return {
+      STATUS_CODE: blog.CREATED,
+      STATUS: true,
+      MESSAGE: "Blog created successfully.",
+      DATA: blog,
+    };
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+};

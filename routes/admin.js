@@ -54,8 +54,8 @@ router.put("/application/msg/add", authToken, asyncHandler(adminController.addMs
 
 //blog
 router.post("/blog", authToken, asyncHandler(adminController.createBlog)); 
-router.get("/blog", authToken, asyncHandler(adminController.getAllBlogs)); 
-router.get("/blog/:id", authToken, asyncHandler(adminController.getBlogById)); 
+router.get("/blog", asyncHandler(adminController.getAllBlogs)); 
+router.get("/blog/:id", asyncHandler(adminController.getBlogById)); 
 router.put("/blog/:id", authToken, asyncHandler(adminController.updateBlog)); 
 router.delete("/blog/:id", authToken, asyncHandler(adminController.deleteBlog)); 
 

@@ -622,9 +622,63 @@ exports.createBlog = async (user_id, data) => {
     };
 
     const response = await Blog.create(blogInput);
+    console.log(response);
     return response;
   } catch (error) {
     console.error("Error creating blog:", error);
     return { error: "Failed to create blog", details: error.message };
+  }
+};
+
+
+exports.getAllBlogs = async()=>{
+  try {
+    const response = await Blog.findAll();
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return { error: "Failed to fetch blogs", details: error.message };
+  }
+}
+
+exports.getBlogById = async(id)=>{
+  try {
+    const response = await Blog.findByPk(id);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error fetching blog by id:", error);
+    return { error: "Failed to fetch blog by id", details: error.message };
+  }
+}
+
+exports.updateBlog = async(id, data) => {
+  try {
+    if (!id) {
+      throw new Error("Blog ID is required.");
+    }
+
+    const response = await Blog.update(data, { where: { id } });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    return { error: "Failed to update blog", details: error.message };
+  }
+};
+
+exports.deleteBlog = async(id) => {
+  try {
+    if (!id) {
+      throw new Error("Blog ID is required.");
+    }
+
+    const response = await Blog.destroy({ where: { id } });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    return { error: "Failed to delete blog", details: error.message };
   }
 };

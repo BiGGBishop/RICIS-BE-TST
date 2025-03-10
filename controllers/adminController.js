@@ -422,7 +422,7 @@ exports.getAllUsersForms = async (req, res) => {
   });
 };
 
-exports.createBlog = async (req) => {
+exports.createBlog = async (req,res) => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -451,12 +451,11 @@ exports.createBlog = async (req) => {
       published,
     });
 
-    return {
-      STATUS_CODE: blog.CREATED,
-      STATUS: true,
-      MESSAGE: "Blog created successfully.",
-      DATA: blog,
-    };
+    return res.status(200).json({
+      status: 200,
+      message:"blog created successfully",
+      data: blog,
+    });
   } catch (error) {
     console.error("Error creating blog:", error);
     return {
@@ -466,3 +465,105 @@ exports.createBlog = async (req) => {
     };
   }
 };
+
+exports.getAllBlogs = async(req,res)=>{
+  try {
+    const blogs = await AdminRepo.getAllBlogs();
+    return res.status(200).json({
+      status: 200,
+      message: "Blogs fetched successfully",
+      data: blogs,
+    });
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+}
+
+exports.getBlogById = async(req,res)=>{
+  try {
+    const { id } = req.params;
+    const blog = await AdminRepo.getBlogById(id);
+    if (!blog) {
+      return res.status(404).json({
+        status: 404,
+        message: "Blog not found",
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      message: "Blog fetched successfully",
+      data: blog,
+    });
+  } catch (error) {
+    console.error("Error fetching blog:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+};
+
+exports.updateBlog = async(req,res)=>{
+  try{
+    const { id } = req.params;
+    const { title, description, image, status, published } = req.body;
+
+    const blog = await AdminRepo.updateBlog(id, {
+      title,
+      description,
+      image,
+      status,
+      published,
+    });
+
+    if (!blog) {
+      return res.status(404).json({
+        status: 404,
+        message: "Blog not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      message: "Blog updated successfully",
+      data: blog,
+    });
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      return {
+        STATUS_CODE: 500,
+        STATUS: false,
+        MESSAGE: "Internal server error",
+      };
+  }
+}
+
+exports.deleteBlog = async(req,res)=>{
+  try{
+    const { id } = req.params;
+    const deletedBlog = await AdminRepo.deleteBlog(id);
+    if (!deletedBlog) {
+      return res.status(404).json({
+        status: 404,
+        message: "Blog not found",
+      });
+    }
+    return res.status(200).json({
+      status: 200,
+      message: "Blog deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+    };
+  }
+}

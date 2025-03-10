@@ -225,11 +225,30 @@ exports.makePayment = async (req, res) => {
       payerName,
       payerEmail,
       payerPhone,
-      description,
-      lineItems
+      description
     } = req.body;
 
     const orderId = Date.now();
+
+    const lineItem1 = {
+      lineItemsId: "itemid1",
+      beneficiaryName: "Alozie Michael",
+      beneficiaryAccount: "6020067886",
+      bankCode: "058",
+      beneficiaryAmount: "7000",
+      deductFeeFrom: "1"
+    };
+
+    const lineItem2 = {
+      lineItemsId: "itemid2",
+      beneficiaryName: "Folivi Joshua",
+      beneficiaryAccount: "0360883515",
+      bankCode: "058",
+      beneficiaryAmount: "3000",
+      deductFeeFrom: "0"
+    };
+
+    const lineItems = [lineItem1, lineItem2];
 
     const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + totalAmount + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
@@ -269,6 +288,43 @@ exports.makePayment = async (req, res) => {
   } catch (error) {
     console.error('Error processing Remita split payment:', error);
     res.status(500).json({ error: 'Payment creation failed', details: error.message });
+  }
+};
+
+exports.checkTransactionStatus = async (req, res) => {
+  try {
+    const { rrr } = req.body;
+    if (!rrr) {
+      return res.status(400).json({ error: "Missing required parameter: rrr" });
+    }
+
+    const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
+    const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+
+    const url = `http://www.remitademo.net/remita/ecomm/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
+    };
+
+    const response = await axios.get(url, { headers });
+
+    let data;
+    if (typeof response.data === 'string') {
+      let resBody = response.data;
+      if (resBody.startsWith('jsonp')) {
+        resBody = resBody.substring(7, resBody.length - 1);
+      }
+      data = JSON.parse(resBody);
+    } else {
+      data = response.data;
+    }
+
+    res.json(data);
+  } catch (error) {
+    console.error('Error checking transaction status:', error);
+    res.status(500).json({ error: 'Failed to check transaction status', details: error.message });
   }
 };
 

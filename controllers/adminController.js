@@ -5,7 +5,7 @@ const AdminRepo = require("../repositories/adminRepo")
 const { ClassificationMerge, Classification } = require("../sequelize/models");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Assuming you are using JWT
-
+const { uploadSingleFile } = require('../utils/cloudinary');
 
 //Super admin Login do not touch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,7 @@ exports.getAllUsersForms = async (req, res) => {
   });
 };
 
-exports.createBlog = async (req,res) => {
+exports.createBlog = async (req, res) => {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -434,35 +434,41 @@ exports.createBlog = async (req,res) => {
     }
 
     const { title, description, image, status, published } = req.body;
-
-    // Optional: Validate required fields (modify as needed)
-    if (!title || !description) {
-      return {
-        STATUS: false,
-        MESSAGE: "Title and description are required.",
-      };
+  
+    // Check if an image is provided, and upload it if so
+    let uploadedImageUrl = null;
+    if (image) {
+      uploadedImageUrl = await uploadSingleFile(image);  // Upload and get the image URL
     }
 
+    // Optional: Validate required fields
+    if (!title || !description) {
+      return res.status(400).json({
+        STATUS: false,
+        MESSAGE: "Title and description are required.",
+      });
+    }
+
+    // Create the blog
     const blog = await AdminRepo.createBlog(userId, {
       title,
       description,
-      image,
+      image: uploadedImageUrl,  // Use the uploaded image URL
       status,
       published,
     });
 
     return res.status(200).json({
       status: 200,
-      message:"blog created successfully",
+      message: "Blog created successfully",
       data: blog,
     });
   } catch (error) {
     console.error("Error creating blog:", error);
-    return {
-      STATUS_CODE: 500,
+    return res.status(500).json({
       STATUS: false,
       MESSAGE: "Internal server error",
-    };
+    });
   }
 };
 
@@ -514,10 +520,12 @@ exports.updateBlog = async(req,res)=>{
     const { id } = req.params;
     const { title, description, image, status, published } = req.body;
 
+    let uploadedImageUrl = image ? await uploadSingleFile(image) : null;
+
     const blog = await AdminRepo.updateBlog(id, {
       title,
       description,
-      image,
+      image: uploadedImageUrl,
       status,
       published,
     });

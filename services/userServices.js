@@ -824,15 +824,21 @@ exports.getUsersApplication = async (req) => {
   const filter = {
     userId: req.user?.id,
   };
-  console.log({filter})
-  const user = await UserRepo.findAllApplication(filter);
-  console.log(user)
+  
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const user = await UserRepo.findAllApplication(filter, page, limit);
+
+  // You can also send the total count of records for pagination metadata.
   if (!user || user.length === 0) {
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       MESSAGE: "No applications found for this user.",
       DATA: [],
+      totalCount: 0,
+      totalPages: 0,
     };
   }
 
@@ -840,8 +846,13 @@ exports.getUsersApplication = async (req) => {
     STATUS_CODE: StatusCodes.OK,
     STATUS: true,
     DATA: user,
+    totalCount: totalCount,
+    totalPages: Math.ceil(totalCount / limit),
+    page,
+    limit,
   };
 };
+
 
 exports.getUsersSingleApplication = async (req) => {
   const filter = {

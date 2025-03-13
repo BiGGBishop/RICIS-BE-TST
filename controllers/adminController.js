@@ -318,6 +318,10 @@ exports.getAllApplications = async (req, res) => {
     status: data.STATUS,
     message: data.MESSAGE,
     data: data.DATA,
+    totalCount: data.totalCount,
+    totalPages: data.totalPages,
+    page: data.page,
+    limit: data.limit,
   });
 };
 
@@ -419,6 +423,10 @@ exports.getAllUsersForms = async (req, res) => {
     status: data.STATUS,
     message: data.MESSAGE,
     data: data.DATA,
+    totalCount: data.totalCount,
+    totalPages: data.totalPages,
+    page: data.page,
+    limit: data.limit,
   });
 };
 

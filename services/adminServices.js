@@ -840,14 +840,21 @@ exports.getAllApplications = async (req) => {
   const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
   console.log({ who_role: role?.name });
 
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
   if (role?.name == "admin") {
     console.log({ who: "an admin" });
-    const app = await UserRepo.findAllApplication(filter);
+    const { app, totalCount } = await UserRepo.findAllApplication(filter, page, limit);
 
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       DATA: app,
+      totalCount: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      page,
+      limit,
     };
   }
 
@@ -855,12 +862,16 @@ exports.getAllApplications = async (req) => {
     const staffFilterObj = {
       app_status: "approved",
     };
-    const app = await UserRepo.findAllApplication(staffFilterObj);
+    const { app, totalCount } = await UserRepo.findAllApplication(staffFilterObj, page, limit);
 
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       DATA: app,
+      totalCount: totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      page,
+      limit,
     };
   }
 

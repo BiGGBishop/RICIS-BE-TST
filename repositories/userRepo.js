@@ -80,10 +80,13 @@ exports.createApp = async (update) => {
   }
 };
 
-exports.findAllApplication = async (filter) => {
+exports.findAllApplication = async (filter, page = 1, limit = 10) => {
   try {
+    const offset = (page - 1) * limit;
     const response = await Application.findAll({
-      where: filter
+      where: filter,
+      limit: limit,
+      offset: offset,
       /*include: [
         {
           model: Categories, // Include the associated category
@@ -125,6 +128,10 @@ exports.findAllApplication = async (filter) => {
         },
       ]*/
     });
+    const totalCount = await Application.count({
+      where: filter,
+    });
+    return { response, totalCount };
     // console.log({response, update})
     return response;
   } catch (error) {

@@ -10,6 +10,13 @@ const {Op} = require('sequelize')
 
 dotenv.config();
 
+const REMITA_MERCHANT_ID = process.env.REMITA_MERCHANT_ID;
+const REMITA_API_KEY = process.env.REMITA_API_KEY;
+const REMITA_CONSUMER_KEY = process.env.REMITA_CONSUMER_KEY;
+const REMITA_SERVICE_TYPE_ID = process.env.REMITA_SERVICE_TYPE_ID;
+const REMITA_BASE_URL = process.env.REMITA_BASE_URL;
+const RESPONSE_URL = process.env.RESPONSE_URL;
+
 exports.getOTP = async (req, res) => {
   const data = await UserService.getOTP(req, res);
 
@@ -214,12 +221,6 @@ exports.getPaymentToken = async (req, res) => {
   });
 };
 
-const REMITA_MERCHANT_ID = process.env.REMITA_MERCHANT_ID;
-const REMITA_API_KEY = process.env.REMITA_API_KEY;
-const REMITA_CONSUMER_KEY = process.env.REMITA_CONSUMER_KEY;
-const REMITA_SERVICE_TYPE_ID = process.env.REMITA_SERVICE_TYPE_ID;
-const REMITA_BASE_URL = process.env.REMITA_BASE_URL;
-const RESPONSE_URL = process.env.RESPONSE_URL;
 
 exports.makePayment = async (req, res) => {
   try {

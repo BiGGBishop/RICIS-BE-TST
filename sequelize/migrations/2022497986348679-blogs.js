@@ -2,6 +2,7 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
+        await queryInterface.sequelize.query("CREATE TYPE \"enum_blogs_category\" AS ENUM ('news', 'notice', 'circular', 'order')");
         await queryInterface.createTable("blogs", {
             id: {
                 allowNull: false,
@@ -35,6 +36,10 @@ module.exports = {
                 type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
                 defaultValue: "pending",
             },
+        category: {
+            type: Sequelize.ENUM("news", "notice", "circular", "order"),
+            defaultValue: "news",
+        },
             published: {
                 type: Sequelize.BOOLEAN,
                 defaultValue: false,

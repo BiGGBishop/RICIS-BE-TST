@@ -268,8 +268,12 @@ exports.fetchClassificationMerge = async () => {
               form_type: item.incidentalClassification?.form_type,
               category_name: item.incidentalClassification?.category?.name,
               subcategory_name: item.incidentalClassification?.subcategory?.name,
-              amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
-              fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+              amount: item.incidentalClassification?.classificationFees?.map(
+                (fee) => fee.amount
+              ),
+              fee: item.incidentalClassification?.classificationFees?.map(
+                (fee) => fee.fee
+              ),
               has_incidental: item.incidentalClassification?.has_incidental
               
           }
@@ -286,8 +290,12 @@ exports.fetchClassificationMerge = async () => {
           subcategory_name: primaryClassification.subcategory?.name,
           amount:
             primaryClassification.classificationFees &&
-            primaryClassification.classificationFees[0]?.amount,
-            fee: primaryClassification.classificationFees?.[0]?.fee,
+            primaryClassification.classificationFees?.map(
+              (fee) => fee.amount
+            ),
+            fee: primaryClassification.classificationFees?.map(
+              (fee) => fee.fee
+            ),
         },
         has_incidental: primaryClassification.has_incidental,
         incidentalClassifications: incidentalClassifications,

@@ -1227,7 +1227,7 @@ exports.getClassificationWithIncidental = async (req, res) => {
     }
 
     // Step 2: Fetch the classification merge record
-    const classificationMerge = await AdminRepo.fetchAClassificationMerge({
+    const classificationMerge = await AdminRepo.fetchClassificationMerge({
       classificationId: classification.id,
     });
 

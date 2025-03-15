@@ -1435,7 +1435,13 @@ console.log(getIncidentalClassifications)
                 subcategory_name: primaryClassification.subcategory?.name,
                 amount:
                   primaryClassification.classificationFees &&
-                  primaryClassification.classificationFees[0]?.amount,
+                  primaryClassification.classificationFees.map(
+                    fee => fee.amount
+                  ),
+                  fee: primaryClassification.classificationFees &&
+                  primaryClassification.classificationFees.map(
+                    fee => fee.fee
+                  ),
               },
               incidentalClassifications: [],
         }
@@ -1451,8 +1457,12 @@ console.log(getIncidentalClassifications)
           form_type: item.incidentalClassification?.form_type,
           category_name: item.incidentalClassification?.category?.name,
           subcategory_name: item.incidentalClassification?.subcategory?.name,
-          amount: item.incidentalClassification?.classificationFees?.[0]?.amount,
-          fee: item.incidentalClassification?.classificationFees?.[0]?.fee,
+          amount: item.incidentalClassification?.classificationFees?.map(
+            fee => fee.amount
+          ),
+          fee: item.incidentalClassification?.classificationFees?.map(
+            fee => fee.fee
+          ),
       }
   })
     const response = {
@@ -1466,8 +1476,12 @@ console.log(getIncidentalClassifications)
         subcategory_name: primaryClassification.subcategory?.name,
         amount:
           primaryClassification.classificationFees &&
-          primaryClassification.classificationFees[0]?.amount,
-          fee: primaryClassification.classificationFees?.[0]?.fee,
+          primaryClassification.classificationFees?.map(
+            fee => fee.amount
+          ),
+          fee: primaryClassification.classificationFees?.map(
+            fee => fee.fee
+          ),
       },
       incidentalClassifications: incidentalClassifications,
     };

@@ -230,7 +230,9 @@ exports.makePayment = async (req, res) => {
       payerName,
       payerEmail,
       payerPhone,
-      description
+      description,
+      statutoryFees,
+      incidentalFees
     } = req.body;
 
     const orderId = Date.now();
@@ -240,7 +242,7 @@ exports.makePayment = async (req, res) => {
       beneficiaryName: "Alozie Michael",
       beneficiaryAccount: "6020067886",
       bankCode: "058",
-      beneficiaryAmount: "7000",
+      beneficiaryAmount: `${statutoryFees}`,
       deductFeeFrom: "1"
     };
 
@@ -249,7 +251,7 @@ exports.makePayment = async (req, res) => {
       beneficiaryName: "Folivi Joshua",
       beneficiaryAccount: "0360883515",
       bankCode: "058",
-      beneficiaryAmount: "3000",
+      beneficiaryAmount: `${incidentalFees}`,
       deductFeeFrom: "0"
     };
 

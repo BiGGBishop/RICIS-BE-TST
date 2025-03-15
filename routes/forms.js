@@ -213,5 +213,8 @@ router.delete("/reports/:id",authToken,
 //Feedback
 router.post("/feedback", authToken, asyncHandler(formsController.createFeedback));
 router.get("/feedback/:formType/:formId", authToken, asyncHandler(formsController.getFeedback));
+router.get("/feedback/:email",authToken,asyncHandler(
+    formsController.feedBackRead
+))
 
 module.exports = router;

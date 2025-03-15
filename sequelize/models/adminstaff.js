@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       ref_number: DataTypes.STRING,
       address: DataTypes.STRING,
       phone_number: DataTypes.STRING,
+      isFeedBackReceived:{
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
       userroleId: {
         type: DataTypes.INTEGER,
         references: {

@@ -759,3 +759,9 @@ exports.getFeedback = async (req, res) => {
   const data = await FormsService.getFeedback(formType, formId);
   return res.status(data.STATUS_CODE).json(data);
 };
+
+exports.feedBackRead =async(req,res)=>{
+  const {email} = req.params;
+  const data = await FormsService.readFeedBack(email);
+  return res.status(data.STATUS_CODE).json(data);
+}

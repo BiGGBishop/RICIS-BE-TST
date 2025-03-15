@@ -441,7 +441,7 @@ exports.createBlog = async (req, res) => {
       };
     }
 
-    const { title, description, image, status, published } = req.body;
+    const { title, description, image, status, categories, published } = req.body;
   
     // Check if an image is provided, and upload it if so
     let uploadedImageUrl = null;
@@ -463,6 +463,7 @@ exports.createBlog = async (req, res) => {
       description,
       image: uploadedImageUrl,  // Use the uploaded image URL
       status,
+      categories,
       published,
     });
 
@@ -526,7 +527,7 @@ exports.getBlogById = async(req,res)=>{
 exports.updateBlog = async(req,res)=>{
   try{
     const { id } = req.params;
-    const { title, description, image, status, published } = req.body;
+    const { title, description, image, status,categories, published } = req.body;
 
     let uploadedImageUrl = image ? await uploadSingleFile(image) : null;
 
@@ -535,6 +536,7 @@ exports.updateBlog = async(req,res)=>{
       description,
       image: uploadedImageUrl,
       status,
+      categories,
       published,
     });
 

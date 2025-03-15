@@ -5,6 +5,9 @@ const {Feedback} = require("../sequelize/models")
 const StatusCodes = require("../utils/statusCodes");
 const {User} = require("../sequelize/models")
 const { uploadSingleFile } = require('../utils/cloudinary');
+const { sendFeedbackNotification } = require("../utils/emails/feedback");
+const {AdminStaff} = require("../sequelize/models");
+const { sendReportNotification } = require("../utils/emails/report");
  
 
 //Authourization Approved
@@ -2967,9 +2970,18 @@ exports.updateReport = async (req) => {
       ...req.body,
       certificate_image,
     };
-
+    //find existingReort user email
+    const user = await User.findById(existingReport.user_id)
+    const email = user.email
    
     const updatedReport = await FormsRepo.updateReport(id, updatedData);
+    const reportDetails={
+      reportId: updatedReport._id,
+      reportUrl:`/report/${updatedReport._id}`,
+    }
+    if(updatedReport)(
+      await sendReportNotification(email,reportDetails)
+    )
 
     return {
       STATUS_CODE: StatusCodes.OK,
@@ -2987,15 +2999,16 @@ exports.updateReport = async (req) => {
   }
 };
 
-
 exports.deleteReport = async (id) => {
   return FormsRepo.deleteReport(id);
 };
 
-
 exports.createFeedback = async (feedbackData, userId,email) => {
   const userRole = await AdminRepo.findAdminUser({ email: email });
   const isAdmin = userRole?.userroleId === 1 ?true:false
+  const adminFeedbackUrl = process.env.FEEDBACK_URL_ADMIN;
+  const userFeedbackUrl = process.env.FEEDBACK_URL_USER;
+
   console.log(email)
   try {
     const { formId, formType, message } = feedbackData;
@@ -3006,12 +3019,37 @@ exports.createFeedback = async (feedbackData, userId,email) => {
         message: message,
         isAdmin: isAdmin
       });
+      if(!newFeedback){
+        return {
+          STATUS_CODE: 400,
+          STATUS: false,
+          MESSAGE: "Failed to create feedback",
+        };
+      }
+     if(isAdmin){
+      const mail = {
+        message:newFeedback.message,
+        url:adminFeedbackUrl
+      }
+        await sendFeedbackNotification(email, mail);
+        await User.update({isFeedBackReceived: true} ,{ where: { email } });
+        
+  
+      }else{
+        const mail = {
+        message:newFeedback.message,
+        url:userFeedbackUrl
+        }
+        await sendFeedbackNotification(email, mail);
+        await AdminStaff.update({isFeedBackReceived: true} ,{ where: {userroleId:1 } });
+
+      }
       return {
         STATUS_CODE: 201,
         STATUS: true,
         MESSAGE: "Feedback created successfully",
         DATA: newFeedback,
-      };
+      }
   } catch (error) {
     console.error("Error creating feedback:", error);
     return {
@@ -3021,7 +3059,6 @@ exports.createFeedback = async (feedbackData, userId,email) => {
     };
   }
 };
-
 
 exports.getFeedback = async (formType, formId) => {
   try {
@@ -3055,4 +3092,27 @@ exports.getFeedback = async (formType, formId) => {
   }
 };
 
+
+exports.readFeedBack =async(email)=>{
+  const userRole = await AdminRepo.findAdminUser({ email: email });
+  const isAdmin = userRole?.userroleId === 1 ?true:false
+  try {
+    if(isAdmin){
+      await AdminStaff.update({isFeedBackReceived:false},{where:{userroleId:1}})
+    }else{
+      await User.update({isFeedBackReceived:false},{where:{email}})
+    }
+    return {
+      STATUS_CODE: 200,
+      STATUS: true,
+    };
+  } catch (error) {
+    console.error("Error retrieving feedback:", error);
+    return {
+      STATUS_CODE: 500,
+      STATUS: false,
+      MESSAGE: "Error retrieving feedback",
+    };
+  }
+}
 //THE END

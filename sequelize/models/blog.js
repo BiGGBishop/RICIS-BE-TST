@@ -37,9 +37,8 @@ module.exports = (sequelize) => {
                 type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
                 defaultValue: "pending",
             },
-            category: {
-                type: DataTypes.ENUM("news", "notice", "circular", "order"),
-                defaultValue:"news",
+            categories: {
+                type: DataTypes.STRING,
             },
             published: {
                 type: DataTypes.BOOLEAN,

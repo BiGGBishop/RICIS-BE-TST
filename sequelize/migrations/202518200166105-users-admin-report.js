@@ -53,7 +53,7 @@ module.exports = {
         allowNull: true,
       },
       status: {
-				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
+				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended", "paid", "unpaid"),
 			  },
       is_draft: {
           type: Sequelize.BOOLEAN,                  

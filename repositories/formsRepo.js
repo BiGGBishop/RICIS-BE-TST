@@ -615,3 +615,8 @@ exports.deleteReport = async (id) => {
     throw error;
   }
 };
+
+exports.countReports = async () => {
+  const { Report } = require("../sequelize/models");
+  return await Report.count();
+};

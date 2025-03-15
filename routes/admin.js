@@ -59,6 +59,11 @@ router.get("/blog/:id", asyncHandler(adminController.getBlogById));
 router.put("/blog/:id", authToken, asyncHandler(adminController.updateBlog)); 
 router.delete("/blog/:id", authToken, asyncHandler(adminController.deleteBlog)); 
 
+//api endpoint for staff
+router.get('/statistics', authToken, asyncHandler(adminController.getStatistics));
+router.get('/approved-applications', authToken, asyncHandler(adminController.getApprovedApplications));
+router.get("/application/:appId", authToken, asyncHandler(adminController.getAnApplication));
+
 module.exports = router;
 
 

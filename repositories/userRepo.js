@@ -202,3 +202,8 @@ exports.createAdminUser = async (update) => {
   // console.log({response, update})
   return response;
 };
+
+exports.countUsers = async () => {
+  const { User } = require("../sequelize/models");
+  return await User.count();
+};

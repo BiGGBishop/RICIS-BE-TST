@@ -585,3 +585,31 @@ exports.deleteBlog = async(req,res)=>{
     };
   }
 }
+
+exports.getStatistics = async (req, res) => {
+  const data = await AdminService.getStatistics(req, res);
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.getApprovedApplications = async (req, res) => {
+  const data = await AdminService.getApprovedApplications(req, res);
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
+
+exports.getAnApplication = async (req, res) => {
+  const data = await AdminService.getSingleApplication(req, res);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};

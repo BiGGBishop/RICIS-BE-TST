@@ -1707,3 +1707,112 @@ exports.createBlog = async(req)=>{
   }
 }
 
+exports.getStatistics = async (req, res) => {
+  try {
+    const totalUsers = await UserRepo.countUsers();
+    const totalReports = await FormsRepo.countReports();
+
+    const formsResponse = await exports.getAllUsersForms();
+    
+    let totalForms = 0;
+    let totalDraft = 0;
+    let totalApplications = 0;
+    let approvedApplications = 0;
+    let completedApplications = 0;
+    
+    if (formsResponse.STATUS_CODE === StatusCodes.OK && Array.isArray(formsResponse.DATA)) {
+      formsResponse.DATA.forEach(userData => {
+        
+        userData.forms.forEach(formArray => {
+          if (Array.isArray(formArray)) {
+            formArray.forEach(form => {
+              totalForms += 1;
+              
+              if (form.isDraft === true) {
+                totalDraft += 1;
+              } else {
+                totalApplications += 1;
+              }
+              
+              if (form.appStatus && form.appStatus.toLowerCase() === 'approved') {
+                approvedApplications += 1;
+              }
+              
+              if (form.certificate !== null && form.certificate !== undefined) {
+                completedApplications += 1;
+              }
+            });
+          }
+        });
+      });
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Statistics fetched successfully",
+      DATA: {
+        totalUsers,
+        totalReports,
+        totalForms,
+        totalDraft,
+        totalApplications,
+        approvedApplications,
+        completedApplications,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching statistics:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+      DATA: null,
+    };
+  }
+}
+
+exports.getApprovedApplications = async (req, res) => {
+  try {
+    // Call your existing function that fetches all forms for all users
+    const formsResponse = await exports.getAllUsersForms();
+    if (formsResponse.STATUS_CODE !== StatusCodes.OK || !Array.isArray(formsResponse.DATA)) {
+      return {
+        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+        STATUS: false,
+        MESSAGE: "Error fetching forms data",
+        DATA: null,
+      };
+    }
+
+    // Filter approved applications (appStatus equals "approved")
+    let approvedApplications = [];
+    formsResponse.DATA.forEach(userData => {
+      // userData.forms is an array of arrays from each query
+      userData.forms.forEach(formArray => {
+        if (Array.isArray(formArray)) {
+          formArray.forEach(form => {
+            if (form.appStatus && form.appStatus.toLowerCase() === 'approved') {
+              approvedApplications.push(form);
+            }
+          });
+        }
+      });
+    });
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Approved applications fetched successfully.",
+      DATA: approvedApplications,
+    };
+  } catch (error) {
+    console.error("Error fetching approved applications:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Internal server error",
+      DATA: null,
+    };
+  }
+};

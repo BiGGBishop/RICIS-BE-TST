@@ -2971,18 +2971,17 @@ exports.updateReport = async (req) => {
       certificate_image,
     };
     //find existingReort user email
-    const user = await User.findById(existingReport.user_id)
+    const user = await User.findOne({where:{id:existingReport.user_id}})
     const email = user.email
    
     const updatedReport = await FormsRepo.updateReport(id, updatedData);
     const reportDetails={
-      reportId: updatedReport._id,
-      reportUrl:`/report/${updatedReport._id}`,
+      status:updatedReport.status,
+      url:`${process.env.REPORT_URL}/user/report/${updatedReport._id}`,
     }
     if(updatedReport)(
       await sendReportNotification(email,reportDetails)
     )
-
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,

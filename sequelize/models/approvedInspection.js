@@ -63,6 +63,16 @@ module.exports = (sequelize, DataTypes) => {
               type:  DataTypes.DATE,
               allowNull: true
             },
+			paymentStatus: {
+				type: DataTypes.ENUM("unpaid", "paid"),
+				defaultValue:"unpaid",
+			   allowNull: true
+			  },
+			  appStatus: {
+				type: DataTypes.ENUM("pending", "approved", "rejected", "suspended"),
+			   defaultValue:"pending",
+			   allowNull: true
+			  },
 			form_number:{ 
 				type: DataTypes.STRING,
 				allowNull: true,

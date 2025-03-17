@@ -2979,7 +2979,7 @@ exports.updateReport = async (req) => {
       status:updatedReport.appStatus,
       url:`${process.env.REPORT_URL}/user/report/${updatedReport._id}`,
     }
-    if(updatedReport)(
+    if(updatedReport.certificate_image)(
       await sendReportNotification(email,reportDetails)
     )
     return {

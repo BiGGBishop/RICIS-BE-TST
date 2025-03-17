@@ -2976,7 +2976,7 @@ exports.updateReport = async (req) => {
    
     const updatedReport = await FormsRepo.updateReport(id, updatedData);
     const reportDetails={
-      status:updatedReport.status,
+      status:updatedReport.appStatus,
       url:`${process.env.REPORT_URL}/user/report/${updatedReport._id}`,
     }
     if(updatedReport)(

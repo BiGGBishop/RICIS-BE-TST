@@ -387,38 +387,97 @@ exports.makeSinglePayment = async (req, res) => {
 
 exports.checkTransactionStatus = async (req, res) => {
   try {
-    const { rrr } = req.body;
+    const { rrr } = req.query;
+
     if (!rrr) {
       return res.status(400).json({ error: "Missing required parameter: rrr" });
     }
 
-    const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
-    const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+    const REMITA_MERCHANT_ID = process.env.REMITA_MERCHANT_ID?.trim();
+    const REMITA_API_KEY = process.env.REMITA_API_KEY?.trim();
+    const REMITA_BASE_URL = "https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc";
 
-    const url = `http://www.remitademo.net/remita/ecomm/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+    if (!REMITA_MERCHANT_ID || !REMITA_API_KEY) {
+      return res.status(500).json({ error: "Missing Remita API credentials" });
+    }
+
+    const hashData = `${rrr}${REMITA_API_KEY}${REMITA_MERCHANT_ID}`;
+    const apiHash = crypto.createHash("sha512").update(hashData).digest("hex");
+
+    console.log("Hash String:", hashData);
+    console.log("Generated Hash:", apiHash);
+
+    const url = `${REMITA_BASE_URL}/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
 
     const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
+      "Content-Type": "application/json",
+      Authorization: `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`,
     };
 
     const response = await axios.get(url, { headers });
 
     let data;
-    if (typeof response.data === 'string') {
-      let resBody = response.data;
-      if (resBody.startsWith('jsonp')) {
-        resBody = resBody.substring(7, resBody.length - 1);
+    if (typeof response.data === "string") {
+      let resBody = response.data.trim();
+      if (resBody.startsWith("jsonp")) {
+        resBody = resBody.slice(6, -1);
       }
       data = JSON.parse(resBody);
     } else {
       data = response.data;
     }
 
-    res.json(data);
+    if (data.status === "013") {
+      return res.status(400).json({ error: "Invalid Hash", details: data });
+    }
+
+    return res.json(data);
   } catch (error) {
-    console.error('Error checking transaction status:', error);
-    res.status(500).json({ error: 'Failed to check transaction status', details: error.message });
+    console.error("Error checking transaction status:", error);
+    return res.status(500).json({
+      error: "Failed to check transaction status",
+      details: error.message,
+    });
+  }
+};
+
+exports.remitaWebhook = async (req, res) => {
+  try {
+    const notificationData = req.body;
+
+    if (!Array.isArray(notificationData) || notificationData.length === 0) {
+      return res.status(400).json({ error: "Invalid webhook payload" });
+    }
+
+    const transaction = notificationData[0];
+
+    const {
+      rrr,
+      channel,
+      billerName,
+      amount,
+      transactiondate,
+      orderId,
+      payerName,
+      payerPhoneNumber,
+      payerEmail,
+      serviceTypeId,
+      chargeFee,
+      paymentDescription,
+      customFieldData
+    } = transaction;
+
+    console.log("Received webhook notification from Remita:");
+    console.log(transaction);
+
+    // TODO: Process payment confirmation (e.g., update database, send email, etc.)
+    // Example: Store transaction details in the database
+
+    // Respond with a 200 status to acknowledge receipt
+    return res.status(200).json({ message: "Webhook received successfully" });
+  } catch (error) {
+    console.error("Error handling Remita webhook:", error);
+    return res.status(500).json({ error: "Failed to process webhook", details: error.message });
   }
 };
 

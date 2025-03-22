@@ -1,4 +1,4 @@
-const { Model, JSONB } = require("sequelize");
+const { Model} = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
 	class RenewalForm extends Model {
@@ -65,6 +65,9 @@ module.exports = (sequelize, DataTypes) => {
 						  key: 'id',
 						},
 						onDelete: 'SET NULL',
+					},
+					incidentalIds:{
+						type: DataTypes.ARRAY(DataTypes.ARRAY)
 					},
 					feeId:{
 						type: DataTypes.INTEGER,

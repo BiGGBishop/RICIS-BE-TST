@@ -71,6 +71,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete: "SET NULL",
       },
+      incidentalIds:{
+				type: DataTypes.ARRAY(DataTypes.ARRAY)
+			},
       feeId: {
         type: DataTypes.INTEGER,
         allowNull: true,

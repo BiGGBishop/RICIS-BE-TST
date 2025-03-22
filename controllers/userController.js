@@ -242,7 +242,7 @@ exports.makePayment = async (req, res) => {
       beneficiaryName: "Alozie Michael",
       beneficiaryAccount: "6020067886",
       bankCode: "058",
-      beneficiaryAmount: `${statutoryFees}`,
+      beneficiaryAmount: `${Number(statutoryFees)}`,
       deductFeeFrom: "1"
     };
 
@@ -251,13 +251,13 @@ exports.makePayment = async (req, res) => {
       beneficiaryName: "Folivi Joshua",
       beneficiaryAccount: "0360883515",
       bankCode: "058",
-      beneficiaryAmount: `${incidentalFees}`,
+      beneficiaryAmount: `${Number(incidentalFees)}`,
       deductFeeFrom: "0"
     };
 
     const lineItems = [lineItem1, lineItem2];
 
-    const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + totalAmount + REMITA_API_KEY;
+    const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + Number(totalAmount) + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
     const headers = {
@@ -267,7 +267,7 @@ exports.makePayment = async (req, res) => {
 
     const payload = {
       serviceTypeId,
-      amount: totalAmount,
+      amount: Number(totalAmount),
       orderId,
       payerName,
       payerEmail,
@@ -298,7 +298,7 @@ exports.makePayment = async (req, res) => {
   }
 };
 
-exports.makeSinglePayment = async (req, res) => {
+exports. 6makeSinglePayment = async (req, res) => {
   try {
     // Get the data from the request body
     const {

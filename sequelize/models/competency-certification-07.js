@@ -78,6 +78,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true,
           },
+          incidentalIds:{
+            type: DataTypes.ARRAY(DataTypes.ARRAY)
+          },
           paymentStatus: {
             type: DataTypes.ENUM('unpaid', 'paid'),
             defaultValue: 'unpaid',

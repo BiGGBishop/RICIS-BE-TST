@@ -2969,7 +2969,7 @@ exports.updateReport = async (req) => {
     const updatedData = {
       ...req.body,
       certificate_image,
-    };
+    } ;
     //find existingReort user email
     const user = await User.findOne({where:{id:existingReport.user_id}})
     const email = user.email

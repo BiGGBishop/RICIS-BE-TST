@@ -10,6 +10,7 @@ const {
 const {asyncHandler} = require("../middlewares/handler")
 const adminController = require("../controllers/adminController")
 const {authToken} =  require("../utils/AunthenticateUser")
+const transactionController = require('../controllers/adminController');
 
 
 
@@ -63,6 +64,12 @@ router.delete("/blog/:id", authToken, asyncHandler(adminController.deleteBlog));
 router.get('/statistics', authToken, asyncHandler(adminController.getStatistics));
 router.get('/approved-applications', authToken, asyncHandler(adminController.getApprovedApplications));
 router.get("/application/:appId", authToken, asyncHandler(adminController.getAnApplication));
+
+//Transactions
+
+router.get('/transactions',authToken,transactionController.getAllTransactions);
+router.post('/transactions',authToken, transactionController.createTransaction);
+router.get('/transactions/:user_id',authToken, transactionController.getTransactionsByUserId);
 
 module.exports = router;
 

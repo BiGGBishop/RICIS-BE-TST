@@ -6,7 +6,8 @@ const UserService = require("../services/userServices")
 const FormsRepo = require("../repositories/formsRepo");
 //const StatusCodes = require("../utils/statusCodes")
 const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
-const {Op} = require('sequelize')
+const {Op} = require('sequelize');
+const StatusCodes = require("../utils/statusCodes");
 
 dotenv.config();
 
@@ -298,7 +299,7 @@ exports.makePayment = async (req, res) => {
   }
 };
 
-exports. 6makeSinglePayment = async (req, res) => {
+exports.makeSinglePayment = async (req, res) => {
   try {
     // Get the data from the request body
     const {
@@ -387,97 +388,38 @@ exports. 6makeSinglePayment = async (req, res) => {
 
 exports.checkTransactionStatus = async (req, res) => {
   try {
-    const { rrr } = req.query;
-
+    const { rrr } = req.body;
     if (!rrr) {
       return res.status(400).json({ error: "Missing required parameter: rrr" });
     }
 
-    const REMITA_MERCHANT_ID = process.env.REMITA_MERCHANT_ID?.trim();
-    const REMITA_API_KEY = process.env.REMITA_API_KEY?.trim();
-    const REMITA_BASE_URL = "https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc";
+    const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
+    const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
-    if (!REMITA_MERCHANT_ID || !REMITA_API_KEY) {
-      return res.status(500).json({ error: "Missing Remita API credentials" });
-    }
-
-    const hashData = `${rrr}${REMITA_API_KEY}${REMITA_MERCHANT_ID}`;
-    const apiHash = crypto.createHash("sha512").update(hashData).digest("hex");
-
-    console.log("Hash String:", hashData);
-    console.log("Generated Hash:", apiHash);
-
-    const url = `${REMITA_BASE_URL}/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+    const url = `http://www.remitademo.net/remita/ecomm/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
 
     const headers = {
-      "Content-Type": "application/json",
-      Authorization: `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`,
+      'Content-Type': 'application/json',
+      'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
     };
 
     const response = await axios.get(url, { headers });
 
     let data;
-    if (typeof response.data === "string") {
-      let resBody = response.data.trim();
-      if (resBody.startsWith("jsonp")) {
-        resBody = resBody.slice(6, -1);
+    if (typeof response.data === 'string') {
+      let resBody = response.data;
+      if (resBody.startsWith('jsonp')) {
+        resBody = resBody.substring(7, resBody.length - 1);
       }
       data = JSON.parse(resBody);
     } else {
       data = response.data;
     }
 
-    if (data.status === "013") {
-      return res.status(400).json({ error: "Invalid Hash", details: data });
-    }
-
-    return res.json(data);
+    res.json(data);
   } catch (error) {
-    console.error("Error checking transaction status:", error);
-    return res.status(500).json({
-      error: "Failed to check transaction status",
-      details: error.message,
-    });
-  }
-};
-
-exports.remitaWebhook = async (req, res) => {
-  try {
-    const notificationData = req.body;
-
-    if (!Array.isArray(notificationData) || notificationData.length === 0) {
-      return res.status(400).json({ error: "Invalid webhook payload" });
-    }
-
-    const transaction = notificationData[0];
-
-    const {
-      rrr,
-      channel,
-      billerName,
-      amount,
-      transactiondate,
-      orderId,
-      payerName,
-      payerPhoneNumber,
-      payerEmail,
-      serviceTypeId,
-      chargeFee,
-      paymentDescription,
-      customFieldData
-    } = transaction;
-
-    console.log("Received webhook notification from Remita:");
-    console.log(transaction);
-
-    // TODO: Process payment confirmation (e.g., update database, send email, etc.)
-    // Example: Store transaction details in the database
-
-    // Respond with a 200 status to acknowledge receipt
-    return res.status(200).json({ message: "Webhook received successfully" });
-  } catch (error) {
-    console.error("Error handling Remita webhook:", error);
-    return res.status(500).json({ error: "Failed to process webhook", details: error.message });
+    console.error('Error checking transaction status:', error);
+    res.status(500).json({ error: 'Failed to check transaction status', details: error.message });
   }
 };
 
@@ -768,8 +710,8 @@ if(!userId){
   }
 };
 
-const FormsService = require("../services/formsServices");
-const StatusCodes = require("../utils/statusCodes");
+
+
 
 exports.getAllUserFormsWithCertificate = async (req, res) => {
   const userId = req?.user?.id;
@@ -820,7 +762,7 @@ exports.getAllUserFormsWithCertificate = async (req, res) => {
   } catch (error) {
     console.error("Error fetching all user forms:", error);
     return {
-      STATUS_CODE:INTERNAL_SERVER_ERROR,
+      STATUS_CODE:500,
       STATUS: false,
       MESSAGE: "Internal server error",
     };

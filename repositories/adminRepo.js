@@ -12,6 +12,7 @@ const { Fee } = require("../sequelize/models");//Importing from the index file
 const { ClassificationFees } = require("../sequelize/models");// Importing from the index file
 const {Blog} = require("../sequelize/models");
 // const {Op} = require("sequelize");
+const { Transaction } = require('../sequelize/models');
 
 
 exports.findOne = async (filter) => {
@@ -690,3 +691,19 @@ exports.deleteBlog = async(id) => {
     return { error: "Failed to delete blog", details: error.message };
   }
 };
+
+class TransactionRepository {
+  async getAll() {
+      return await Transaction.findAll();
+  }
+
+  async create(transactionData) {
+      return await Transaction.create(transactionData);
+  }
+
+  async getByUserId(user_id) {
+      return await Transaction.findAll({ where: { user_id } });
+  }
+}
+
+module.exports = new TransactionRepository();

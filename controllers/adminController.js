@@ -6,6 +6,7 @@ const { ClassificationMerge, Classification } = require("../sequelize/models");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Assuming you are using JWT
 const { uploadSingleFile } = require('../utils/cloudinary');
+const transactionService = require('../services/adminServices');
 
 //Super admin Login do not touch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,3 +586,36 @@ exports.deleteBlog = async(req,res)=>{
     };
   }
 }
+
+
+
+class TransactionController {
+    async getAllTransactions(req, res) {
+        try {
+            const transactions = await transactionService.getAllTransactions();
+            res.json(transactions);
+        } catch (error) {
+            res.status(500).json({ error: 'Error fetching transactions' });
+        }
+    }
+
+    async createTransaction(req, res) {
+        try {
+            const transaction = await transactionService.createTransaction(req.body);
+            res.status(201).json(transaction);
+        } catch (error) {
+            res.status(400).json({ error });
+        }
+    }
+
+    async getTransactionsByUserId(req, res) {
+        try {
+            const transactions = await transactionService.getTransactionsByUserId(req.params.user_id);
+            res.json(transactions);
+        } catch (error) {
+            res.status(500).json({ error });
+        }
+    }
+}
+
+module.exports = new TransactionController();

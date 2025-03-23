@@ -10,6 +10,7 @@ module.exports = {
       type: Sequelize.STRING,
     });
   },
+  
   async down(queryInterface, ) {
     await queryInterface.removeColumn("applications", "application_category");
     await queryInterface.removeColumn("applications", "application_type");

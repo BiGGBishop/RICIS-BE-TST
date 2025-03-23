@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // Application belongs to a category
       Application.belongsTo(models.Categories, {
         foreignKey: "categoryId",
-        as: "category", // Alias
+        as: "category", // alias
       });
 
       // Application belongs to a subcategory
@@ -94,11 +94,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: "pending", // Set the default value
       },
       paymentId: DataTypes.INTEGER,
-
-
-
       equipment_incidental: DataTypes.STRING,
-
       company_name: DataTypes.STRING,
       name: DataTypes.STRING,
       company_type: DataTypes.STRING,
@@ -111,12 +107,9 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       email: DataTypes.STRING,
       website: DataTypes.STRING,
-
       phone_number: DataTypes.STRING,
       equipment_name: DataTypes.STRING,
       equipment_owner: DataTypes.STRING,
-
-
       type_of_facility: DataTypes.STRING,
       construction_code: DataTypes.STRING,
       year_of_manufacture: DataTypes.DATE,
@@ -154,9 +147,7 @@ module.exports = (sequelize, DataTypes) => {
       owner_email: DataTypes.STRING,
       owner_telephone: DataTypes.STRING,
       contact_person: DataTypes.INTEGER,
-
       feeId: DataTypes.INTEGER,
-
     },
     {
       sequelize,

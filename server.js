@@ -4,7 +4,7 @@ const { PORT } = require("./config/envConfig");
 const {job}  = require("./cron/cron");
 
 
-
+// Connect to the database
 const connectDb = async () => {
   console.log("checking db connection .....");
   try {
@@ -17,7 +17,7 @@ const connectDb = async () => {
 };
 
 (async () => {
-  await connectDb(); 
+  await connectDb();
   job.start();
   app.listen(PORT, () => {
     console.log(`listening on ${PORT}`);

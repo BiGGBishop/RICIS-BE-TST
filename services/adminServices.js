@@ -4,6 +4,7 @@ const UserRepo = require("../repositories/userRepo");
 const StatusCodes = require("../utils/statusCodes");
 const { Op } = require("sequelize");
 const { Classification,ClassificationFees,Fee, ClassificationMerge,Categories,SubCategories,Users } = require('../sequelize/models');
+const transactionRepository = require('../repositories/adminRepo');
 
 exports.getAdminDetails = async (req) => {
   const adminExist = await AdminRepo.findAdminUser({ email: req.user?.email });
@@ -1816,3 +1817,20 @@ exports.getApprovedApplications = async (req, res) => {
     };
   }
 };
+
+
+class TransactionService {
+    async getAllTransactions() {
+        return await transactionRepository.getAll();
+    }
+
+    async createTransaction(transactionData) {
+        return await transactionRepository.create(transactionData);
+    }
+
+    async getTransactionsByUserId(user_id) {
+        return await transactionRepository.getByUserId(user_id);
+    }
+}
+
+module.exports = new TransactionService();

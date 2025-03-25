@@ -9,12 +9,6 @@ module.exports = {
             },
             user_id: {
                 type: Sequelize.INTEGER,
-                references: {
-                    model: "users",
-                    key: "id",
-                },
-                onDelete: "SET NULL",
-                allowNull: true,
             },
             form_id: {
                 type: Sequelize.INTEGER,

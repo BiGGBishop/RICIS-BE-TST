@@ -2,12 +2,6 @@ module.exports = (sequelize, DataTypes) => {
     const Transaction = sequelize.define('Transaction', {
         user_id: {
             type: DataTypes.INTEGER,
-            references: {
-              model: "users",
-              key: "id",
-            },
-            onDelete: "SET NULL",
-            allowNull: true,
           },
       
         form_id: {

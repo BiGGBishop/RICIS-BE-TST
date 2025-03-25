@@ -102,7 +102,7 @@ OperatorCertification.belongsTo(models.Fee, {
         allowNull: true,
       },
 	  incidentalIds:{
-		type: DataTypes.ARRAY(DataTypes.ARRAY)
+		type: DataTypes.ARRAY(DataTypes.INTEGER)
 	},
 			certification_type: DataTypes.STRING,
 			certification_class: DataTypes.STRING,

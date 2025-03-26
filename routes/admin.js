@@ -67,9 +67,9 @@ router.get("/application/:appId", authToken, asyncHandler(adminController.getAnA
 
 //Transactions
 
-router.get('/transactions',authToken,transactionController.getAllTransactions);
-router.post('/transactions',authToken, transactionController.createTransaction);
-router.get('/transactions/:user_id',authToken, transactionController.getTransactionsByUserId);
+// router.get('/transactions',authToken,transactionController.getAllTransactions);
+// router.post('/transactions',authToken, transactionController.createTransaction);
+// router.get('/transactions/:user_id',authToken, transactionController.getTransactionsByUserId);
 
 module.exports = router;
 

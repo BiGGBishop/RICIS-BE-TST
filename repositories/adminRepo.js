@@ -692,18 +692,18 @@ exports.deleteBlog = async(id) => {
   }
 };
 
-class TransactionRepository {
-  async getAll() {
-      return await Transaction.findAll();
-  }
+// class TransactionRepository {
+//   async getAll() {
+//       return await Transaction.findAll();
+//   }
 
-  async create(transactionData) {
-      return await Transaction.create(transactionData);
-  }
+//   async create(transactionData) {
+//       return await Transaction.create(transactionData);
+//   }
 
-  async getByUserId(user_id) {
-      return await Transaction.findAll({ where: { user_id } });
-  }
-}
+//   async getByUserId(user_id) {
+//       return await Transaction.findAll({ where: { user_id } });
+//   }
+// }
 
-module.exports = new TransactionRepository();
+// module.exports = new TransactionRepository();

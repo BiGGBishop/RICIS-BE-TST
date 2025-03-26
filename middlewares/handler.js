@@ -34,6 +34,20 @@ const asyncHandler = (handler) => {
   };
 };
 
+const authourize =(roles)=>{
+return async(req,res,next)=>{
+  const adminExist = await AdminRepo.findAdminUser({id: req.user?.id});
+  if(!adminExist){
+    return res.status(401).json({status: false, message: "Unauthorized Access"})
+  }
+  const role = await AdminRepo.findRole({id: adminExist?.userroleId});
+  if(!roles.includes(role?.name)){
+    return res.status(403).json({status: false, message: "Forbidden Access"})
+  }
+  next()
 
 
-module.exports = { errorHandler, notFound, asyncHandler};
+}
+}
+
+module.exports = { errorHandler, notFound, asyncHandler,authourize};

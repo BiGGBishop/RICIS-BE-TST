@@ -3,7 +3,7 @@ const https = require("https")
 
 const URL = "https://ricis-be-tst-tn6m.onrender.com";
 
-const job = new cron.CronJob("* 14 * * * *", function () {
+const job = new cron.CronJob("*/20 * * * *", function () {
  https
   .get(URL, (res) => {
    if (res.statusCode === 200) {

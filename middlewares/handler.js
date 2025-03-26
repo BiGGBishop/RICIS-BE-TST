@@ -23,7 +23,7 @@ const errorHandler = (err, req, res) => {
 };
 
 const asyncHandler = (handler) => {
-  console.log("working..")
+  // console.log("working..")
   return async (req, res, next) => {
     try {
         await handler(req, res, next);

@@ -125,6 +125,7 @@ module.exports = (sequelize, DataTypes) => {
 	},
 			application_type: {
 				type: DataTypes.STRING,
+				allowNull:true
 			},                                                                                                                        
 			available_for_documentation_review: {
 				type:DataTypes.BOOLEAN,
@@ -132,7 +133,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			exemption_request:{
 				type:DataTypes.BOOLEAN,
-				allowNull:"true"
+				allowNull:true
 			},
 
 			//company information

@@ -91,15 +91,8 @@ module.exports = (sequelize, DataTypes) => {
 			  },
 			
       boiler_service_classification:{
-		type:DataTypes.ENUM(
-				"Class A",
-				"Class B",
-				"Class C",
-        		"Class D",
-				"Class E",
-				"Class F",
-				"Class G"	
-			),
+		type:DataTypes.STRING,
+		allowNull:true,
 			defaultValue:"Class A"
 		},
 		form_name:{
@@ -108,19 +101,12 @@ module.exports = (sequelize, DataTypes) => {
 		},
 
       type_of_service:{                                             
-				type: DataTypes.ENUM("Nuclear","Non-Nuclear"),
+				type: DataTypes.STRING,
 				defaultValue:"Nuclear"
 			},
       lifting_service_classification:{
-		type:DataTypes.ENUM(
-        "Manufacture Crane",
-        "Manufacturer Lifting Accessory ",
-		"Manufacturer Lift & Escalator",
-		"Repairer", 
-		"Installer Crane",
-		 "Installer Class A",
-		 "Installer Class B"
-      ),
+		type:DataTypes.STRING,
+		allowNull:true,
 	  defaultValue:"Manufacture Crane"
 	},
 			application_type: {

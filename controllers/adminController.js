@@ -418,7 +418,8 @@ exports.getClassificationWithIncidental = async (req, res) => {
 
 
 exports.getAllUsersForms = async (req, res) => {
-  const data = await AdminService.getAllUsersForms(req, res);
+  console.log("initaitaion started");
+  const data = await AdminService.getAllUsersForms(req,res);
 
   return res.status(200).json({
     status: data.STATUS,

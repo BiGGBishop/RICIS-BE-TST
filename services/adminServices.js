@@ -1496,7 +1496,7 @@ exports.getAllUsersForms = async () => {
       console.log(userForms)
       allForms.push({ userId, forms: userForms });
     }
-    console.time()
+    // console.time()
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,

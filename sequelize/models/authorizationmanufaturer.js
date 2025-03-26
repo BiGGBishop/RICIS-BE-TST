@@ -124,8 +124,7 @@ module.exports = (sequelize, DataTypes) => {
 	  defaultValue:"Manufacture Crane"
 	},
 			application_type: {
-				type: DataTypes.ENUM("New Application", "Re-application"),
-				defaultValue:"New Application"
+				type: DataTypes.STRING,
 			},                                                                                                                        
 			available_for_documentation_review: {
 				type:DataTypes.BOOLEAN,

@@ -590,33 +590,29 @@ exports.deleteBlog = async(req,res)=>{
 
 
 
-// class TransactionController {
-//     async getAllTransactions(req, res) {
-//         try {
-//             const transactions = await transactionService.getAllTransactions();
-//             res.json(transactions);
-//         } catch (error) {
-//             res.status(500).json({ error: 'Error fetching transactions' });
-//         }
-//     }
+exports.getAllTransactions = async (req, res) => {
+  try {
+      const transactions = await transactionService.getAllTransactions();
+      res.json(transactions);
+  } catch (error) {
+      res.status(500).json({ error: 'Error fetching transactions' });
+  }
+};
 
-//     async createTransaction(req, res) {
-//         try {
-//             const transaction = await transactionService.createTransaction(req.body);
-//             res.status(201).json(transaction);
-//         } catch (error) {
-//             res.status(400).json({ error });
-//         }
-//     }
+exports.createTransaction = async (req, res) => {
+  try {
+      const transaction = await transactionService.createTransaction(req.body);
+      res.status(201).json(transaction);
+  } catch (error) {
+      res.status(400).json({ error });
+  }
+};
 
-//     async getTransactionsByUserId(req, res) {
-//         try {
-//             const transactions = await transactionService.getTransactionsByUserId(req.params.user_id);
-//             res.json(transactions);
-//         } catch (error) {
-//             res.status(500).json({ error });
-//         }
-//     }
-// }
-
-// module.exports = new TransactionController();
+exports.getTransactionsByUserId = async (req, res) => {
+  try {
+      const transactions = await transactionService.getTransactionsByUserId(req.params.user_id);
+      res.json(transactions);
+  } catch (error) {
+      res.status(500).json({ error });
+  }
+};

@@ -3,6 +3,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
 const UserService = require("../services/userServices")
+const AdminService = require("../services/adminServices")
 const FormsRepo = require("../repositories/formsRepo");
 //const StatusCodes = require("../utils/statusCodes")
 const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
@@ -233,7 +234,7 @@ exports.makePayment = async (req, res) => {
       payerPhone,
       description,
       statutoryFees,
-      incidentalFees
+      incidentalFees,
     } = req.body;
 
     const orderId = Date.now();
@@ -291,8 +292,25 @@ exports.makePayment = async (req, res) => {
     } else {
       data = response.data;
     }
+    if (data && data.RRR) {
+      const transactionData = {
+        user_id: req.user?.id || null,
+        form_id: req.body.form_id || null,
+        form_name: req.body.form_name || '',
+        rrr: data.RRR,
+        billerName: "Remita Payment Gateway",
+        payerName,
+        payerEmail,
+        statutoryFees,
+        totalFees: totalAmount,
+        transactionDate: new Date()
+      };
 
-    res.json({ ...data, orderId });
+     const transaction = await AdminService.createTransaction(transactionData);
+     console.log(transaction);
+    }
+
+    res.json({ ...data, orderId});
   } catch (error) {
     console.error('Error processing Remita split payment:', error);
     res.status(500).json({ error: 'Payment creation failed', details: error.message });
@@ -307,7 +325,9 @@ exports.makeSinglePayment = async (req, res) => {
       payerName,
       payerEmail,
       payerPhone,
-      description
+      description,
+      form_id,
+      form_name,
     } = req.body;
 
     // Validate that required fields are provided
@@ -362,12 +382,28 @@ exports.makeSinglePayment = async (req, res) => {
 
     // Check if the response has the expected data fields
     if (data && data.RRR && data.statuscode && data.status) {
+
       const result = {
         statuscode: data.statuscode,  // Add the statuscode
         RRR: data.RRR,                // Add the RRR
         status: data.status           // Add the status message
       };
 
+      const transactionData = {
+        user_id: req.user?.id || null,
+        form_id,
+        form_name,
+        rrr: data.RRR,
+        billerName: "Remita Payment Gateway",
+        payerName,
+        payerEmail,
+        statutoryFees:0,
+        totalFees: amount,
+        transactionDate: new Date()
+      };
+
+      const transaction = await AdminService.createTransaction(transactionData);
+      console.log(transaction)
       console.log('Payment Response:', result);  // Log the payment response for debugging
       return res.status(200).json(result);  // Send the payment response back to the client
     } else {
@@ -455,8 +491,7 @@ exports.getClassificationWithIncidental = async (req, res) => {
       message: "An error occurred while processing the request",
     });
   }
-};                                                                                                                                                        
-
+}
 
 exports.getClassificationMergeData = async (req, res) => {
   const { classification_number,application_type } = req.body;
@@ -475,7 +510,6 @@ exports.getClassificationMergeData = async (req, res) => {
 
   }
 };
-
 
 exports.getAllUserForms = async (req,res) => {
 const userId = req?.user?.id;
@@ -709,9 +743,6 @@ if(!userId){
     };
   }
 };
-
-
-
 
 exports.getAllUserFormsWithCertificate = async (req, res) => {
   const userId = req?.user?.id;

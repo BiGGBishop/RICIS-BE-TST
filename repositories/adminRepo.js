@@ -677,11 +677,11 @@ exports.updateBlog = async(id, data) => {
   }
 };
 
-exports.deleteBlog = async(id) => {
+exports.deleteBlog = async(id) => {                                  
   try {
     if (!id) {
       throw new Error("Blog ID is required.");
-    }
+    }                                                                                                                     
 
     const response = await Blog.destroy({ where: { id } });
     console.log(response);
@@ -692,18 +692,14 @@ exports.deleteBlog = async(id) => {
   }
 };
 
-// class TransactionRepository {
-//   async getAll() {
-//       return await Transaction.findAll();
-//   }
+exports.getAllTransactions = async () => {
+  return await Transaction.findAll();
+};
 
-//   async create(transactionData) {
-//       return await Transaction.create(transactionData);
-//   }
+exports.createTransaction = async (transactionData) => {
+  return await Transaction.create(transactionData);
+};
 
-//   async getByUserId(user_id) {
-//       return await Transaction.findAll({ where: { user_id } });
-//   }
-// }
-
-// module.exports = new TransactionRepository();
+exports.getTransactionsByUserId = async (user_id) => {
+  return await Transaction.findAll({ where: { user_id } });
+};

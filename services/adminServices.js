@@ -1819,18 +1819,14 @@ exports.getApprovedApplications = async (req, res) => {
 };
 
 
-// class TransactionService {
-//     async getAllTransactions() {
-//         return await transactionRepository.getAll();
-//     }
+exports.getAllTransactions = async () => {
+  return await AdminRepo.getAllTransactions();
+};
 
-//     async createTransaction(transactionData) {
-//         return await transactionRepository.create(transactionData);
-//     }
+exports.createTransaction = async (transactionData) => {
+  return await AdminRepo.createTransaction(transactionData);
+};
 
-//     async getTransactionsByUserId(user_id) {
-//         return await transactionRepository.getByUserId(user_id);
-//     }
-// }
-
-// module.exports = new TransactionService();
+exports.getTransactionsByUserId = async (user_id) => {
+  return await AdminRepo.getTransactionsByUserId(user_id);
+};

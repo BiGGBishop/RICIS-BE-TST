@@ -596,6 +596,16 @@ exports.findFee = async (filter) => {
   }
 };
 
+exports.findAppFee = async (id) => {
+  try {
+    const response = await Fee.findOne({ where: { id } });
+    return response;
+  } catch (error) {
+    console.error("Error details:", error);
+    throw error;
+  }
+};
+
 exports.findFees = async (filter) => {
   try {
     const response = await Fee.findAll({ where: filter });

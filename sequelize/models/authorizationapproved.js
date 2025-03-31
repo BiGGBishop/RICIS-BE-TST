@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "subcategoryId",
         as: "subcategory",
     });
+	AuthorizationApproved.hasMany(models.ClassificationFees, {
+		foreignKey: "classificationId",
+		as: "classificationFees",
+	  });	  
   
     AuthorizationApproved.belongsTo(models.Fee, {
         foreignKey: "feeId",

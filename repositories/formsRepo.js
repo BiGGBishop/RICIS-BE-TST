@@ -14,6 +14,9 @@ const {LiftingEquipmentRegistration} = require("../sequelize/models");
 const {CompetencyCertificationFormLiftOperator}= require("../sequelize/models/");
 const {Report} = require ("../sequelize/models");
 const boilerregistration = require("../sequelize/models/boilerregistration");
+const { ClassificationFees, Fee } = require("../sequelize/models");
+const { fetchClassifications } = require("../repositories/adminRepo");
+const { Op } = require("sequelize");
 
 
 exports.create = async (data) => {
@@ -64,12 +67,48 @@ exports.updateAuthorizationApproved = async (id, data) => {
 exports.findAuthorizationApprovedById = async (id) => {
   try {
     const response = await AuthorizationApproved.findByPk(id);
+
+    if (!response) return null;
+
+    const classificationData = await fetchClassifications({
+      id: response.classificationId,
+    });
+
+    let incidentalClassifications = [];
+    if (response.incidentalIds?.length > 0) {
+      const incidentalRecords = await Classification.findAll({
+        where: {
+          classification_number: { [Op.in]: response.incidentalIds },
+        },
+        attributes: ["id"],
+      });
+
+      const incidentalIds = incidentalRecords.map((record) => record.id);
+
+      incidentalClassifications =
+        incidentalIds.length > 0
+          ? await fetchClassifications({ id: { [Op.in]: incidentalIds } })
+          : [];
+    }
+
+    const classificationIdFees = classificationData.flatMap(
+      (classification) => classification.classificationFees || []
+    );
+
+    const incidentalIdsFees = incidentalClassifications.flatMap(
+      (classification) => classification.classificationFees || []
+    );
+
+    // Attach fees separately
+    response.dataValues.classificationIdFees = classificationIdFees;
+    response.dataValues.incidentalIdsFees = incidentalIdsFees;
+
     return response;
   } catch (error) {
     console.error("Error details:", error);
-    throw error; 
+    throw error;
   }
-};                                                                   
+};
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
   console.log("working...")
   return  AuthorizationApproved.findAll({

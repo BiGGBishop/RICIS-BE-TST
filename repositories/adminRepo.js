@@ -174,7 +174,7 @@ exports.fetchAClassification = async (filter) => {
           {
             model: Fee,
             as: "fee",
-            attributes: ["fee_type", "application_category"],
+            attributes: ["fee_type", "application_category", "application_type", "account_type"],
           },
         ],
       },
@@ -206,7 +206,7 @@ exports.fetchClassificationMerge = async () => {
             {
               model: Fee,
               as: "fee",
-              attributes: ["fee_type", "application_category","application_type"],
+              attributes: ["fee_type", "application_category","application_type", "account_type"],
             },
           ],
         },
@@ -251,7 +251,7 @@ exports.fetchClassificationMerge = async () => {
                   {
                     model: Fee,
                     as: "fee",
-                    attributes: ["fee_type", "application_category","application_type"],
+                    attributes: ["fee_type", "application_category","application_type", "account_type"],
                   },
                 ],
               },
@@ -463,7 +463,7 @@ exports.fetchClassificationsNoIncidental = async (filter) => {
           {
             model: Fee, // Include Fee details within ClassificationFees
             as: "fee",
-            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+            attributes: ["fee_type", "application_category", "application_type", "account_type"], // Specify which fields of Fee to include
           },
         ],
       },
@@ -498,7 +498,7 @@ exports.fetchClassificationsYesIncidental = async (filter) => {
           {
             model: Fee, // Include Fee details within ClassificationFees
             as: "fee",
-            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+            attributes: ["fee_type", "application_category", "application_type", "account_type"], // Specify which fields of Fee to include
           },
         ],
       },
@@ -545,7 +545,7 @@ exports.fetchClassifications = async (filter) => {
           {
             model: Fee, // Include Fee details within ClassificationFees
             as: "fee",
-            attributes: ["fee_type", "application_category"], // Specify which fields of Fee to include
+            attributes: ["fee_type", "application_category", "application_type", "account_type"], // Specify which fields of Fee to include
           },
         ],
       },

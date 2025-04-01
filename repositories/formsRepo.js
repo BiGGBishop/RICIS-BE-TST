@@ -63,40 +63,62 @@ exports.updateAuthorizationApproved = async (id, data) => {
     console.error("Error updating AuthorizationApproved:", error);
     throw error; 
   }
-};                                                                                                                                                                                                                                  
+};
+
 exports.findAuthorizationApprovedById = async (id) => {
   try {
     const response = await AuthorizationApproved.findByPk(id);
 
     if (!response) return null;
 
+    let { application_type } = response;
+
+    if (application_type === "New Application") {
+      application_type = "Fresh Application";
+    } else if (application_type === "Re-Application") {
+      application_type = "Renewal Application";
+    }
+
+    // Fetch Classification Data
     const classificationData = await fetchClassifications({
       id: response.classificationId,
     });
 
     let incidentalClassifications = [];
-    if (response.incidentalIds?.length > 0) {
+    if (response.incidentalIds && response.incidentalIds.length > 0) {
+      // Ensure incidentalIds is always treated as an array
+      const incidentalIds = Array.isArray(response.incidentalIds) 
+        ? response.incidentalIds 
+        : [response.incidentalIds];  // Force it to an array even if it's a single ID
+
       const incidentalRecords = await Classification.findAll({
         where: {
-          classification_number: { [Op.in]: response.incidentalIds },
+          [Op.or]: [
+            { classification_number: { [Op.in]: incidentalIds } },
+            { id: { [Op.in]: incidentalIds } },
+          ],
         },
         attributes: ["id"],
       });
 
-      const incidentalIds = incidentalRecords.map((record) => record.id);
+      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
 
       incidentalClassifications =
-        incidentalIds.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIds } })
+        incidentalIdsFromRecords.length > 0
+          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
           : [];
     }
 
-    const classificationIdFees = classificationData.flatMap(
-      (classification) => classification.classificationFees || []
+    // Filter classificationIdFees based on application_type
+    const classificationIdFees = classificationData.flatMap((classification) =>
+      (classification.classificationFees || []).filter((fee) =>
+        fee.fee.application_type?.includes(application_type)
+      )
     );
 
-    const incidentalIdsFees = incidentalClassifications.flatMap(
-      (classification) => classification.classificationFees || []
+    // Fetch incidentalIdsFees without filtering based on application_type
+    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
+      classification.classificationFees || []
     );
 
     // Attach fees separately
@@ -109,6 +131,7 @@ exports.findAuthorizationApprovedById = async (id) => {
     throw error;
   }
 };
+
 exports.findByUserIdAuthorizationApproved  = async    (userId, options = {}) => {
   console.log("working...")
   return  AuthorizationApproved.findAll({

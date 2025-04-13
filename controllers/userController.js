@@ -195,8 +195,6 @@ exports.addMsgToApplication = async (req, res) => {
   });
 };
 
-
-
 exports.getPaymentToken = async (req, res) => {
   // const data = await UserService.getPaymentToken(req, res);
   const data = {
@@ -646,7 +644,7 @@ exports.checkTransactionStatus = async (req, res) => {
     const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
-    const url = `http://www.remitademo.net/remita/ecomm/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+    const url = `https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -693,7 +691,7 @@ exports.checkTransactionStatusBank = async (req, res) => {
     const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
-    const url = `http://www.remitademo.net/remita/ecomm/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+    const url = `https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
 
     const headers = {
       'Content-Type': 'application/json',

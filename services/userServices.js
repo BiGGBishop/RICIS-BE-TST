@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const UserRepo = require("../repositories/userRepo");
 const AdminRepo = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
+const { Transaction } = require("../sequelize/models");
 
 const { Classification,ClassificationFees,Fee, ClassificationMerge,ClassificationIncidentalMerge,Categories,SubCategories } = require('../sequelize/models'); 
 
@@ -1561,4 +1562,20 @@ exports.getClassificationWithIncidental = async (classification_number) => {
       DATA: null,
     };
   }
+};
+
+exports.findTransactionByUserAndForm = async (req) => {
+  const userId = req.user?.id || null;
+  const formId = req.body?.form_id || null;
+
+  if (!userId || !formId) return null;
+
+  return await Transaction.findOne({
+    where: {
+      user_id: userId,
+      form_id: formId,
+      rrr: { [Op.ne]: null }
+    },
+    // order: [['createdAt', 'DESC']]
+  });
 };

@@ -21,6 +21,7 @@ router.get("/payment/token",authToken, asyncHandler(usersController.getPaymentTo
 router.post("/initiate-payment", authToken, asyncHandler(usersController.makePayment));
 router.post("/initiate-single-payment", authToken, asyncHandler(usersController.makeSinglePayment));
 router.get("/payment-status", authToken, asyncHandler(usersController.checkTransactionStatus));
+router.post('/payment/check-bank-status', authToken, asyncHandler(usersController.checkTransactionStatusBank));
 router.post("/remita/webhook", asyncHandler(usersController.remitaWebhook));
 router.get("/my-applications",authToken,asyncHandler(usersController.getAllUserForms));
 router.get("/my-applications-certificates",authToken,asyncHandler(usersController.getAllUserFormsWithCertificate));

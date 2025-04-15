@@ -23,7 +23,6 @@ router.post("/initiate-single-payment", authToken, asyncHandler(usersController.
 router.get("/payment-status", authToken, asyncHandler(usersController.checkTransactionStatus));
 router.post("/payment/check-bank-status", authToken, asyncHandler(usersController.checkTransactionStatusBank));
 router.post('/notify', usersController.handleNotification);
-router.get('/remita/response', asyncHandler(usersController.handleResponse));
 router.get("/my-applications",authToken,asyncHandler(usersController.getAllUserForms));
 router.get("/my-applications-certificates",authToken,asyncHandler(usersController.getAllUserFormsWithCertificate));
 

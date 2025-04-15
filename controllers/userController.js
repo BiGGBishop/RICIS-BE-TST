@@ -535,6 +535,7 @@ exports.makePayment = async (req, res) => {
 exports.makeSinglePayment = async (req, res) => {
   try {
     const {
+      serviceTypeId = REMITA_SERVICE_TYPE_ID,
       amount,
       payerName,
       payerEmail,
@@ -567,9 +568,8 @@ exports.makeSinglePayment = async (req, res) => {
 
     // Step 2: No RRR found, proceed to generate a new one
     const orderId = Date.now();
-    const totalAmount = amount.toString();
 
-    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + totalAmount + REMITA_API_KEY;
+    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(totalAmount) + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
     const headers = {
@@ -590,49 +590,41 @@ exports.makeSinglePayment = async (req, res) => {
 
     const response = await axios.post(REMITA_BASE_URL, payload, { headers });
 
-    let resBody = response.data;
-    if (resBody.startsWith('jsonp')) {
-      resBody = resBody.substring(7, resBody.length - 1);
-    }
-
-    const data = JSON.parse(resBody);
-
-    if (data && data.RRR) {
-      const transactionData = {
-        user_id: userId,
-        form_id,
-        form_name,
-        rrr: data.RRR,
-        billerName: "Remita Payment Gateway",
-        payerName,
-        payerEmail,
-        statutoryFees: 0,
-        totalFees: totalAmount,
-        orderId,
-        transactionDate: new Date()
-      };
-
-      const transaction = await AdminService.createTransaction(transactionData);
-      console.log('Saved transaction:', transaction);
-
-      return res.status(200).json({
-        RRR: data.RRR,
-        orderId,
-        statuscode: data.statuscode,
-        status: data.status
-      });
+    let data;
+    if (typeof response.data === 'string') {
+      let resBody = response.data;
+      if (resBody.startsWith('jsonp')) {
+        resBody = resBody.substring(7, resBody.length - 1);
+      }
+      data = JSON.parse(resBody);
     } else {
-      return res.status(500).json({ error: 'Failed to retrieve valid RRR from Remita' });
+      data = response.data;
     }
+
+    const rrr = data?.RRR || null;
+
+    const transactionData = {
+      user_id: userId,
+      form_id,
+      form_name,
+      rrr,
+      billerName: "Remita Payment Gateway",
+      payerName,
+      payerEmail,
+      statutoryFees: 0,
+      totalFees: totalAmount,
+      orderId,
+      transactionDate: new Date()
+    };
+
+    const transaction = await AdminService.createTransaction(transactionData);
+    console.log('Saved transaction:', transaction);
+
+    res.json({ ...data, orderId });
 
   } catch (error) {
-    console.error('Error making payment:', error.message);
-    if (error.response) {
-      console.error('Error Response Data:', error.response.data);
-      console.error('Error Response Status:', error.response.status);
-    }
-    console.error('Stack trace:', error.stack);
-    return res.status(500).json({ error: 'An error occurred while processing the payment' });
+    console.error('Error processing Remita payment:', error);
+    res.status(500).json({ error: 'Payment creation failed', details: error.message });
   }
 };
 

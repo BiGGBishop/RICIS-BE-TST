@@ -314,6 +314,111 @@ exports.getPaymentToken = async (req, res) => {
 //   }
 // };
 
+// exports.makeSinglePayment = async (req, res) => {
+//   try {
+//     // Get the data from the request body
+//     const {
+//       amount,
+//       payerName,
+//       payerEmail,
+//       payerPhone,
+//       description,
+//       form_id,
+//       form_name,
+//     } = req.body;
+
+//     // Validate that required fields are provided
+//     if (!amount || !payerName || !payerEmail || !payerPhone || !description) {
+//       return res.status(400).json({
+//         error: 'All fields are required: amount, payerName, payerEmail, payerPhone, description'
+//       });
+//     }
+
+//     // Generate orderId (timestamp in milliseconds)
+//     const d = new Date();
+//     const orderId = d.getTime();
+
+//     // Generate API hash using SHA512
+//     const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + amount + REMITA_API_KEY;
+//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+
+//     // Prepare request body for the payment API
+//     const body = {
+//       serviceTypeId: REMITA_SERVICE_TYPE_ID,
+//       amount: amount,
+//       orderId: orderId,
+//       payerName: payerName,
+//       payerEmail: payerEmail,
+//       payerPhone: payerPhone,
+//       description: description
+//     };
+
+//     // Prepare headers
+//     const headers = {
+//       'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`,
+//       'Content-Type': 'application/json'
+//     };
+
+//     // Log the body to verify it's correct
+//     console.log('Request Body:', body);
+
+//     // Send POST request to the payment API
+//     const response = await axios.post(REMITA_BASE_URL, body, { headers });
+
+//     // Log the response for debugging
+//     console.log('Raw API Response:', response.data);
+
+//     // Parse the response and extract necessary fields
+//     let resBody = response.data;
+//     if (resBody.startsWith('jsonp')) {
+//       resBody = resBody.substring(7, resBody.length - 1);  // Remove JSONP wrapper if present
+//       console.log('Processed API Response:', resBody);  // Log after removing JSONP wrapper
+//     }
+
+//     const data = JSON.parse(resBody);
+
+//     // Check if the response has the expected data fields
+//     if (data && data.RRR && data.statuscode && data.status) {
+
+//       const result = {
+//         statuscode: data.statuscode,  // Add the statuscode
+//         RRR: data.RRR,                // Add the RRR
+//         status: data.status           // Add the status message
+//       };
+
+//       const transactionData = {
+//         user_id: req.user?.id || null,
+//         form_id,
+//         form_name,
+//         rrr: data.RRR,
+//         billerName: "Remita Payment Gateway",
+//         payerName,
+//         payerEmail,
+//         statutoryFees:0,
+//         totalFees: amount,
+//         transactionDate: new Date()
+//       };
+
+//       const transaction = await AdminService.createTransaction(transactionData);
+//       console.log(transaction)
+//       console.log('Payment Response:', result);  // Log the payment response for debugging
+//       return res.status(200).json(result);  // Send the payment response back to the client
+//     } else {
+//       return res.status(500).json({ error: 'Failed to retrieve valid response data from Remita' });
+//     }
+
+//   } catch (error) {
+//     console.error('Error making payment:', error.message);  // Logs the error message
+//     if (error.response) {
+//       // If there is a response from Remita (e.g., status code, data)
+//       console.error('Error Response Data:', error.response.data);  // Log the response data
+//       console.error('Error Response Status:', error.response.status);  // Log the response status code
+//     }
+//     console.error('Stack trace:', error.stack);  // Logs the stack trace
+//     return res.status(500).json({ error: 'An error occurred while processing the payment' });
+//   }
+// };
+
 exports.makePayment = async (req, res) => {
   try {
     const {
@@ -427,111 +532,6 @@ exports.makePayment = async (req, res) => {
   }
 };
 
-// exports.makeSinglePayment = async (req, res) => {
-//   try {
-//     // Get the data from the request body
-//     const {
-//       amount,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       form_id,
-//       form_name,
-//     } = req.body;
-
-//     // Validate that required fields are provided
-//     if (!amount || !payerName || !payerEmail || !payerPhone || !description) {
-//       return res.status(400).json({
-//         error: 'All fields are required: amount, payerName, payerEmail, payerPhone, description'
-//       });
-//     }
-
-//     // Generate orderId (timestamp in milliseconds)
-//     const d = new Date();
-//     const orderId = d.getTime();
-
-//     // Generate API hash using SHA512
-//     const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + amount + REMITA_API_KEY;
-//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
-
-//     // Prepare request body for the payment API
-//     const body = {
-//       serviceTypeId: REMITA_SERVICE_TYPE_ID,
-//       amount: amount,
-//       orderId: orderId,
-//       payerName: payerName,
-//       payerEmail: payerEmail,
-//       payerPhone: payerPhone,
-//       description: description
-//     };
-
-//     // Prepare headers
-//     const headers = {
-//       'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`,
-//       'Content-Type': 'application/json'
-//     };
-
-//     // Log the body to verify it's correct
-//     console.log('Request Body:', body);
-
-//     // Send POST request to the payment API
-//     const response = await axios.post(REMITA_BASE_URL, body, { headers });
-
-//     // Log the response for debugging
-//     console.log('Raw API Response:', response.data);
-
-//     // Parse the response and extract necessary fields
-//     let resBody = response.data;
-//     if (resBody.startsWith('jsonp')) {
-//       resBody = resBody.substring(7, resBody.length - 1);  // Remove JSONP wrapper if present
-//       console.log('Processed API Response:', resBody);  // Log after removing JSONP wrapper
-//     }
-
-//     const data = JSON.parse(resBody);
-
-//     // Check if the response has the expected data fields
-//     if (data && data.RRR && data.statuscode && data.status) {
-
-//       const result = {
-//         statuscode: data.statuscode,  // Add the statuscode
-//         RRR: data.RRR,                // Add the RRR
-//         status: data.status           // Add the status message
-//       };
-
-//       const transactionData = {
-//         user_id: req.user?.id || null,
-//         form_id,
-//         form_name,
-//         rrr: data.RRR,
-//         billerName: "Remita Payment Gateway",
-//         payerName,
-//         payerEmail,
-//         statutoryFees:0,
-//         totalFees: amount,
-//         transactionDate: new Date()
-//       };
-
-//       const transaction = await AdminService.createTransaction(transactionData);
-//       console.log(transaction)
-//       console.log('Payment Response:', result);  // Log the payment response for debugging
-//       return res.status(200).json(result);  // Send the payment response back to the client
-//     } else {
-//       return res.status(500).json({ error: 'Failed to retrieve valid response data from Remita' });
-//     }
-
-//   } catch (error) {
-//     console.error('Error making payment:', error.message);  // Logs the error message
-//     if (error.response) {
-//       // If there is a response from Remita (e.g., status code, data)
-//       console.error('Error Response Data:', error.response.data);  // Log the response data
-//       console.error('Error Response Status:', error.response.status);  // Log the response status code
-//     }
-//     console.error('Stack trace:', error.stack);  // Logs the stack trace
-//     return res.status(500).json({ error: 'An error occurred while processing the payment' });
-//   }
-// };
-
 exports.makeSinglePayment = async (req, res) => {
   try {
     const {
@@ -567,26 +567,28 @@ exports.makeSinglePayment = async (req, res) => {
 
     // Step 2: No RRR found, proceed to generate a new one
     const orderId = Date.now();
+    const totalAmount = amount.toString();
 
-    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + amount + REMITA_API_KEY;
+    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + totalAmount + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
-    const body = {
-      serviceTypeId: REMITA_SERVICE_TYPE_ID,
-      amount,
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`
+    };
+
+    const payload = {
+      serviceTypeId,
+      amount: Number(totalAmount),
       orderId,
       payerName,
       payerEmail,
       payerPhone,
-      description
+      description,
+      responseUrl: RESPONSE_URL,
     };
 
-    const headers = {
-      'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`,
-      'Content-Type': 'application/json'
-    };
-
-    const response = await axios.post(REMITA_BASE_URL, body, { headers });
+    const response = await axios.post(REMITA_BASE_URL, payload, { headers });
 
     let resBody = response.data;
     if (resBody.startsWith('jsonp')) {
@@ -605,7 +607,7 @@ exports.makeSinglePayment = async (req, res) => {
         payerName,
         payerEmail,
         statutoryFees: 0,
-        totalFees: amount,
+        totalFees: totalAmount,
         orderId,
         transactionDate: new Date()
       };
@@ -723,6 +725,44 @@ exports.checkTransactionStatusBank = async (req, res) => {
       error: 'Failed to check transaction status',
       details: error.message
     });
+  }
+};
+
+exports.handleNotification = async (req, res) => {
+  try {
+    const data = req.body;
+
+    console.log("Remita Notification Received:", data);
+
+    const {
+      rrr,
+      orderId,
+      amount,
+      payerName,
+      payerPhoneNumber,
+      payerEmail,
+      serviceTypeId,
+      paymentDescription,
+      transactiondate,
+      chargeFee,
+      customFieldData,
+      type
+    } = data[0]; // Remita sends it as an array
+
+    // Optional: Save to DB or update transaction status
+    await AdminService.updateTransactionStatus({
+      rrr,
+      status: 'SUCCESS',
+      confirmedAt: new Date(),
+      rawData: data
+    });
+
+    // Remita expects 200 OK
+    res.status(200).json({ message: 'Notification received successfully' });
+
+  } catch (error) {
+    console.error("Error handling Remita webhook:", error);
+    res.status(500).json({ error: 'Failed to process notification' });
   }
 };
 

@@ -516,6 +516,7 @@ exports.makePayment = async (req, res) => {
       payerName,
       payerEmail,
       statutoryFees,
+      incidentalFees,
       totalFees: totalAmount,
       orderId,
       transactionDate: new Date()

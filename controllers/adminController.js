@@ -588,8 +588,6 @@ exports.deleteBlog = async(req,res)=>{
   }
 }
 
-
-
 exports.getAllTransactions = async (req, res) => {
   try {
       const transactions = await transactionService.getAllTransactions();

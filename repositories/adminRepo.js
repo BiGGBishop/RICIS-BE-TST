@@ -608,12 +608,15 @@ exports.findAppFee = async (id) => {
 
 exports.findFees = async (filter) => {
   try {
-    const response = await Fee.findAll({ where: filter });
+    const response = await Fee.findAll({
+      where: filter,
+      order: [['createdAt', 'DESC']],
+    });
     return response;
   } catch (error) {
     console.error("Error details:", error);
   }
-}
+};
 
 exports.findAndUpdateFee = async (update,id) => {
   const response = await Fee.update(update,{ where: { id } });
@@ -703,7 +706,9 @@ exports.deleteBlog = async(id) => {
 };
 
 exports.getAllTransactions = async () => {
-  return await Transaction.findAll();
+  return await Transaction.findAll({
+    order: [['transactionDate', 'DESC']],
+  });
 };
 
 exports.createTransaction = async (transactionData) => {
@@ -711,5 +716,8 @@ exports.createTransaction = async (transactionData) => {
 };
 
 exports.getTransactionsByUserId = async (user_id) => {
-  return await Transaction.findAll({ where: { user_id } });
+  return await Transaction.findAll({
+    where: { user_id },
+    order: [['transactionDate', 'DESC']],
+  });
 };

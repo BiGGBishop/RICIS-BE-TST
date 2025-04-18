@@ -516,6 +516,7 @@ exports.makePayment = async (req, res) => {
       payerName,
       payerEmail,
       statutoryFees,
+      incidentalFees,
       totalFees: totalAmount,
       orderId,
       transactionDate: new Date()
@@ -532,179 +533,99 @@ exports.makePayment = async (req, res) => {
   }
 };
 
-// exports.makeSinglePayment = async (req, res) => {
-//   try {
-//     const {
-//       serviceTypeId = REMITA_SERVICE_TYPE_ID,
-//       amount,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       form_id,
-//       form_name
-//     } = req.body;
-
-//     const userId = req.user?.id || null;
-
-//     // Validate required fields
-//     if (!amount || !payerName || !payerEmail || !payerPhone || !description) {
-//       return res.status(400).json({
-//         error: 'All fields are required: amount, payerName, payerEmail, payerPhone, description'
-//       });
-//     }
-
-//     // Step 1: Check for existing RRR for this user + form
-//     const existingTransaction = await UserService.findTransactionByUserAndForm(req);
-
-//     if (existingTransaction && existingTransaction.rrr) {
-//       return res.status(200).json({
-//         message: 'RRR already generated',
-//         RRR: existingTransaction.rrr,
-//         orderId: existingTransaction.orderId,
-//         reuse: true
-//       });
-//     }
-
-//     // Step 2: No RRR found, proceed to generate a new one
-//     const orderId = Date.now();
-
-//     const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(totalAmount) + REMITA_API_KEY;
-//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
-
-//     const headers = {
-//       'Content-Type': 'application/json',
-//       'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`
-//     };
-
-//     const payload = {
-//       serviceTypeId,
-//       amount: Number(totalAmount),
-//       orderId,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       responseUrl: RESPONSE_URL,
-//     };
-
-//     const response = await axios.post(REMITA_BASE_URL, payload, { headers });
-
-//     let data;
-//     if (typeof response.data === 'string') {
-//       let resBody = response.data;
-//       if (resBody.startsWith('jsonp')) {
-//         resBody = resBody.substring(7, resBody.length - 1);
-//       }
-//       data = JSON.parse(resBody);
-//     } else {
-//       data = response.data;
-//     }
-
-//     const rrr = data?.RRR || null;
-
-//     const transactionData = {
-//       user_id: userId,
-//       form_id,
-//       form_name,
-//       rrr,
-//       billerName: "Remita Payment Gateway",
-//       payerName,
-//       payerEmail,
-//       statutoryFees: 0,
-//       totalFees: totalAmount,
-//       orderId,
-//       transactionDate: new Date()
-//     };
-
-//     const transaction = await AdminService.createTransaction(transactionData);
-//     console.log('Saved transaction:', transaction);
-
-//     res.json({ ...data, orderId });
-
-//   } catch (error) {
-//     console.error('Error processing Remita payment:', error);
-//     res.status(500).json({ error: 'Payment creation failed', details: error.message });
-//   }
-// };
-
 exports.makeSinglePayment = async (req, res) => {
   try {
     const {
+      serviceTypeId = REMITA_SERVICE_TYPE_ID,
       amount,
       payerName,
       payerEmail,
       payerPhone,
       description,
-      userId,
       form_id,
       form_name
     } = req.body;
 
-    const orderId = Date.now().toString();
-    const totalAmount = amount;
+    const userId = req.user?.id || null;
 
-    const hashString = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + totalAmount + REMITA_API_KEY;
-    const apiHash = crypto.createHash('sha512').update(hashString).digest('hex');
+    // Validate required fields
+    if (!amount || !payerName || !payerEmail || !payerPhone || !description) {
+      return res.status(400).json({
+        error: 'All fields are required: amount, payerName, payerEmail, payerPhone, description'
+      });
+    }
+
+    // Step 1: Check for existing RRR for this user + form
+    const existingTransaction = await UserService.findTransactionByUserAndForm(req);
+
+    if (existingTransaction && existingTransaction.rrr) {
+      return res.status(200).json({
+        message: 'RRR already generated',
+        RRR: existingTransaction.rrr,
+        orderId: existingTransaction.orderId,
+        reuse: true
+      });
+    }
+
+    // Step 2: No RRR found, proceed to generate a new one
+    const orderId = Date.now();
+
+    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(totalAmount) + REMITA_API_KEY;
+    const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
     const headers = {
-      Authorization: `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`,
       'Content-Type': 'application/json',
+      'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`
     };
 
     const payload = {
-      serviceTypeId: REMITA_SERVICE_TYPE_ID,
-      amount: totalAmount,
+      serviceTypeId,
+      amount: Number(totalAmount),
       orderId,
       payerName,
       payerEmail,
       payerPhone,
       description,
+      responseUrl: RESPONSE_URL,
     };
 
-    const response = await axios.post(
-      'https://remitademo.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit',
-      payload,
-      { headers }
-    );
+    const response = await axios.post(REMITA_BASE_URL, payload, { headers });
 
-    let data = response.data;
-
-    if (typeof data === 'string' && data.startsWith('jsonp')) {
-      data = data.substring(7, data.length - 1);
-      data = JSON.parse(data);
+    let data;
+    if (typeof response.data === 'string') {
+      let resBody = response.data;
+      if (resBody.startsWith('jsonp')) {
+        resBody = resBody.substring(7, resBody.length - 1);
+      }
+      data = JSON.parse(resBody);
+    } else {
+      data = response.data;
     }
+
+    const rrr = data?.RRR || null;
 
     const transactionData = {
       user_id: userId,
       form_id,
       form_name,
-      rrr: data.RRR,
+      rrr,
       billerName: "Remita Payment Gateway",
       payerName,
       payerEmail,
       statutoryFees: 0,
       totalFees: totalAmount,
       orderId,
-      transactionDate: new Date(),
+      transactionDate: new Date()
     };
 
     const transaction = await AdminService.createTransaction(transactionData);
     console.log('Saved transaction:', transaction);
 
-    return res.status(200).json({
-      RRR: data.RRR,
-      orderId,
-      statuscode: data.statuscode,
-      status: data.status
-    });
+    res.json({ ...data, orderId });
 
   } catch (error) {
-    console.error('Remita Init Error:', error.response?.data || error.message);
-    return res.status(500).json({
-      success: false,
-      message: 'Remita payment initiation failed.',
-    });
+    console.error('Error processing Remita payment:', error);
+    res.status(500).json({ error: 'Payment creation failed', details: error.message });
   }
 };
 

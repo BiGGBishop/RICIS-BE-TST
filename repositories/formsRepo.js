@@ -1309,7 +1309,9 @@ exports.createReport = async (data) => {
 
 exports.findAllReports = async () => {
   try {
-    const response = await Report.findAll();
+    const response = await Report.findAll({
+      order: [['createdAt', 'DESC']],
+    });
     return response;
   } catch (error) {
     console.error("Error fetching all reports:", error);

@@ -53,7 +53,7 @@ module.exports = {
         allowNull: true,
       },
       appStatus: {
-				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended", "paid", "unpaid"),
+				type: Sequelize.ENUM("pending", "approved", "rejected", "suspended"),
 			  },
        paymentStatus:{ type: Sequelize.ENUM("paid","unpaid"),},
 

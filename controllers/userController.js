@@ -613,7 +613,7 @@ exports.makeSinglePayment = async (req, res) => {
       payerName,
       payerEmail,
       statutoryFees: 0,
-      totalFees: totalAmount,
+      totalFees: amount,
       orderId,
       transactionDate: new Date()
     };

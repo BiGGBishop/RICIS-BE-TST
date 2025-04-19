@@ -570,7 +570,7 @@ exports.makeSinglePayment = async (req, res) => {
     // Step 2: No RRR found, proceed to generate a new one
     const orderId = Date.now();
 
-    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(totalAmount) + REMITA_API_KEY;
+    const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(amount) + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
     const headers = {
@@ -580,7 +580,7 @@ exports.makeSinglePayment = async (req, res) => {
 
     const payload = {
       serviceTypeId,
-      amount: Number(totalAmount),
+      amount,
       orderId,
       payerName,
       payerEmail,

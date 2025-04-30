@@ -436,19 +436,9 @@ exports.makePayment = async (req, res) => {
 
     const userId = req.user?.id || null;
 
-    // Step 1: Check if an RRR already exists for this user & form
+    // Step 1: Check if an existing transaction exists
     const existingTransaction = await UserService.findTransactionByUserAndForm(req);
 
-    if (existingTransaction && existingTransaction.rrr) {
-      return res.json({
-        message: 'RRR already generated',
-        rrr: existingTransaction.rrr,
-        orderId: existingTransaction.orderId,
-        reuse: true
-      });
-    }
-
-    // Step 2: No existing RRR, so generate a new one
     const orderId = Date.now();
 
     const lineItem1 = {
@@ -506,7 +496,6 @@ exports.makePayment = async (req, res) => {
 
     const rrr = data?.RRR || null;
 
-    // Step 3: Save the transaction regardless of payment status
     const transactionData = {
       user_id: userId,
       form_id,
@@ -522,7 +511,15 @@ exports.makePayment = async (req, res) => {
       transactionDate: new Date()
     };
 
-    const transaction = await AdminService.createTransaction(transactionData);
+    let transaction;
+    if (existingTransaction) {
+      // Update existing transaction with new RRR and orderId
+      transaction = await AdminService.updateTransaction(existingTransaction.id, transactionData);
+    } else {
+      // Create new transaction
+      transaction = await AdminService.createTransaction(transactionData);
+    }
+
     console.log('Saved transaction:', transaction);
 
     res.json({ ...data, orderId });
@@ -555,19 +552,10 @@ exports.makeSinglePayment = async (req, res) => {
       });
     }
 
-    // Step 1: Check for existing RRR for this user + form
+    // Step 1: Check if a transaction already exists for this user + form
     const existingTransaction = await UserService.findTransactionByUserAndForm(req);
 
-    if (existingTransaction && existingTransaction.rrr) {
-      return res.status(200).json({
-        message: 'RRR already generated',
-        RRR: existingTransaction.rrr,
-        orderId: existingTransaction.orderId,
-        reuse: true
-      });
-    }
-
-    // Step 2: No RRR found, proceed to generate a new one
+    // Step 2: Generate a new RRR regardless
     const orderId = Date.now();
 
     const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + Number(amount) + REMITA_API_KEY;
@@ -618,7 +606,15 @@ exports.makeSinglePayment = async (req, res) => {
       transactionDate: new Date()
     };
 
-    const transaction = await AdminService.createTransaction(transactionData);
+    let transaction;
+    if (existingTransaction) {
+      // Update existing record with new RRR and payment info
+      transaction = await AdminService.updateTransaction(existingTransaction.id, transactionData);
+    } else {
+      // Create a new transaction if none exists
+      transaction = await AdminService.createTransaction(transactionData);
+    }
+
     console.log('Saved transaction:', transaction);
 
     res.json({ ...data, orderId });
@@ -727,6 +723,8 @@ exports.handleNotification = async (req, res) => {
 
     console.log("Remita Notification Received:", data);
 
+    const notification = Array.isArray(data) ? data[0] : data;
+
     const {
       rrr,
       orderId,
@@ -740,13 +738,30 @@ exports.handleNotification = async (req, res) => {
       chargeFee,
       customFieldData,
       type
-    } = data[0]; // Remita sends it as an array
+    } = notification;
 
-    // Optional: Save to DB or update transaction status
+    const statusCode = notification.statuscode || notification.status; // Check both
+
+    let newStatus = 'pending';
+
+    if (statusCode === '00') {
+      newStatus = 'completed';
+    } else if (['01', '021', '022', '023', '030', '999'].includes(statusCode)) {
+      newStatus = 'failed';
+    } else {
+      newStatus = 'pending';
+    }
+
+    // Save or update transaction
     await AdminService.updateTransactionStatus({
       rrr,
-      status: 'SUCCESS',
-      confirmedAt: new Date(),
+      orderId,
+      amount,
+      payerName,
+      payerPhoneNumber,
+      payerEmail,
+      status: newStatus,
+      confirmedAt: newStatus === 'completed' ? new Date() : null,
       rawData: data
     });
 

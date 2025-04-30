@@ -137,26 +137,23 @@ exports.getAClassifications = async (req, res) => {
   });
 };
 
-
-  exports.getClassificationMerge = async (req, res) => {
-    try {
-     const merges = await AdminService.getClassificationMerge(req)
-     
-      return res.status(200).json({
-        status: true,
-        message: "Classification merges retrieved successfully",
-        data: merges,
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        status: false,
-        message: "Internal Server Error",
-      });
-    }
-  };
-
-  
+exports.getClassificationMerge = async (req, res) => {
+  try {
+    const merges = await AdminService.getClassificationMerge(req)
+    
+    return res.status(200).json({
+      status: true,
+      message: "Classification merges retrieved successfully",
+      data: merges,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 exports.getClassificationsNoIncidental = async (req, res) => {
   try {
@@ -415,7 +412,6 @@ exports.getClassificationWithIncidental = async (req, res) => {
     data: data.DATA,
   });
 };
-
 
 exports.getAllUsersForms = async (req, res) => {
   console.log("initaitaion started");

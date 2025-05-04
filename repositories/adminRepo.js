@@ -721,3 +721,10 @@ exports.getTransactionsByUserId = async (user_id) => {
     order: [['transactionDate', 'DESC']],
   });
 };
+
+exports.findByApplicationId = async (applicationId) => {
+  return Transaction.findOne({
+    where: { form_id: applicationId },
+    attributes: ['amount'],
+  });
+};

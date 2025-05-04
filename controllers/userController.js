@@ -1043,11 +1043,27 @@ if(!userId){
          ]);
     const allForms = results.map((forms) => forms || []);
     console.log(allForms)
-      
+    const flatForms = results.flat();
+    let totalAmount = 0;
+
+    flatForms.forEach(form => {
+      const fees = form.classification?.classificationFees;
+
+      if (Array.isArray(fees)) {
+        fees.forEach(fee => {
+          totalAmount += fee.amount || 0;
+        });
+      } else if (fees) {
+        totalAmount += fees.amount || 0;
+      }
+    });
     return res.status(200).json({
       status: true,
       message: "User forms fetched successfully.",
-      data: allForms,
+      data: {
+        forms: allForms,
+        totalAmount
+      }
     });
   } catch (error) {
     console.error("Error fetching all user forms:", error);

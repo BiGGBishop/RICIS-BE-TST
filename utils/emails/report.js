@@ -7,7 +7,7 @@ exports.sendReportNotification = async (email, reportDetails) => {
       service: "gmail",
       secure: true,
       auth: {
-        user: "noreply@ricinspection.com",
+        user: "infodevhorizon@gmail.com",
         pass: PASSMAILER,
       },
     });

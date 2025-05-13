@@ -9,14 +9,14 @@ exports.contactUsMsg = async (email, first_name) => {
       secure: true,
       auth: {
         pass: PASSMAILER,
-        user: "farmsagora@gmail.com",
+        user: "noreply@ricinspection.com",
       },
     });
 
     await transporter.sendMail({
-      from: "farmsagora@gmail.com",
+      from: "noreply@ricinspection.com",
       to: email,
-      subject: "Resida Contact",
+      subject: "RICIS Contact",
       html: ` 
              <p>  Hello, ${first_name} </p></br>
   
@@ -61,7 +61,7 @@ exports.contactUsMsg = async (email, first_name) => {
   
               <b>
               <p>Best regards,</p>
-              <p>The RESIDA Team</p>
+              <p>The RICIS Team</p>
               <p>+234 xxx-xxx-xxxx</p>
               </b>
           `,

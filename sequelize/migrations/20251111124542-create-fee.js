@@ -17,6 +17,7 @@ module.exports = {
       allowNull: true,
      },
       account_type: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
        allowNull: true,
       },
       createdAt: {

@@ -4,11 +4,11 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     const tables = [
-      "AuthorizationManufacturers",
-      "ManufacturerRepairers",
-      "OperatorCertifications",
-      "RenewalForms",
-      "LiftingEquipmentRegistrations",
+      // "AuthorizationManufacturers",
+      // "ManufacturerRepairers",
+      // "OperatorCertifications",
+      // "RenewalForms",
+      // "LiftingEquipmentRegistrations",
       "CompetencyCertificationFormLiftOperator"
     ];
 

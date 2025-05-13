@@ -9,7 +9,7 @@ exports.userSignUpMsg = async (email) => {
       secure: true,
       auth: {
         pass: PASSMAILER,
-        user: "infodevhorizon@gmail.com", // USER
+        user: "noreply@ricinspection.com", // USER
       },
     });
 
@@ -44,7 +44,7 @@ exports.signUpOtp = async (email, OTP) => {
       secure: true,
       auth: {
         pass: PASSMAILER,
-        user: "infodevhorizon@gmail.com", // USER
+        user: "noreply@ricinspection.com", // USER
       },
     });
 
@@ -78,7 +78,7 @@ exports.sendCredentails = async (email, password) => {
       secure: true,
       auth: {
         pass: PASSMAILER,
-        user: "infodevhorizon@gmail.com", // USER
+        user: "noreply@ricinspection.com", // USER
       },
     });
     await transporter.sendMail({

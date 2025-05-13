@@ -3,10 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('fees', 'application_category', {
-      type: Sequelize.ARRAY(Sequelize.STRING),
-      allowNull: true,
-    });
     await queryInterface.addColumn('fees', 'application_type', {
       type: Sequelize.ARRAY(Sequelize.STRING),
       allowNull: true,

@@ -17,33 +17,28 @@ const { Classification,ClassificationFees,Fee, ClassificationMerge,Classificatio
 
 exports.getOTP = async (req) => {
   const { email } = req.body;
-
-  console.log({ body: req.body });
-
   const OTP = await generateOTP();
-  console.log(OTP);
-
   const otpObject = {
     email: email,
     code: OTP,
     type: "Signup",
-    otpExpiresAt: Date.now() + 5 * 60 * 1000, // 5mins
+    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
   };
-
-  await UserRepo.createOTP(otpObject);
-  //  const user =  await User.create(otpObject);
-
-  /**
-   * send mail
-   */
-  await signUpOtp(email, OTP);
-
-  return {
-    STATUS_CODE: StatusCodes.CREATED,
-    STATUS: true,
-    MESSAGE: "OTP has been sent to your email.",
-    // DATA:user
-  };
+  try {
+    const savedOtp = await UserRepo.createOTP(otpObject);
+    await signUpOtp(email, OTP);
+    return {
+      STATUS_CODE: StatusCodes.CREATED,
+      STATUS: true,
+      MESSAGE: "OTP has been sent to your email.",
+    };
+  } catch (error) {
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "An error occurred while generating the OTP.",
+    };
+  }
 };
 
 exports.resendOTP = async (req) => {

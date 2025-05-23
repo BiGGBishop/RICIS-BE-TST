@@ -58,7 +58,7 @@ exports.resendOTP = async (req) => {
     email: email,
     code: OTP,
     type: "Signup",
-    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000), // 1mins
+    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
   };
 
   try {
@@ -67,9 +67,7 @@ exports.resendOTP = async (req) => {
     console.error("Failed to create OTP:", e);
   }
 
-  /**
-   * send mail
-   */
+  /** send mail  **/
   await signUpOtp(email, OTP);
 
   return {

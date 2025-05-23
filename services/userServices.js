@@ -25,7 +25,11 @@ exports.getOTP = async (req) => {
     otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
   };
   try {
-    const savedOtp = await UserRepo.createOTP(otpObject);
+    try {
+    await UserRepo.createOTP(otpObject);
+  } catch (e) {
+    console.error("Failed to create OTP:", e);
+  }
     await signUpOtp(email, OTP);
     return {
       STATUS_CODE: StatusCodes.CREATED,
@@ -58,10 +62,14 @@ exports.resendOTP = async (req) => {
     email: email,
     code: OTP,
     type: "Signup",
-    otpExpiresAt: Date.now() + 5 * 60 * 1000, // 1mins
+    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
   };
 
+  try {
   await UserRepo.createOTP(otpObject);
+  } catch (e) {
+    console.error("Failed to create OTP:", e);
+  }
 
   /**
    * send mail
@@ -79,6 +87,7 @@ exports.validateOTP = async (req) => {
   const { otp } = req.body;
 
   const otpExist = await UserRepo.findOneOTP({
+    email: req.body.email,
     code: otp,
     otpExpiresAt: { [Op.gt]: new Date() },
   });
@@ -275,7 +284,7 @@ exports.recoveryOtp = async (req) => {
     email: req.body.email,
     code: OTP,
     type: "ForgotPassword",
-    otpExpiresAt: Date.now() + 5 * 60 * 1000, // 2mins
+    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
   };
 
   await UserRepo.createOTP(otpObject);
@@ -296,6 +305,7 @@ exports.verifyRecoveryOTP = async (req) => {
   const { otp } = req.body;
 
   const otpExist = await UserRepo.findOneOTP({
+    email: req.body.email,
     code: otp,
     otpExpiresAt: { [Op.gt]: new Date() },
   });

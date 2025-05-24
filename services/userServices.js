@@ -83,79 +83,65 @@ exports.resendOTP = async (req) => {
   };
 };
 
-// exports.validateOTP = async (req) => {
-//   const { otp } = req.body;
+exports.validateOTP = async (req) => {
+  const { otp, email } = req.body;
 
-//   const otpExist = await UserRepo.findOneOTP({
-//     email: req.body.email,
-//     code: otp,
-//     otpExpiresAt: { [Op.gt]: new Date() },
-//   });
+  console.log("👉 Received request to validate OTP");
+  console.log("📩 Payload:", { otp, email });
 
-//   if (otpExist == null) {
-//     return {
-//       STATUS_CODE: StatusCodes.BAD_REQUEST,
-//       STATUS: false,
-//       MESSAGE: "Invalid OTP",
-//     };
-//   }
+  // Step 1: Check if OTP exists and is valid
+  console.log("🔍 Checking if OTP exists and is not expired...");
+  const otpExist = await UserRepo.findOneOTP({
+    code: otp,
+    otpExpiresAt: { [Op.gt]: new Date() },
+  });
 
-//   /* delete OTP after verifying */
-//   await UserRepo.deleteOneOTP({ code: otp });
-
-//   const role = await UserRepo.findRole({ name: "user" });
-
-//   const userObject = {
-//     completion_percent: 50,
-//     email: req.body.email,
-//   };
-
-
-//   const createdUser = await UserRepo.createUser(userObject);
-
-//   console.log({ createdUser: createdUser.id });
-//   let token;
-//   if (createdUser) {
-//     const tokenObject = {
-//       user: createdUser.id,
-//       email: createdUser.email,
-//     };
-
-//     token = await generateToken(tokenObject);
-//   }
-
-//   return {
-//     STATUS_CODE: StatusCodes.OK,
-//     STATUS: true,
-//     MESSAGE: "email verified",
-//     DATA: {
-//       user: createdUser,
-//       token,
-//     },
-//   };
-// };
-
-exports.validateOTP = async (req, res) => {
-  try {
-    const data = await UserService.validateOTP(req);
-
-    return res.status(data.STATUS_CODE || 500).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA || null,
-    });
-
-  } catch (err) {
-    console.error("Fatal error in validateOTP controller:", err);
-
-    // Ensure we don't double-send
-    if (!res.headersSent) {
-      return res.status(500).json({
-        status: false,
-        message: "Internal server error.",
-      });
-    }
+  if (!otpExist) {
+    console.log("❌ OTP is invalid or expired.");
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid OTP",
+    };
   }
+  console.log("✅ OTP is valid.");
+
+  // Step 2: Delete the OTP
+  console.log("🧹 Deleting OTP from database...");
+  await UserRepo.deleteOneOTP({ code: otp });
+  console.log("🗑️ OTP deleted.");
+
+  // Step 3: Prepare user data
+  const userObject = {
+    completion_percent: 50,
+    email,
+  };
+  console.log("👤 Preparing to create user with data:", userObject);
+
+  // Step 4: Create user
+  console.log("🛠️ Creating user in database...");
+  const createdUser = await UserRepo.createUser(userObject);
+  console.log("✅ User created with ID:", createdUser.id);
+
+  // Step 5: Generate token
+  console.log("🔐 Generating authentication token...");
+  const token = await generateToken({
+    user: createdUser.id,
+    email: createdUser.email,
+  });
+  console.log("🔑 Token generated.");
+
+  // Step 6: Send final response
+  console.log("🚀 Sending success response to client.");
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Email verified",
+    DATA: {
+      user: createdUser,
+      token,
+    },
+  };
 };
 
 exports.signUpUsers = async (req) => {

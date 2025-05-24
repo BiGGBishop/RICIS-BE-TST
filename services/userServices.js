@@ -83,56 +83,79 @@ exports.resendOTP = async (req) => {
   };
 };
 
-exports.validateOTP = async (req) => {
-  const { otp } = req.body;
+// exports.validateOTP = async (req) => {
+//   const { otp } = req.body;
 
-  const otpExist = await UserRepo.findOneOTP({
-    email: req.body.email,
-    code: otp,
-    otpExpiresAt: { [Op.gt]: new Date() },
-  });
+//   const otpExist = await UserRepo.findOneOTP({
+//     email: req.body.email,
+//     code: otp,
+//     otpExpiresAt: { [Op.gt]: new Date() },
+//   });
 
-  if (otpExist == null) {
-    return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
-      STATUS: false,
-      MESSAGE: "Invalid OTP",
-    };
+//   if (otpExist == null) {
+//     return {
+//       STATUS_CODE: StatusCodes.BAD_REQUEST,
+//       STATUS: false,
+//       MESSAGE: "Invalid OTP",
+//     };
+//   }
+
+//   /* delete OTP after verifying */
+//   await UserRepo.deleteOneOTP({ code: otp });
+
+//   const role = await UserRepo.findRole({ name: "user" });
+
+//   const userObject = {
+//     completion_percent: 50,
+//     email: req.body.email,
+//   };
+
+
+//   const createdUser = await UserRepo.createUser(userObject);
+
+//   console.log({ createdUser: createdUser.id });
+//   let token;
+//   if (createdUser) {
+//     const tokenObject = {
+//       user: createdUser.id,
+//       email: createdUser.email,
+//     };
+
+//     token = await generateToken(tokenObject);
+//   }
+
+//   return {
+//     STATUS_CODE: StatusCodes.OK,
+//     STATUS: true,
+//     MESSAGE: "email verified",
+//     DATA: {
+//       user: createdUser,
+//       token,
+//     },
+//   };
+// };
+
+exports.validateOTP = async (req, res) => {
+  try {
+    const data = await UserService.validateOTP(req);
+
+    return res.status(data.STATUS_CODE || 500).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA || null,
+    });
+
+  } catch (err) {
+    console.error("Fatal error in validateOTP controller:", err);
+
+    // Ensure we don't double-send
+    if (!res.headersSent) {
+      return res.status(500).json({
+        status: false,
+        message: "Internal server error.",
+      });
+    }
   }
-
-  /* delete OTP after verifying */
-  await UserRepo.deleteOneOTP({ code: otp });
-
-  const role = await UserRepo.findRole({ name: "user" });
-
-  const userObject = {
-    completion_percent: 50,
-    email: req.body.email,
-  };
-  // console.log({ userObject });
-
-  const createdUser = await UserRepo.createUser(userObject);
-
-  console.log({ createdUser: createdUser.id });
-  let token;
-  if (createdUser) {
-    const tokenObject = {
-      user: createdUser.id,
-      email: createdUser.email,
-    };
-
-    token = await generateToken(tokenObject);
-  }
-
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "email verified",
-    DATA: {
-      user: createdUser,
-      token,
-    },
-  };
 };
 
 exports.signUpUsers = async (req) => {

@@ -2,11 +2,11 @@ const { getClassificationsWithMerges,getClassificationWithIncidental } = require
 const axios = require('axios');
 const crypto = require('crypto');
 const dotenv = require('dotenv');
-const UserService = require("../services/userServices")
-const AdminService = require("../services/adminServices")
+const UserService = require("../services/userServices");
+const AdminService = require("../services/adminServices");
 const FormsRepo = require("../repositories/formsRepo");
 //const StatusCodes = require("../utils/statusCodes")
-const {Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
+const {Otp, User, Categories,SubCategories,Fee,Classification,ClassificationFees} = require("../sequelize/models" );
 const {Op} = require('sequelize');
 const StatusCodes = require("../utils/statusCodes");
 
@@ -40,13 +40,65 @@ exports.resendOTP = async (req, res) => {
 };
 
 exports.validateOTP = async (req, res) => {
-  const data = await UserService.validateOTP(req, res);
+  const { email, otp } = req.body;
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+  try {
+    console.log('Validating OTP for:', email, otp);
+
+    // Step 1: Find OTP entry
+    const otpEntry = await Otp.findOne({
+      where: {
+        email,
+        code: otp,
+        otpExpiresAt: {
+          [Op.gt]: new Date(), // not expired
+        },
+      },
+    });
+
+    if (!otpEntry) {
+      return res.status(400).json({
+        status: false,
+        message: 'Invalid or expired OTP',
+      });
+    }
+
+    // Step 2: Delete OTP after successful validation
+    await otpEntry.destroy();
+
+    // Step 3: Check if user exists
+    let user = await User.findOne({ where: { email } });
+
+    // Step 4: Create user if not exists
+    if (!user) {
+      user = await User.create({
+        email,
+        completion_percent: 50,
+        // isFeedbackReceived: false,
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: 'OTP verified successfully',
+      data: {
+        user: {
+          id: user.id,
+          email: user.email,
+        },
+      },
+    });
+
+  } catch (error) {
+    console.error('Fatal error in validateOTP controller:', error);
+
+    if (!res.headersSent) {
+      return res.status(500).json({
+        status: false,
+        message: 'Internal server error',
+      });
+    }
+  }
 };
 
 exports.signUpUsers = async (req, res) => {

@@ -35,10 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       phone_number: DataTypes.STRING,
       completion_percent: DataTypes.INTEGER,
-      isFeedBackReceived:{
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
+      // isFeedBackReceived:{
+      //   type: DataTypes.BOOLEAN,
+      //   defaultValue: false,
+      // },
       userroleId: {
         type: DataTypes.INTEGER,
         references: {

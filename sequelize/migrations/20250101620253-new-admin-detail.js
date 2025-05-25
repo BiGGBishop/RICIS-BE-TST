@@ -6,11 +6,6 @@ const bcrypt = require("bcryptjs")
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    /*const adminRole = await userRepo.findRole({ name: 'admin' });
-    if (!adminRole) {
-      console.error("Admin role not found. Please create the 'admin' role first.");
-      return;
-    }*/
       const hashedPassword = bcrypt.hashSync('FMT-ech123', 10);
 
     await queryInterface.bulkInsert('adminstaffs', [{
@@ -27,6 +22,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('adminstaffs', { email: 'admin@ricis.com' });
+    await queryInterface.bulkDelete('adminstaffs', { email: 'oladimejid@gmail.com' });
   }
 };

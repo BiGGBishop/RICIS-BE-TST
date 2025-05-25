@@ -69,6 +69,16 @@ exports.findRole = async (filter) => {
   return response;
 };
 
+exports.findByEmail = async (email) => {
+  try {
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    return user; // returns null if not found
+  } catch (error) {
+    console.error("Error in findByEmail:", error);
+    throw error;
+  }
+};
+
 //applicatations
 exports.createApp = async (update) => {
   try {

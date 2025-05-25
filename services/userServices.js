@@ -17,26 +17,44 @@ const { Classification,ClassificationFees,Fee, ClassificationMerge,Classificatio
 
 exports.getOTP = async (req) => {
   const { email } = req.body;
-  const OTP = await generateOTP();
-  const otpObject = {
-    email: email,
-    code: OTP,
-    type: "Signup",
-    otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
-  };
+
   try {
+    // 1. Check if email is already registered
+    const existingUser = await UserRepo.findByEmail(email);
+    if (existingUser) {
+      return {
+        STATUS_CODE: StatusCodes.BAD_REQUEST,
+        STATUS: false,
+        MESSAGE: "This email is already registered.",
+      };
+    }
+
+    // 2. Generate OTP
+    const OTP = await generateOTP();
+    const otpObject = {
+      email: email,
+      code: OTP,
+      type: "Signup",
+      otpExpiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    };
+
+    // 3. Save OTP to DB
     try {
-    await UserRepo.createOTP(otpObject);
-  } catch (e) {
-    console.error("Failed to create OTP:", e);
-  }
+      await UserRepo.createOTP(otpObject);
+    } catch (e) {
+      console.error("Failed to create OTP:", e);
+    }
+
+    // 4. Send OTP
     await signUpOtp(email, OTP);
+
     return {
       STATUS_CODE: StatusCodes.CREATED,
       STATUS: true,
       MESSAGE: "OTP has been sent to your email.",
     };
   } catch (error) {
+    console.error("getOTP error:", error);
     return {
       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
       STATUS: false,
@@ -658,38 +676,41 @@ exports.registerStaffAndAdmin = async (req) => {
 };
 
 exports.staffLogin = async (req) => {
-  const filter = {
-    email: req.body.email,
-  };
-  // debugger
+  console.log("=== staffLogin initiated ===");
+
+  const filter = { email: req.body.email };
+  console.log("Filter for login:", filter);
+
   const adminExist = await UserRepo.findAdminUser(filter);
-  // console.log(userExist);
+  console.log("adminExist:", adminExist);
 
   if (!adminExist) {
+    console.log("User not found. Invalid credentials.");
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,
-      MESSAGE: "Invalid Credentials.", //@admin not exist
+      MESSAGE: "Invalid Credentials.", // @admin not exist
     };
   }
 
   const role = await UserRepo.findRole({ id: adminExist?.userroleId });
+  console.log("Fetched role:", role);
 
-  console.log({ role: role?.id, name: role?.name });
+  const password_match = await bcrypt.compare(req.body.password, adminExist.password);
+  console.log("Password match result:", password_match);
 
-  const password_match = await bcrypt.compare(
-    req.body.password,
-    adminExist.password
-  );
-
-  if (!password_match)
+  if (!password_match) {
+    console.log("Password does not match.");
     return {
       STATUS_CODE: StatusCodes.NOT_FOUND,
       STATUS: false,
-      MESSAGE: "Invalid  Credentials..",
+      MESSAGE: "Invalid Credentials..",
     };
-  /**Only admin and staff can loggin */
+  }
+
+  /** Only admin and staff can login */
   if (role?.name !== "admin" && role?.name !== "staff") {
+    console.log("Access denied. Role:", role?.name);
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,
@@ -697,9 +718,9 @@ exports.staffLogin = async (req) => {
     };
   }
 
-  /**Only admin and staff whose status is not pending can login that is to say untill approved you cannot login*/
-
+  /** You can also uncomment this if you want to block non-approved users */
   // if (adminExist?.user_status !== "approved") {
+  //   console.log("Access denied. User status:", adminExist?.user_status);
   //   return {
   //     STATUS_CODE: StatusCodes.BAD_REQUEST,
   //     STATUS: false,
@@ -707,21 +728,24 @@ exports.staffLogin = async (req) => {
   //   };
   // }
 
-  // Convert the instance to a plain object
+  // Convert instance to a plain object
   const user = adminExist.get({ plain: true });
-  // remove the password field
   delete user.password;
+  console.log("User object after removing password:", user);
 
   const tokenObject = {
     user: user.id,
     email: user.email,
   };
   const token = await generateToken(tokenObject);
+  console.log("Generated token:", token);
+
+  console.log("=== staffLogin successful ===");
 
   return {
     STATUS_CODE: StatusCodes.OK,
     STATUS: true,
-    MESSAGE: "User logged in  successfully!",
+    MESSAGE: "User logged in successfully!",
     DATA: {
       user,
       token,

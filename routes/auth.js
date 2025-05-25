@@ -66,7 +66,6 @@ router.patch(
 
 router.post(
   "/register/staff",
-  authToken,
   asyncHandler(usersController.registerStaffAndAdmin)
 );
 

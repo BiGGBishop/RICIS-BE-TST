@@ -20,8 +20,11 @@ exports.getOTP = async (req) => {
 
   try {
     // 1. Check if email is already registered
-    const existingUser = await UserRepo.findByEmail(email);
-    if (existingUser) {
+    const filter = {
+      email: email,
+    };
+    const userExist = await UserRepo.findOne(filter);
+    if (userExist) {
       return {
         STATUS_CODE: StatusCodes.BAD_REQUEST,
         STATUS: false,
@@ -162,107 +165,33 @@ exports.validateOTP = async (req) => {
   };
 };
 
-// exports.signUpUsers = async (req) => {
-//   const { password } = req.body;
-
-//   const filter = {
-//     id: req?.user?.id,
-//   };
-
-//   // console.log(filter)
-
-//   const userExist = await UserRepo.findOne(filter);
-//   if (!userExist) {
-
-//     return {
-//       STATUS_CODE: StatusCodes.BAD_REQUEST,
-//       STATUS: false,
-//       MESSAGE: "no record",
-//       DATA: null,
-//     };
-//   }
-
-//   const role = await UserRepo.findRole({ name: "user" });
-
-//   const userObject = {
-//     userroleId: role?.id,
-//     completion_percent: 100,
-//     ...req.body,
-//   };
-
-//   await UserRepo.findUserAndUpdate(filter, userObject);
-
-//   // Encrypt the password before saving
-//   const salt = await bcrypt.genSaltSync(10);
-
-//   userExist.password = await bcrypt.hash(password, salt); // Encrypt the password
-//   await userExist.save(); // Save the changes
-
-//   let token;
-
-//   const tokenObject = {
-//     user: userExist.id,
-//     email: userExist.email,
-//   };
-//   token = await generateToken(tokenObject);
-
-//   const fetchUser = await UserRepo.findUser(filter);
-
-//   // Convert the instance to a plain object
-//   const user = fetchUser.get({ plain: true });
-//   // remove the password field
-//   delete user.password;
-
-//   return {
-//     STATUS_CODE: StatusCodes.OK,
-//     STATUS: true,
-//     MESSAGE: "User registered successfully!",
-//     DATA: {
-//       user,
-//       token,
-//     },
-//   };
-// };
-
 exports.signUpUsers = async (req) => {
   const { email, password } = req.body;
 
-  // First, check if the email is already registered
-  const userExist = await UserRepo.findOne({ email });
-  if (userExist) {
-    return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
-      STATUS: false,
-      MESSAGE: "Email is already registered",
-      DATA: null,
-    };
-  }
-
-  // Fetch the role for "user"
+  // Fetch the "user" role
   const role = await UserRepo.findRole({ name: "user" });
 
-  // Create a new user object
-  const salt = await bcrypt.genSaltSync(10);
+  // Hash the password
+  const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const userObject = {
     ...req.body,
+    email,
     password: hashedPassword,
     userroleId: role?.id,
     completion_percent: 100,
   };
 
   // Create the new user
-  const newUser = await UserRepo.create(userObject);
+  const newUser = await UserRepo.createUser(userObject);
 
-  // Generate the token
   const tokenObject = {
     user: newUser.id,
     email: newUser.email,
   };
   const token = await generateToken(tokenObject);
 
-  // Remove the password from the user object before returning
   const user = newUser.get({ plain: true });
   delete user.password;
 

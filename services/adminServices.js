@@ -609,74 +609,58 @@ exports.updateClassifications = async (req) => {
 };
 
 exports.updateClassificationMerge = async (req) => {
-  const update = {
-    classificationId: req.body.classification_id,
-    classificationIncidentalId: req.body.classification_incidental_id,
-  };
+  const adminExist = await AdminRepo.findAdminUser({
+    id: req.user?.id,
+  });
 
-  const classificationMergeId = req.params.classId;
-
-  const filter = {
-    id: classificationMergeId,
-  };
-
-  const classExist = await AdminRepo.fetchAClassificationMerge(filter);
-  // console.log({ classExist})
-
-  if (!classExist) {
-    // from the flow users would have verified their email first, and at thie verification and  acoount is created though without a password
+  if (!adminExist) {
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,
-      MESSAGE: "no record",
+      MESSAGE: "Invalid Credentials",
     };
   }
 
-  await AdminRepo.findAndUpdateClassification(filter, update);
-  // const updated = await AdminRepo.fetchAClassification(filter);
+  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
 
-  // Process the fees data
-  const newFeeEntries = req.body.fees.map((fee) => ({
-    classificationId,
-    feeId: fee.feeId,
-    amount: fee.amount,
-  }));
-
-  // Fetch existing ClassificationFees
-  const existingFees = await AdminRepo.findClassificationFees({
-    classificationId,
-  });
-
-  // console.log({existingFees})
-
-  // Update existing fees, delete removed ones, and add new entries
-  const existingFeeIds = existingFees?.map((f) => f.feeId);
-  const newFeeIds = newFeeEntries.map((f) => f.feeId);
-
-  // Update and delete existing fees
-  for (let fee of existingFees) {
-    if (newFeeIds.includes(fee.feeId)) {
-      // If fee exists in both, update it
-      const newFeeData = newFeeEntries.find((f) => f.feeId === fee.feeId);
-      await fee.update({ amount: newFeeData.amount });
-    } else {
-      // If fee was removed, delete it
-      await fee.destroy();
-    }
+  if (role?.name !== "admin") {
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Access denied, Strictly for Admin",
+    };
   }
 
-  // Add new fees not present in existingFees
-  const feesToAdd = newFeeEntries.filter(
-    (f) => !existingFeeIds.includes(f.feeId)
-  );
-  await AdminRepo.addClassificationFees(feesToAdd);
-
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "updated classifications",
-    // DATA: updated,
+  const { id } = req.params; // ID of the merge record to update
+  const updateData = {
+    classificationId: req.body.classificationId,
+    incidentalClassificationIds: req.body.incidentalClassificationIds,
   };
+
+  try {
+    const updatedMerge = await AdminRepo.updateClassificationMerge(id, updateData);
+
+    if (!updatedMerge) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: "Classification merge not found",
+      };
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      DATA: updatedMerge,
+    };
+  } catch (error) {
+    console.error("Error updating classification merge:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "An error occurred while updating the classification merge.",
+    };
+  }
 };
 
 exports.deleteClassifications = async (req) => {

@@ -165,6 +165,43 @@ exports.validateOTP = async (req) => {
   };
 };
 
+exports.validateOTP = async (req) => {
+  const { otp, email } = req.body;
+
+  console.log("👉 Received request to validate OTP");
+  console.log("📩 Payload:", { otp, email });
+
+  // Step 1: Check if OTP exists and is valid
+  console.log("🔍 Checking if OTP exists and is not expired...");
+  const otpExist = await UserRepo.findOneOTP({
+    code: otp,
+    otpExpiresAt: { [Op.gt]: new Date() },
+  });
+
+  if (!otpExist) {
+    console.log("❌ OTP is invalid or expired.");
+    return {
+      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS: false,
+      MESSAGE: "Invalid OTP",
+    };
+  }
+  console.log("✅ OTP is valid.");
+
+  // Step 2: Delete the OTP
+  console.log("🧹 Deleting OTP from database...");
+  await UserRepo.deleteOneOTP({ code: otp });
+  console.log("🗑️ OTP deleted.");
+
+  // OPTIONAL: Update user or email verification status
+  console.log("✅ Email has been verified.");
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "Email verified successfully.",
+  };
+};
+
 exports.signUpUsers = async (req) => {
   const { email, password } = req.body;
 

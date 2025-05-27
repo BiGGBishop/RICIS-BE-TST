@@ -29,7 +29,6 @@ router.post(
 
 router.post(
   "/register/user",
-  authToken,
   userSignUpValidation,
   asyncHandler(usersController.signUpUsers)
 );

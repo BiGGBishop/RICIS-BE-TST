@@ -656,75 +656,143 @@ exports.getUser = async (req) => {
   };
 };
 
-exports.registerStaffAndAdmin = async (req) => {
-  const filter = {
-    id: req?.user?.id,
-  };
+// exports.registerStaffAndAdmin = async (req) => {
+//   const filter = {
+//     id: req?.user?.id,
+//   };
 
-  console.log({ filter });
+//   console.log({ filter });
 
-  const adminExist = await UserRepo.findAdminUser(filter);
+//   const adminExist = await UserRepo.findAdminUser(filter);
 
-  if (!adminExist) {
-    return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
-      STATUS: false,
-      MESSAGE: "Invalid Credetials..", //@admin not found
+//   if (!adminExist) {
+//     return {
+//       STATUS_CODE: StatusCodes.BAD_REQUEST,
+//       STATUS: false,
+//       MESSAGE: "Invalid Credetials..", //@admin not found
+//     };
+//   }
+
+//   const role = await UserRepo.findRole({ id: adminExist?.userroleId });
+
+//   if (role?.name !== "admin") {
+//     return {
+//       STATUS_CODE: StatusCodes.BAD_REQUEST,
+//       STATUS: false,
+//       MESSAGE: "Access denied, Strictly for Admin",
+//     };
+//   }
+
+//   const userToBeAddedExist = await UserRepo.findAdminUser({
+//     email: req.body.email,
+//   });
+
+//   if (userToBeAddedExist) {
+//     return {
+//       STATUS_CODE: StatusCodes.BAD_REQUEST,
+//       STATUS: false,
+//       MESSAGE: "This user has been registered and already exists",
+//     };
+//   }
+
+//   /* generate pasword */
+//   const defaultPassword = await generateDefaultPassword();
+//   const refnumber = await generateRefNumber();
+
+//   // Encrypt the password before saving
+//   const salt = await bcrypt.genSaltSync(10);
+
+//   const password = await bcrypt.hash(defaultPassword, salt); // Encrypt the password
+
+//   const userObject = {
+//     email: req.body.email,
+//     full_name: req.body.full_name,
+//     password: password,
+//     userroleId: req.body.role,
+//     ref_number: `APP_${refnumber}`,
+//   };
+
+//   // console.log({ defaultPassword });
+
+//   await UserRepo.createAdminUser(userObject);
+
+//   /*send email notification to the created user */
+//   await sendCredentails(req.body.email, defaultPassword);
+
+//   return {
+//     STATUS_CODE: StatusCodes.OK,
+//     STATUS: true,
+//     MESSAGE: "account registered and email sent to user successfully !",
+//     // DATA: null,
+//   };
+// };
+
+exports.registerStaffAndAdmin = async (req, res) => {
+  try {
+    // Check if req.user exists
+    if (!req.user || !req.user.id) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        STATUS: false,
+        MESSAGE: 'Unauthorized: admin token missing or invalid.',
+      });
+    }
+
+    const filter = { id: req.user.id };
+    console.log({ filter });
+
+    // Check if the admin user exists
+    const adminExist = await UserRepo.findAdminUser(filter);
+    if (!adminExist) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        STATUS: false,
+        MESSAGE: 'Invalid credentials: admin not found.',
+      });
+    }
+
+    // Check if the user to be created already exists
+    const userToBeAddedExist = await UserRepo.findAdminUser({
+      email: req.body.email,
+    });
+    if (userToBeAddedExist) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        STATUS: false,
+        MESSAGE: 'This user has been registered and already exists.',
+      });
+    }
+
+    // Generate password and reference number
+    const defaultPassword = await generateDefaultPassword();
+    const refnumber = await generateRefNumber();
+
+    // Encrypt the password
+    const salt = await bcrypt.genSaltSync(10);
+    const password = await bcrypt.hash(defaultPassword, salt);
+
+    const userObject = {
+      email: req.body.email,
+      full_name: req.body.full_name,
+      password: password,
+      userroleId: req.body.role,
+      ref_number: `APP_${refnumber}`,
     };
-  }
 
-  const role = await UserRepo.findRole({ id: adminExist?.userroleId });
+    // Create the new staff/admin user
+    await UserRepo.createAdminUser(userObject);
 
-  if (role?.name !== "admin") {
-    return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
+    // Send email notification with the credentials
+    await sendCredentails(req.body.email, defaultPassword);
+
+    return res.status(StatusCodes.OK).json({
+      STATUS: true,
+      MESSAGE: 'Account registered and email sent to user successfully!',
+    });
+  } catch (error) {
+    console.error('Error registering staff/admin:', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       STATUS: false,
-      MESSAGE: "Access denied, Strictly for Admin",
-    };
+      MESSAGE: 'Internal server error',
+    });
   }
-
-  const userToBeAddedExist = await UserRepo.findAdminUser({
-    email: req.body.email,
-  });
-
-  if (userToBeAddedExist) {
-    return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
-      STATUS: false,
-      MESSAGE: "This user has been registered and already exists",
-    };
-  }
-
-  /* generate pasword */
-  const defaultPassword = await generateDefaultPassword();
-  const refnumber = await generateRefNumber();
-
-  // Encrypt the password before saving
-  const salt = await bcrypt.genSaltSync(10);
-
-  const password = await bcrypt.hash(defaultPassword, salt); // Encrypt the password
-
-  const userObject = {
-    email: req.body.email,
-    full_name: req.body.full_name,
-    password: password,
-    userroleId: req.body.role,
-    ref_number: `APP_${refnumber}`,
-  };
-
-  // console.log({ defaultPassword });
-
-  await UserRepo.createAdminUser(userObject);
-
-  /*send email notification to the created user */
-  await sendCredentails(req.body.email, defaultPassword);
-
-  return {
-    STATUS_CODE: StatusCodes.OK,
-    STATUS: true,
-    MESSAGE: "account registered and email sent to user successfully !",
-    // DATA: null,
-  };
 };
 
 exports.staffLogin = async (req) => {

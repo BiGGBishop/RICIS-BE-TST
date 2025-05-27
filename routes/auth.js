@@ -7,6 +7,7 @@ const {
   userSignUpValidation,
 } = require("../validations/userValidation");
 const { asyncHandler } = require("../middlewares/handler");
+const { authenticate } = require("../middlewares/authjwt");
 const usersController = require("../controllers/userController");
 const adminController = require("../controllers/adminController")
 const { authToken } = require("../utils/AunthenticateUser");
@@ -66,6 +67,7 @@ router.patch(
 
 router.post(
   "/register/staff",
+  authenticate,
   asyncHandler(usersController.registerStaffAndAdmin)
 );
 

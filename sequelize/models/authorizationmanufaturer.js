@@ -99,6 +99,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING,
 			allowNull: true,
 		},
+		form_number:{
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
 
       type_of_service:{                                             
 				type: DataTypes.STRING,
@@ -277,6 +281,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "AuthorizationManufacturer",
+      tableName: 'AuthorizationManufacturers',
+      timestamps: true,
     }
   );
 

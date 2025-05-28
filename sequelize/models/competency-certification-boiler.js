@@ -274,6 +274,7 @@ module.exports = (sequelize, DataTypes) => {
 			joining_date: DataTypes.STRING,
 			exit_date: DataTypes.DATE
 			,
+			companyQualityManual: DataTypes.STRING,
 			  applicant_declaration_name: {
 				type: DataTypes.STRING,
 			  },

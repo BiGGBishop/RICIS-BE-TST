@@ -48,23 +48,58 @@ exports.signUpOtp = async (email, OTP) => {
       },
     });
 
+    // const transporter = nodemailer.createTransport({
+    //   host: 'smtp.zoho.com',
+    //   port: 465,
+    //   secure: true, // true for port 465, false for 587
+    //   auth: {
+    //     user: 'info@ricinspection.com',
+    //     pass: 'YOUR_ZOHO_PASSWORD_OR_APP_PASSWORD', // Use app password if 2FA enabled
+    //   },
+    // });
+
     await transporter.sendMail({
-      from: "noreply",
+      from: '"RIC Inspection" <infodevhorizon@gmail.com>',
       to: email,
       subject: "OTP SENT",
       html: ` <b> Hi </b></br>
               <p>
-                 Here is  the otp sent to you to verify yourself ${OTP}....................
+                 Here is  the otp sent to you to verify yourself: <strong>${OTP}</strong>
               </p>
             
               </br>
               <b>
             
               <p>Best regards,</p>
-              <p>RICIS Team </p>
+              <p>RIC Inspection Team </p>
               </b>
             `,
     });
+
+    // exports.signUpOtp = async (email, OTP) => {
+    //   try {
+    //     await transporter.sendMail({
+    //       from: '"RIC Inspection" <info@ricinspection.com>', // Display name + your email
+    //       to: email,
+    //       subject: 'OTP SENT',
+    //       html: `
+    //         <b>Hi</b><br/>
+    //         <p>
+    //           Here is the OTP sent to you to verify yourself: <strong>${OTP}</strong>
+    //         </p>
+    //         <br/>
+    //         <b>
+    //           <p>Best regards,</p>
+    //           <p>RICIS Team</p>
+    //         </b>
+    //       `,
+    //     });
+
+    //     console.log('Email sent successfully');
+    //   } catch (error) {
+    //     console.log('Email not sent:', error);
+    //   }
+    // };
     console.log("email sent sucessfully");
   } catch (error) {
     console.log(error, "email not sent");

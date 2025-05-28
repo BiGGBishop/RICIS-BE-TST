@@ -12,9 +12,17 @@ const { sendReportNotification } = require("../utils/emails/report");
 
 //Authourization Approved
 
-exports.getAuthorizationApprovedByUserId = async (userId) => {
-  return FormsRepo.findByUserIdAuthorizationApproved(userId);
-};
+exports.getAuthorizationApprovedByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdAuthorizationApproved(userId);
+  console.log(registrations)
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Data fetched successfully.",
+      DATA: registrations,
+  };
+}; 
 
 exports.createAuthorizationApproved = async (req) => {
   const userId = req?.user?.id
@@ -614,11 +622,17 @@ exports.getAuthorizationManufacturerById = async (id) => {
   }
 };
 
-
-
-exports.getAuthorizationManufacturerByUserId = async (userId) => {
-  return FormsRepo.findByUserIdAuthorizationManufacturer(userId);
-};
+exports.getAuthorizationManufacturerByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdAuthorizationManufacturer(userId);
+  console.log(registrations)
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Data fetched successfully.",
+      DATA: registrations,
+  };
+}; 
 
 
 exports.createTrainingAuthorization = async (req) => {
@@ -882,9 +896,17 @@ exports.getAuthorizationTrainingById = async (id) => {
   }
 };
 
-  exports.getAuthorizationTrainingByUserId = async (userId) => {
-    return FormsRepo.findByUserIdTrainingAuthorization(userId);
+exports.getAuthorizationTrainingByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdTrainingAuthorization(userId);
+  console.log(registrations)
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Data fetched successfully.",
+      DATA: registrations,
   };
+}; 
 
   
 exports.createBoilerRegistration = async (req) => {
@@ -985,24 +1007,17 @@ exports.getAllBoilerRegistrations = async () => {
   };
   
   
-  exports.getBoilerRegistrationsByUserId = async (userId) => {
-      try {
-        const registrations = await FormsRepo.findByUserIdBoilerRegistrationRepos(userId);
-        return {
-          STATUS_CODE: StatusCodes.OK,
-          STATUS: true,
-          MESSAGE: "Boiler registrations fetched successfully.",
-          DATA: registrations,
-        };
-      } catch (error) {
-        console.error("Error in getBoilerRegistrationsByUserId service:", error);
-        return {
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Failed to fetch boiler registrations by user ID.",
-        };
-      }
-    };
+exports.getBoilerRegistrationByUserId = async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdBoilerRegistrationRepos(userId);
+  console.log(registrations)
+  return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Boiler registrations fetched successfully.",
+      DATA: registrations,
+  };
+}; 
 
     exports.getBoilerRegistrationsById = async (id) => {
       const competencyForm = await FormsRepo.findBoilerRegistrationById(id);
@@ -1440,24 +1455,17 @@ exports.getAllRenewalForms = async () => {
   }
 };
 
-exports.getRenewalFormByUserId = async (userId) => {
-  try {
-    const renewalForms = await FormsRepo.findRenewalFormsByUserId(userId);
-    return {
+exports.getRenewalFormByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findRenewalFormsByUserId(userId);
+  console.log(registrations)
+  return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
-      MESSAGE: "Renewal forms fetched successfully.",
-      DATA: renewalForms,
-    };
-  } catch (error) {
-    console.error("Error fetching renewal forms by user ID:", error);
-    return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-      STATUS: false,
-      MESSAGE: "Error fetching renewal forms by user ID",
-    };
-  }
-};
+      MESSAGE: "Boiler registrations fetched successfully.",
+      DATA: registrations,
+  };
+}; 
 
  exports.getRenewalFormId = async (id) => {
     const renewalForm = await FormsRepo.findRenewalFormsById(id);
@@ -1856,16 +1864,17 @@ exports.getAllCompetencyCertificationLiftings = async () => {
   };
 };
 
-exports.getCompetencyCertificationLiftingByUserId = async (userId) => {
-  const certifications = await FormsRepo.findCompetencyCertificationLiftingByUserId(userId);
+exports.getCompetencyCertificationLiftingByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findCompetencyCertificationLiftingByUserId(userId);
+  console.log(registrations)
   return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       MESSAGE: "Competency certifications lifting fetched successfully.",
-      DATA: certifications,
+      DATA: registrations,
   };
-};
-
+}; 
 exports.getCompetencyCertificationLiftingById = async (id) => {
   const certification = await FormsRepo.findCompetencyCertificationLiftingById(id);
   if (!certification) {
@@ -2350,32 +2359,18 @@ exports.getCompertencyCertificationBoilerById = async (id) => {
   }
 };
 
-exports.getCompertencyCertificationBoilerByUserId = async (id) => {
-  try {
-    const authorization = await FormsRepo.findByUserIdCompetencyCertificationFormBoiler(id);
-    if (!authorization) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "competency record not found.",
-      };
-    }
-    return {
+ exports.getCompertencyCertificationBoilerByUserId= async (userId) => {
+  console.log(userId)
+  const registrations = await FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId);
+  console.log(registrations)
+  return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
-      MESSAGE: "competency record fetched successfully.",
-      DATA: authorization,
-    };
-  } catch (error) {
-    console.error("Error in competency service:", error);
-    return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-      STATUS: false,
-      MESSAGE: "Failed to fetch competency",
-    };
-  }
-};
- 
+      MESSAGE: "Data fetched successfully.",
+      DATA: registrations,
+  };
+}; 
+
 //competency certification welder
 exports.createCompetencyCertificationWelder = async (req) => {
   const userId = req?.user?.id;

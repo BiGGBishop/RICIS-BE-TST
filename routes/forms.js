@@ -34,7 +34,7 @@ router.put(
 
                                                         
 router.get(
-  "/authorization-approved/:userId",
+  "/user-authorization-approved",
   authToken,
   asyncHandler(formsController.getAuthorizationApprovedByUserId)
 );
@@ -64,10 +64,11 @@ router.put(
 );
 
 router.get(
-  "/authorization-manufacturer/:userId",
+  "/user-authorization-manufacturer",
+  authToken,
   asyncHandler(formsController.getAuthorizationManufacturerByUserId)
 );
-                                                                   
+
 router.post(
   "/authorization-training",
   authToken,
@@ -92,7 +93,7 @@ router.get(
     asyncHandler(formsController.getAuthorizationTrainingById)
   );
 router.get(
-  "/authorization-training/:userId",
+  "/user-authorization-training",
   authToken,
   asyncHandler(formsController.getAuthorizationTrainingByUserId)
 );

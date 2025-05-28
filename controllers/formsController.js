@@ -53,12 +53,21 @@ exports.updateAuthorizationApproved = async (req, res) => {
   });
 };
 
+exports.getAuthorizationApprovedByUserId= async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getAuthorizationApprovedByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching data.",
+        });
+    }
+  };
 
-exports.getAuthorizationApprovedByUserId = async (req, res) => {
-  const { userId } = req.params;
-  const data = await FormsService.getAuthorizationApprovedByUserId(userId);
-  return res.status(200).json({ status: true, message: "Fetched successfully", data });
-};
 //get a classification
 
 exports.getAClassifications = async (req, res) => {
@@ -120,12 +129,21 @@ exports.getAuthorizationManufacturerById = async (req, res) => {
     data: data.DATA,
   });
 };
-exports.getAuthorizationManufacturerByUserId = async (req, res) => {
-  const { userId } = req.params;
-  const data = await FormsService.getAuthorizationManufacturerByUserId(userId);
-  return res.status(200).json({ status: true, message: "Fetched successfully", data });
-};
 
+exports.getAuthorizationManufacturerByUserId= async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getAuthorizationManufacturerByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching data.",
+        });
+    }
+  };
 
 //Authorization Training
 exports.createAuthorizationTraining = async (req, res) => {
@@ -164,10 +182,19 @@ exports.getAllAuthorizationTraining = async (req, res) => {
   };
 
 
-  exports.getAuthorizationTrainingByUserId = async (req, res) => {
-    const { userId } = req.params;
-    const data = await FormsService.getAuthorizationTrainingByUserId(userId);
-    return res.status(200).json({ status: true, message: "Fetched successfully", data });
+exports.getAuthorizationTrainingByUserId= async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getAuthorizationTrainingByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching data.",
+        });
+    }
   };
 
   exports.getAuthorizationTrainingById = async (req, res) => {
@@ -224,11 +251,20 @@ exports.getAllAuthorizationTraining = async (req, res) => {
           });
       }
   };
-  
+
   exports.getBoilerRegistrationByUserId = async (req, res) => {
-      const { userId } = req.params;
-      const data = await FormsService.getBoilerRegistrationsByUserId(userId);
-      return res.status(200).json({ status: true, message: "Fetched successfully", data });
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getBoilerRegistrationByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching boiler registrations:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching boilers registrations.",
+        });
+    }
   };
 
   exports.getBoilerRegistrationById = async (req, res) => {
@@ -353,22 +389,21 @@ exports.getAllRenewalForms = async (req, res) => {
   }
 };
 
-exports.getRenewalFormByUserId = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const response = await FormsService.getRenewalFormByUserId(userId);
-    res.status(response.STATUS_CODE).json(response);
-  } catch (error) {
-    console.error("Error fetching renewal forms by user ID:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({
-        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-        STATUS: false,
-        MESSAGE: "Error fetching renewal forms by user ID",
-      });
-  }
-};
+exports.getRenewalFormByUserId= async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getRenewalFormByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching renewal forms:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching renewal forms.",
+        });
+    }
+  };
+
 
 exports.getRenewalFormById = async (req, res) => {
   const { id } = req.params;
@@ -433,11 +468,20 @@ exports.getAllCompetencyCertificationLifting = async (req, res) => {
   res.status(response.STATUS_CODE).json(response);
 };
 
-exports.getCompetencyCertificationLiftingByUserId = async (req, res) => {
-  const userId = req?.user?.id;
-  const response = await FormsService.getCompetencyCertificationLiftingByUserId(userId);
-  res.status(response.STATUS_CODE).json(response);
-};
+exports.getCompetencyCertificationLiftingByUserId= async (req, res) => {
+    try {
+        const userId  = req?.user?.id;
+        const response = await FormsService.getCompetencyCertificationLiftingByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
+    } catch (error) {
+        console.error("Error fetching competency certificate lifting:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching competency certificate lifting.",
+        });
+    }
+  };
 
 exports.getCompetencyCertificationLiftingById = async (req, res) => {
   const { id } = req.params;
@@ -504,22 +548,20 @@ exports.getAllCompetencyCertificationBoiler = async (req, res) => {
   res.status(response.STATUS_CODE).json(response);
 };
 
-exports.getAllCompetencyCertificationBoilerByUserId = async (req, res) => {
+exports.getAllCompetencyCertificationBoilerByUserId= async (req, res) => {
     try {
-      const userId = req.user.id;
-      const response = await FormsService.getCompertencyCertificationBoilerByUserId(userId);
-      res.status(response.STATUS_CODE).json(response);
+        const userId  = req?.user?.id;
+        const response = await FormsService.getCompertencyCertificationBoilerByUserId(userId);
+        res.status(response.STATUS_CODE).json(response);
     } catch (error) {
-      console.error("Error fetching renewal forms by user ID:", error);
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .json({
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Error fetching renewal forms by user ID",
+        console.error("Error fetching data:", error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+            STATUS: false,
+            MESSAGE: "Error fetching data.",
         });
     }
-};
+  };
 
 
 exports.getAllCompetencyCertificationBoilerById = async (req, res) => {

@@ -825,252 +825,347 @@ exports.getClassificationMergeData = async (req, res) => {
   }
 };
 
-exports.getAllUserForms = async (req,res) => {
-const userId = req?.user?.id;
-if(!userId){
-  return res.status(400).json({message:"action not allowed you need to log in as a user"})
-}
-  try {
-   const results = await Promise.all([
-                 FormsRepo.findByUserIdAuthorizationApproved(userId,{
-                    include:[
-                      {
-                        model: Classification,
-                        as: "classification",
-                        attributes: ["id", "classification_name"],
-                        include: {
-                          model: ClassificationFees,
-                          as: "classificationFees", // Changed alias to match the association
-                          attributes: ["amount"],
-                        },
-                      },
-                      { model: Categories, as: 'category', attributes: ['name'] },
-                      { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                      { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                    ],       
-                  }),                            
-                FormsRepo.findByUserIdAuthorizationManufacturer(userId,{
-                  include: [
-                    {
-                      model: Classification,
-                      as: "classification",
-                      attributes: ["id", "classification_name"],
-                      include: {
-                        model: ClassificationFees,
-                        as: "classificationFees", // Changed alias to match the association
-                        attributes: ["amount"],
-                      },
-                    },
-                    { model: Categories, as: 'category', attributes: ['name'] },
-                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                  ],       
-                }),                 
-                FormsRepo.findByUserIdTrainingAuthorization(userId,{
-                  include: [
-                    {
-                      model: Classification,
-                      as: "classification",
-                      attributes: ["id", "classification_name"],
-                      include: {
-                        model: ClassificationFees,
-                        as: "classificationFees", // Changed alias to match the association
-                        attributes: ["amount"],
-                      },
-                    },
-                    { model: Categories, as: 'category', attributes: ['name'] },
-                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                  ],       
-                }),
-                FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId,{
-                  include: [
-                    {
-                      model: Classification,
-                      as: "classification",
-                      attributes: ["id", "classification_name"],
-                      include: {
-                        model: ClassificationFees,
-                        as: "classificationFees", // Changed alias to match the association
-                        attributes: ["amount"],
-                      },
-                    },
-                    { model: Categories, as: 'category', attributes: ['name'] },
-                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                  ],     
-                }),
+// exports.getAllUserForms = async (req,res) => {
+// const userId = req?.user?.id;
+// if(!userId){
+//   return res.status(400).json({message:"action not allowed you need to log in as a user"})
+// }
+//   try {
+//    const results = await Promise.all([
+//                  FormsRepo.findByUserIdAuthorizationApproved(userId,{
+//                     include:[
+//                       {
+//                         model: Classification,
+//                         as: "classification",
+//                         attributes: ["id", "classification_name"],
+//                         include: {
+//                           model: ClassificationFees,
+//                           as: "classificationFees", // Changed alias to match the association
+//                           attributes: ["amount"],
+//                         },
+//                       },
+//                       { model: Categories, as: 'category', attributes: ['name'] },
+//                       { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                       { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                     ],       
+//                   }),                            
+//                 FormsRepo.findByUserIdAuthorizationManufacturer(userId,{
+//                   include: [
+//                     {
+//                       model: Classification,
+//                       as: "classification",
+//                       attributes: ["id", "classification_name"],
+//                       include: {
+//                         model: ClassificationFees,
+//                         as: "classificationFees", // Changed alias to match the association
+//                         attributes: ["amount"],
+//                       },
+//                     },
+//                     { model: Categories, as: 'category', attributes: ['name'] },
+//                     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                     { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                   ],       
+//                 }),                 
+//                 FormsRepo.findByUserIdTrainingAuthorization(userId,{
+//                   include: [
+//                     {
+//                       model: Classification,
+//                       as: "classification",
+//                       attributes: ["id", "classification_name"],
+//                       include: {
+//                         model: ClassificationFees,
+//                         as: "classificationFees", // Changed alias to match the association
+//                         attributes: ["amount"],
+//                       },
+//                     },
+//                     { model: Categories, as: 'category', attributes: ['name'] },
+//                     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                     { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                   ],       
+//                 }),
+//                 FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId,{
+//                   include: [
+//                     {
+//                       model: Classification,
+//                       as: "classification",
+//                       attributes: ["id", "classification_name"],
+//                       include: {
+//                         model: ClassificationFees,
+//                         as: "classificationFees", // Changed alias to match the association
+//                         attributes: ["amount"],
+//                       },
+//                     },
+//                     { model: Categories, as: 'category', attributes: ['name'] },
+//                     { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                     { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                   ],     
+//                 }),
               
-               FormsRepo.findByUserIdBoilerRegistrationRepos(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],    
-               }),
+//                FormsRepo.findByUserIdBoilerRegistrationRepos(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],    
+//                }),
    
-               FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-              FormsRepo.findByUserIdOperatorCertificationsByUserId(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-              FormsRepo.findCompetencyCertificationLiftingByUserId(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-               FormsRepo.findCompetencyCertificationInspectionByUserId(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-               FormsRepo.findCompetencyCertificationWelderByUserId(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-               FormsRepo.findRenewalFormsByUserId(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),
-               FormsRepo.findByUserIdLiftingEquipmentRegistration(userId,{
-                 include: [
-                   {
-                     model: Classification,
-                     as: "classification",
-                     attributes: ["id", "classification_name"],
-                     include: {
-                       model: ClassificationFees,
-                       as: "classificationFees", // Changed alias to match the association
-                       attributes: ["amount"],
-                     },
-                   },
-                   { model: Categories, as: 'category', attributes: ['name'] },
-                   { model: SubCategories, as: 'subcategory', attributes: ['name'] },
-                   { model: Fee, as: 'fee', attributes: ['fee_type'] },
-                 ],     
-               }),                                     
+//                FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//               FormsRepo.findByUserIdOperatorCertificationsByUserId(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//               FormsRepo.findCompetencyCertificationLiftingByUserId(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//                FormsRepo.findCompetencyCertificationInspectionByUserId(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//                FormsRepo.findCompetencyCertificationWelderByUserId(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//                FormsRepo.findRenewalFormsByUserId(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),
+//                FormsRepo.findByUserIdLiftingEquipmentRegistration(userId,{
+//                  include: [
+//                    {
+//                      model: Classification,
+//                      as: "classification",
+//                      attributes: ["id", "classification_name"],
+//                      include: {
+//                        model: ClassificationFees,
+//                        as: "classificationFees", // Changed alias to match the association
+//                        attributes: ["amount"],
+//                      },
+//                    },
+//                    { model: Categories, as: 'category', attributes: ['name'] },
+//                    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+//                    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+//                  ],     
+//                }),                                     
              
-         ]);
-    const allForms = results.map((forms) => forms || []);
-    console.log(allForms)
-    const flatForms = results.flat();
-    let totalAmount = 0;
+//          ]);
+//     const allForms = results.map((forms) => forms || []);
+//     console.log(allForms)
+//     const flatForms = results.flat();
+//     let totalAmount = 0;
 
+//     flatForms.forEach(form => {
+//       const fees = form.classification?.classificationFees;
+
+//       if (Array.isArray(fees)) {
+//         fees.forEach(fee => {
+//           totalAmount += fee.amount || 0;
+//         });
+//       } else if (fees) {
+//         totalAmount += fees.amount || 0;
+//       }
+//     });
+//     return res.status(200).json({
+//       status: true,
+//       message: "User forms fetched successfully.",
+//       data: {
+//         forms: allForms,
+//         totalAmount
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error fetching all user forms:", error);
+//     return {
+//       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+//       STATUS: false,
+//       MESSAGE: "Internal server error",
+//     };
+//   }
+// };
+
+exports.getAllUserForms = async (req, res) => {
+  const userId = req?.user?.id;
+  if (!userId) {
+    return res.status(400).json({
+      status: false,
+      message: "Action not allowed. Please log in as a user."
+    });
+  }
+
+  const includes = [
+    {
+      model: Classification,
+      as: "classification",
+      attributes: ["id", "classification_name"],
+      include: {
+        model: ClassificationFees,
+        as: "classificationFees",
+        attributes: ["amount"],
+      },
+    },
+    { model: Categories, as: 'category', attributes: ['name'] },
+    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+  ];
+
+  // Create a mapping of queries with names
+  const queryMap = [
+    { name: "AuthorizationApproved", query: FormsRepo.findByUserIdAuthorizationApproved(userId, { include: includes }) },
+    { name: "AuthorizationManufacturer", query: FormsRepo.findByUserIdAuthorizationManufacturer(userId, { include: includes }) },
+    { name: "TrainingAuthorization", query: FormsRepo.findByUserIdTrainingAuthorization(userId, { include: includes }) },
+    { name: "CompetencyCertificationLiftOperator", query: FormsRepo.findByUserIdCompetencyCertificationLiftOperator(userId, { include: includes }) },
+    { name: "BoilerRegistrationRepos", query: FormsRepo.findByUserIdBoilerRegistrationRepos(userId, { include: includes }) },
+    { name: "CompetencyCertificationFormBoiler", query: FormsRepo.findByUserIdCompetencyCertificationFormBoiler(userId, { include: includes }) },
+    { name: "OperatorCertificationsByUserId", query: FormsRepo.findByUserIdOperatorCertificationsByUserId(userId, { include: includes }) },
+    { name: "CompetencyCertificationLiftingByUserId", query: FormsRepo.findCompetencyCertificationLiftingByUserId(userId, { include: includes }) },
+    { name: "CompetencyCertificationInspectionByUserId", query: FormsRepo.findCompetencyCertificationInspectionByUserId(userId, { include: includes }) },
+    { name: "CompetencyCertificationWelderByUserId", query: FormsRepo.findCompetencyCertificationWelderByUserId(userId, { include: includes }) },
+    { name: "RenewalFormsByUserId", query: FormsRepo.findRenewalFormsByUserId(userId, { include: includes }) },
+    { name: "LiftingEquipmentRegistration", query: FormsRepo.findByUserIdLiftingEquipmentRegistration(userId, { include: includes }) },
+  ];
+
+  const queryPromises = queryMap.map(q => q.query);
+
+  console.time("DB Queries");
+
+  try {
+    const results = await Promise.allSettled(queryPromises);
+
+    console.timeEnd("DB Queries");
+
+    // Log results for each query
+    results.forEach((result, index) => {
+      const name = queryMap[index].name;
+      if (result.status === 'rejected') {
+        console.error(`❌ Query "${name}" failed:`, result.reason);
+      } else {
+        console.log(`✅ Query "${name}" succeeded with ${result.value.length} items.`);
+      }
+    });
+
+    // Collect only successful results
+    const successfulResults = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value);
+
+    const flatForms = successfulResults.flat().filter(Boolean);
+
+    // Calculate total amount
+    let totalAmount = 0;
     flatForms.forEach(form => {
       const fees = form.classification?.classificationFees;
-
       if (Array.isArray(fees)) {
-        fees.forEach(fee => {
-          totalAmount += fee.amount || 0;
-        });
+        fees.forEach(fee => totalAmount += fee.amount || 0);
       } else if (fees) {
         totalAmount += fees.amount || 0;
       }
     });
+
     return res.status(200).json({
       status: true,
       message: "User forms fetched successfully.",
       data: {
-        forms: allForms,
+        forms: successfulResults,
         totalAmount
       }
     });
   } catch (error) {
-    console.error("Error fetching all user forms:", error);
-    return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-      STATUS: false,
-      MESSAGE: "Internal server error",
-    };
+    console.error("Unexpected error while processing user forms:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error"
+    });
   }
 };
 

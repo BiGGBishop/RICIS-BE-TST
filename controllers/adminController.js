@@ -270,13 +270,20 @@ exports.addClassificationMerge = async (req, res) => {
 };
 
 exports.updateClassificationMerge = async (req, res) => {
-  const data = await AdminService.updateClassificationMerge(req, res);
-
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+  try {
+    const data = await AdminService.updateClassificationMerge(req, res);
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  } catch (error) {
+    console.error('Controller error:', error);
+    return res.status(500).json({
+      status: false,
+      message: 'Internal Server Error',
+    });
+  }
 };
 
 exports.deleteClassificationMerge = async (req, res) => {

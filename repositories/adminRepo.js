@@ -140,6 +140,43 @@ exports.addClassificationMerge = async (update) => {
   }
 };
 
+exports.updateClassificationMerge = async ({ id, classificationId, incidentalClassificationIds }) => {
+  try {
+    // Update the classificationMerge record
+    await ClassificationMerge.update(
+      { classificationId },
+      { where: { id } }
+    );
+
+    // Delete all existing incidentalClassificationMerges for this classificationMergeId
+    await ClassificationIncidentalMerge.destroy({
+      where: { classificationMergeId: id }
+    });
+
+    // Create new incidentalClassificationMerge records
+    const newIncidentalMerges = incidentalClassificationIds.map(incidentalClassificationId => ({
+      classificationMergeId: id,
+      incidentalClassificationId,
+    }));
+    await ClassificationIncidentalMerge.bulkCreate(newIncidentalMerges);
+
+    // Return updated info
+    const updatedClassificationMerge = await ClassificationMerge.findOne({ where: { id } });
+
+    const updatedIncidentalMerges = await ClassificationIncidentalMerge.findAll({
+      where: { classificationMergeId: id }
+    });
+
+    return {
+      classificationMerge: updatedClassificationMerge,
+      incidentalClassificationMerges: updatedIncidentalMerges,
+    };
+  } catch (error) {
+    console.error('Repo error updating classification merge:', error);
+    throw error;
+  }
+};
+
 exports.addClassificationFees = async (update) => {
   try {
     const response = await ClassificationFees.bulkCreate(update);
@@ -223,7 +260,7 @@ exports.fetchClassificationMerge = async () => {
       });
 
       if (!classificationMerge) {
-        return null
+        return null;
       }
 
       const getIncidentalClassifications = await ClassificationIncidentalMerge.findAll({
@@ -262,41 +299,35 @@ exports.fetchClassificationMerge = async () => {
 
       const incidentalClassifications = getIncidentalClassifications.map(item => {
         return {
-              classification_number:item.incidentalClassification?.classification_number,
-              classification_name: item.incidentalClassification?.classification_name,
-              categoryId: item.incidentalClassification?.categoryId,
-              subcategoryId: item.incidentalClassification?.subcategoryId,
-              form_type: item.incidentalClassification?.form_type,
-              category_name: item.incidentalClassification?.category?.name,
-              subcategory_name: item.incidentalClassification?.subcategory?.name,
-              amount: item.incidentalClassification?.classificationFees?.map(
-                (fee) => fee.amount
-              ),
-              fee: item.incidentalClassification?.classificationFees?.map(
-                (fee) => fee.fee
-              ),
-              has_incidental: item.incidentalClassification?.has_incidental
-              
-          }
-      })
+          id: item.id, // <== ClassificationIncidentalMerge ID
+          classificationId: item.classificationId,
+          classificationMergeId: item.classificationMergeId,
+          classification_number: item.incidentalClassification?.classification_number,
+          classification_name: item.incidentalClassification?.classification_name,
+          categoryId: item.incidentalClassification?.categoryId,
+          subcategoryId: item.incidentalClassification?.subcategoryId,
+          form_type: item.incidentalClassification?.form_type,
+          category_name: item.incidentalClassification?.category?.name,
+          subcategory_name: item.incidentalClassification?.subcategory?.name,
+          amount: item.incidentalClassification?.classificationFees?.map(fee => fee.amount),
+          fee: item.incidentalClassification?.classificationFees?.map(fee => fee.fee),
+          has_incidental: item.incidentalClassification?.has_incidental
+        };
+      });
 
       return {
+        id: classificationMerge.id, // <== ClassificationMerge ID
         primaryClassification: {
-          classification_number:primaryClassification.classification_number,
+          id: primaryClassification.id,
+          classification_number: primaryClassification.classification_number,
           classification_name: primaryClassification.classification_name,
           categoryId: primaryClassification.categoryId,
           subcategoryId: primaryClassification.subcategoryId,
           form_type: primaryClassification.form_type,
           category_name: primaryClassification.category?.name,
           subcategory_name: primaryClassification.subcategory?.name,
-          amount:
-            primaryClassification.classificationFees &&
-            primaryClassification.classificationFees?.map(
-              (fee) => fee.amount
-            ),
-            fee: primaryClassification.classificationFees?.map(
-              (fee) => fee.fee
-            ),
+          amount: primaryClassification.classificationFees?.map(fee => fee.amount),
+          fee: primaryClassification.classificationFees?.map(fee => fee.fee),
         },
         has_incidental: primaryClassification.has_incidental,
         incidentalClassifications: incidentalClassifications,
@@ -304,7 +335,6 @@ exports.fetchClassificationMerge = async () => {
       };
     }));
 
-    
     const filteredClassificationsWithMerges = allClassificationsWithMerges.filter(
       (item) => item !== null && item.createdAt
     );
@@ -315,6 +345,7 @@ exports.fetchClassificationMerge = async () => {
     throw error;
   }
 };
+
 
 // exports.fetchClassificationMerge = async () => {
 //   console.log("working..");

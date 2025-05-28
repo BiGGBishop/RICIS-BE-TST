@@ -609,56 +609,54 @@ exports.updateClassifications = async (req) => {
 };
 
 exports.updateClassificationMerge = async (req) => {
-  const adminExist = await AdminRepo.findAdminUser({
-    id: req.user?.id,
-  });
-
+  const adminExist = await AdminRepo.findAdminUser({ id: req.user?.id });
   if (!adminExist) {
     return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS_CODE: 400,
       STATUS: false,
       MESSAGE: "Invalid Credentials",
     };
   }
 
-  const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
-
+  const role = await AdminRepo.findRole({ id: adminExist.userroleId });
   if (role?.name !== "admin") {
     return {
-      STATUS_CODE: StatusCodes.BAD_REQUEST,
+      STATUS_CODE: 403,
       STATUS: false,
-      MESSAGE: "Access denied, Strictly for Admin",
+      MESSAGE: "Access denied, strictly for Admin",
     };
   }
 
-  const { id } = req.params; // ID of the merge record to update
-  const updateData = {
-    classificationId: req.body.classificationId,
-    incidentalClassificationIds: req.body.incidentalClassificationIds,
-  };
-
   try {
-    const updatedMerge = await AdminRepo.updateClassificationMerge(id, updateData);
+    const { id, classificationId, incidentalClassificationIds } = req.body;
 
-    if (!updatedMerge) {
+    if (!id || !classificationId || !Array.isArray(incidentalClassificationIds)) {
       return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS_CODE: 400,
         STATUS: false,
-        MESSAGE: "Classification merge not found",
+        MESSAGE: "Invalid input data",
       };
     }
 
+    const updatedData = await AdminRepo.updateClassificationMerge({
+      id,
+      classificationId,
+      incidentalClassificationIds,
+    });
+
     return {
-      STATUS_CODE: StatusCodes.OK,
+      STATUS_CODE: 200,
       STATUS: true,
-      DATA: updatedMerge,
+      MESSAGE: "Classification merge updated successfully",
+      DATA: updatedData,
     };
   } catch (error) {
-    console.error("Error updating classification merge:", error);
+    console.error('Service error updating classification merge:', error);
     return {
-      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS_CODE: 500,
       STATUS: false,
-      MESSAGE: "An error occurred while updating the classification merge.",
+      MESSAGE: "Server error while updating classification merge",
+      ERROR: error.message,
     };
   }
 };

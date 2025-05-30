@@ -978,6 +978,20 @@ exports.getUsersApplication = async (req) => {
   };
 };
 
+exports.updateApplicationStatus = async (userId, formId, newStatus) => {
+  const filter = {
+    userId,
+    formId
+  };
+
+  const application = await UserRepo.findApplication(filter);
+
+  if (!application) {
+    throw new Error(`Application not found for user ID ${userId} and form ID ${formId}`);
+  }
+
+  return await application.update({ status: newStatus });
+};
 
 exports.getUsersSingleApplication = async (req) => {
   const filter = {

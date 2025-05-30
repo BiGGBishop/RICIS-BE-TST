@@ -66,71 +66,9 @@ exports.updateAuthorizationApproved = async (id, data) => {
 };
 
 exports.findAuthorizationApprovedById = async (id) => {
-  try {
-    const response = await AuthorizationApproved.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
-    }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      // Ensure incidentalIds is always treated as an array
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];  // Force it to an array even if it's a single ID
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
-  } catch (error) {
-    console.error("Error details:", error);
-    throw error;
+    return AuthorizationApproved.findByPk(id);
   }
-};
+
 
 exports.findByUserIdAuthorizationApproved= async (userId,options = {}) => {
   return await AuthorizationApproved.findAll({
@@ -1361,4 +1299,58 @@ exports.deleteReport = async (id) => {
 exports.countReports = async () => {
   const { Report } = require("../sequelize/models");
   return await Report.count();
+};
+
+exports.updatePaymentStatus = async (formName, formId, status) => {
+  let Model;
+
+  switch (formName) {
+    case 'Training Organization':
+      Model = TrainingOrganizationForm;
+      break;
+    case 'Lifting Operation Certification':
+      Model = CompetencyCertificationFormLiftOperator;
+      break;
+    case 'Manufacturer / Installer / Repairer':
+      Model = AuthorizationManufacturer;
+      break;
+    case 'Approved Inspection Agency':
+      Model = ApprovedInspectionAgency;
+      break;
+    case 'Operator Certification Lifting Equipment B':
+      Model = CompetencyCertificationLifting;
+      break;
+    case 'Operator Certification Lifting Equipment A':
+      Model = AuthorizationApproved;
+      break;
+    case 'Operator Certification Boiler & Pressure Vessel':
+      Model = CompetencyCertificationFormBoiler;
+      break;
+    case 'Pressure Welder Certification':
+      Model = CompetencyCertificationWelder;
+      break;
+    case 'Lifting Equipment Registration':
+      Model = LiftingEquipmentRegistration;
+      break;
+    case 'ReNewal / ReInstatement':
+      Model = RenewalForm;
+      break;
+    case 'Authorized Inspector Certification':
+      Model = AuthorizedInspectorCertification;
+      break;
+    case 'Boiler / Pressure Vessel Registration':
+      Model = BoilerRegistration;
+      break;
+    default:
+      throw new Error(`❌ Unknown form type: "${formName}"`);
+  }
+
+  if (!Model) {
+    throw new Error(`❌ No model found for form: "${formName}"`);
+  }
+
+  return await Model.update(
+    { paymentStatus: status },
+    { where: { id: formId } }
+  );
 };

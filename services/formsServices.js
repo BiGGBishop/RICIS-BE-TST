@@ -137,9 +137,7 @@ exports.createAuthorizationApproved = async (req) => {
 exports.updateAuthorizationApproved = async (req, id) => {
   const userId = req?.user?.id;
 
-  const userExist = await UserRepo.findUser({ id: userId });
-
-  if (!userExist) {
+  if (!userId) {
     return {
       STATUS_CODE: StatusCodes.UNAUTHORIZED,
       STATUS: false,
@@ -147,16 +145,15 @@ exports.updateAuthorizationApproved = async (req, id) => {
     };
   }
 
-  try {
-    // Fetch the existing authorization data
-    const existingAuthorization = await FormsRepo.findAuthorizationApprovedById(id);
-    if (!existingAuthorization) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Authorization not found.",
-      };
-    }
+  const existingAuthorization = await FormsRepo.findAuthorizationApprovedById(id);
+    
+  if (!existingAuthorization) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Authorization not found.",
+    };
+  }
 
     let {
       member_nagobin,
@@ -181,7 +178,7 @@ exports.updateAuthorizationApproved = async (req, id) => {
     let remain = { ...certificate };
     delete remain.certificate_image;
 
-    
+    try {
     const [
       member_nagobin_url,
       member_leia_url,
@@ -216,7 +213,7 @@ exports.updateAuthorizationApproved = async (req, id) => {
       certificate_image ? uploadSingleFile(certificate_image) : existingAuthorization.certificate?.certificate_image,
     ]);
 
-    const updatedData = {
+    const data = {
       member_nagobin: member_nagobin_url,
       member_leia: member_leia_url,
       member_indt: member_indt_url,
@@ -233,10 +230,11 @@ exports.updateAuthorizationApproved = async (req, id) => {
         certificate_image: certificate_image_url,
         ...remain,
       },
+      user_id: userId,
       ...rest,
     };
 
-    const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(id, updatedData);
+    const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(id, data);
 
     return {
       STATUS_CODE: StatusCodes.OK,

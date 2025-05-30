@@ -220,204 +220,6 @@ exports.getPaymentToken = async (req, res) => {
   });
 };
 
-// exports.makePayment = async (req, res) => {
-//   try {
-//     const {
-//       serviceTypeId = REMITA_SERVICE_TYPE_ID,
-//       totalAmount,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       statutoryFees,
-//       incidentalFees,
-//     } = req.body;
-
-//     const orderId = Date.now();
-
-//     const lineItem1 = {
-//       lineItemsId: "itemid1",
-//       beneficiaryName: "Alozie Michael",
-//       beneficiaryAccount: "6020067886",
-//       bankCode: "058",
-//       beneficiaryAmount: `${Number(statutoryFees)}`,
-//       deductFeeFrom: "1"
-//     };
-
-//     const lineItem2 = {
-//       lineItemsId: "itemid2",
-//       beneficiaryName: "Folivi Joshua",
-//       beneficiaryAccount: "0360883515",
-//       bankCode: "058",
-//       beneficiaryAmount: `${Number(incidentalFees)}`,
-//       deductFeeFrom: "0"
-//     };
-
-//     const lineItems = [lineItem1, lineItem2];
-
-//     const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + Number(totalAmount) + REMITA_API_KEY;
-//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
-
-//     const headers = {
-//       'Content-Type': 'application/json',
-//       'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`
-//     };
-
-//     const payload = {
-//       serviceTypeId,
-//       amount: Number(totalAmount),
-//       orderId,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       responseUrl: RESPONSE_URL,
-//       lineItems
-//       // "expiryDate" can be added if required.
-//     };
-
-//     const response = await axios.post(REMITA_BASE_URL, payload, { headers });
-
-//     let data;
-//     if (typeof response.data === 'string') {
-//       let resBody = response.data;
-//       if (resBody.startsWith('jsonp')) {
-//         resBody = resBody.substring(7, resBody.length - 1);
-//       }
-//       data = JSON.parse(resBody);
-//     } else {
-//       data = response.data;
-//     }
-//     if (data && data.RRR) {
-//       const transactionData = {
-//         user_id: req.user?.id || null,
-//         form_id: req.body.form_id || null,
-//         form_name: req.body.form_name || '',
-//         rrr: data.RRR,
-//         billerName: "Remita Payment Gateway",
-//         payerName,
-//         payerEmail,
-//         statutoryFees,
-//         totalFees: totalAmount,
-//         transactionDate: new Date()
-//       };
-
-//      const transaction = await AdminService.createTransaction(transactionData);
-//      console.log(transaction);
-//     }
-
-//     res.json({ ...data, orderId});
-//   } catch (error) {
-//     console.error('Error processing Remita split payment:', error);
-//     res.status(500).json({ error: 'Payment creation failed', details: error.message });
-//   }
-// };
-
-// exports.makeSinglePayment = async (req, res) => {
-//   try {
-//     // Get the data from the request body
-//     const {
-//       amount,
-//       payerName,
-//       payerEmail,
-//       payerPhone,
-//       description,
-//       form_id,
-//       form_name,
-//     } = req.body;
-
-//     // Validate that required fields are provided
-//     if (!amount || !payerName || !payerEmail || !payerPhone || !description) {
-//       return res.status(400).json({
-//         error: 'All fields are required: amount, payerName, payerEmail, payerPhone, description'
-//       });
-//     }
-
-//     // Generate orderId (timestamp in milliseconds)
-//     const d = new Date();
-//     const orderId = d.getTime();
-
-//     // Generate API hash using SHA512
-//     const hashData = REMITA_MERCHANT_ID + REMITA_SERVICE_TYPE_ID + orderId + amount + REMITA_API_KEY;
-//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
-
-//     // Prepare request body for the payment API
-//     const body = {
-//       serviceTypeId: REMITA_SERVICE_TYPE_ID,
-//       amount: amount,
-//       orderId: orderId,
-//       payerName: payerName,
-//       payerEmail: payerEmail,
-//       payerPhone: payerPhone,
-//       description: description
-//     };
-
-//     // Prepare headers
-//     const headers = {
-//       'Authorization': `remitaConsumerKey=${REMITA_CONSUMER_KEY},remitaConsumerToken=${apiHash}`,
-//       'Content-Type': 'application/json'
-//     };
-
-//     // Log the body to verify it's correct
-//     console.log('Request Body:', body);
-
-//     // Send POST request to the payment API
-//     const response = await axios.post(REMITA_BASE_URL, body, { headers });
-
-//     // Log the response for debugging
-//     console.log('Raw API Response:', response.data);
-
-//     // Parse the response and extract necessary fields
-//     let resBody = response.data;
-//     if (resBody.startsWith('jsonp')) {
-//       resBody = resBody.substring(7, resBody.length - 1);  // Remove JSONP wrapper if present
-//       console.log('Processed API Response:', resBody);  // Log after removing JSONP wrapper
-//     }
-
-//     const data = JSON.parse(resBody);
-
-//     // Check if the response has the expected data fields
-//     if (data && data.RRR && data.statuscode && data.status) {
-
-//       const result = {
-//         statuscode: data.statuscode,  // Add the statuscode
-//         RRR: data.RRR,                // Add the RRR
-//         status: data.status           // Add the status message
-//       };
-
-//       const transactionData = {
-//         user_id: req.user?.id || null,
-//         form_id,
-//         form_name,
-//         rrr: data.RRR,
-//         billerName: "Remita Payment Gateway",
-//         payerName,
-//         payerEmail,
-//         statutoryFees:0,
-//         totalFees: amount,
-//         transactionDate: new Date()
-//       };
-
-//       const transaction = await AdminService.createTransaction(transactionData);
-//       console.log(transaction)
-//       console.log('Payment Response:', result);  // Log the payment response for debugging
-//       return res.status(200).json(result);  // Send the payment response back to the client
-//     } else {
-//       return res.status(500).json({ error: 'Failed to retrieve valid response data from Remita' });
-//     }
-
-//   } catch (error) {
-//     console.error('Error making payment:', error.message);  // Logs the error message
-//     if (error.response) {
-//       // If there is a response from Remita (e.g., status code, data)
-//       console.error('Error Response Data:', error.response.data);  // Log the response data
-//       console.error('Error Response Status:', error.response.status);  // Log the response status code
-//     }
-//     console.error('Stack trace:', error.stack);  // Logs the stack trace
-//     return res.status(500).json({ error: 'An error occurred while processing the payment' });
-//   }
-// };
-
 exports.makePayment = async (req, res) => {
   try {
     const {
@@ -435,30 +237,33 @@ exports.makePayment = async (req, res) => {
 
     const userId = req.user?.id || null;
 
+    console.log('--- Incoming Payment Request ---');
+    console.log('User ID:', userId);
+    console.log('Request Body:', req.body);
+
     // Step 1: Check if an existing transaction exists
     const existingTransaction = await UserService.findTransactionByUserAndForm(req);
 
     const orderId = Date.now();
 
-    const lineItem1 = {
-      lineItemsId: "itemid1",
-      beneficiaryName: "Alozie Michael",
-      beneficiaryAccount: "6020067886",
-      bankCode: "058",
-      beneficiaryAmount: `${Number(statutoryFees)}`,
-      deductFeeFrom: "1"
-    };
-
-    const lineItem2 = {
-      lineItemsId: "itemid2",
-      beneficiaryName: "Folivi Joshua",
-      beneficiaryAccount: "0360883515",
-      bankCode: "058",
-      beneficiaryAmount: `${Number(incidentalFees)}`,
-      deductFeeFrom: "0"
-    };
-
-    const lineItems = [lineItem1, lineItem2];
+    const lineItems = [
+      {
+        lineItemsId: "itemid1",
+        beneficiaryName: "Alozie Michael",
+        beneficiaryAccount: "6020067886",
+        bankCode: "058",
+        beneficiaryAmount: `${Number(statutoryFees)}`,
+        deductFeeFrom: "1"
+      },
+      {
+        lineItemsId: "itemid2",
+        beneficiaryName: "Folivi Joshua",
+        beneficiaryAccount: "0360883515",
+        bankCode: "058",
+        beneficiaryAmount: `${Number(incidentalFees)}`,
+        deductFeeFrom: "0"
+      }
+    ];
 
     const hashData = REMITA_MERCHANT_ID + serviceTypeId + orderId + Number(totalAmount) + REMITA_API_KEY;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
@@ -480,7 +285,13 @@ exports.makePayment = async (req, res) => {
       lineItems
     };
 
+    console.log('--- Remita Payload ---');
+    console.log(JSON.stringify(payload, null, 2));
+
     const response = await axios.post(REMITA_BASE_URL, payload, { headers });
+
+    console.log('--- Raw Response from Remita ---');
+    console.log('Response Data:', response.data);
 
     let data;
     if (typeof response.data === 'string') {
@@ -494,6 +305,11 @@ exports.makePayment = async (req, res) => {
     }
 
     const rrr = data?.RRR || null;
+
+    if (!rrr) {
+      console.error('❌ Remita did not return an RRR:', data);
+      return res.status(502).json({ error: 'Failed to get RRR from Remita', data });
+    }
 
     const transactionData = {
       user_id: userId,
@@ -512,20 +328,23 @@ exports.makePayment = async (req, res) => {
 
     let transaction;
     if (existingTransaction) {
-      // Update existing transaction with new RRR and orderId
+      console.log('Updating existing transaction:', existingTransaction.id);
       transaction = await AdminService.updateTransaction(existingTransaction.id, transactionData);
     } else {
-      // Create new transaction
+      console.log('Creating new transaction');
       transaction = await AdminService.createTransaction(transactionData);
     }
 
-    console.log('Saved transaction:', transaction);
-
-    res.json({ ...data, orderId });
+    console.log('✅ Saved transaction:', transaction);
+    return res.json({ ...data, orderId });
 
   } catch (error) {
-    console.error('Error processing Remita payment:', error);
-    res.status(500).json({ error: 'Payment creation failed', details: error.message });
+    console.error('❌ Error processing Remita payment:', error); // full error log
+    return res.status(500).json({
+      error: 'Payment creation failed',
+      details: error.message,
+      remitaError: error.response?.data || null
+    });
   }
 };
 
@@ -661,23 +480,169 @@ exports.checkTransactionStatus = async (req, res) => {
   }
 };
 
+// exports.checkTransactionStatusBank = async (req, res) => {
+//   try {
+//     const userId = req.user?.id || null;
+//     const formId = req.body?.form_id || null;
+
+//     if (!userId || !formId) {
+//       return res.status(400).json({ error: "Missing required parameters: user ID or form ID" });
+//     }
+
+//     // Step 1: Find the transaction
+//     const transaction = await UserService.findTransactionByUserAndForm(req);
+
+//     if (!transaction || !transaction.rrr) {
+//       return res.status(404).json({ error: "No transaction found with a valid RRR" });
+//     }
+
+//     const rrr = transaction.rrr;
+
+//     // Step 2: Prepare hash and request URL
+//     const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
+//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+
+//     const url = `https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+
+//     const headers = {
+//       'Content-Type': 'application/json',
+//       'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
+//     };
+
+//     // Step 3: Send request to Remita
+//     const response = await axios.get(url, { headers });
+
+//     let data;
+//     if (typeof response.data === 'string') {
+//       let resBody = response.data;
+//       if (resBody.startsWith('jsonp')) {
+//         resBody = resBody.substring(7, resBody.length - 1);
+//       }
+//       data = JSON.parse(resBody);
+//     } else {
+//       data = response.data;
+//     }
+
+//     // ✅ Pull status code directly from the correct structure
+//     const statusCode = data?.status || '';
+//     const paymentSuccessCodes = ['00', '01']; // 00: success, 01: paid but pending remittance
+
+//     console.log('Remita status code:', statusCode);
+
+//     let updatesPerformed = false;
+
+//     if (paymentSuccessCodes.includes(statusCode)) {
+//       await AdminService.updateTransaction(transaction.id, { status: 'completed' });
+//       const formName = transaction.form_name;
+//       try {
+//         await FormsService.updatePaymentStatus(transaction.form_name, transaction.form_id, 'paid');
+//       } catch (err) {
+//         console.error(`❌ Failed to update payment status for form ${formName}:`, err);
+//       }
+
+//       updatesPerformed = true;
+//       console.log(`✅ Payment confirmed. Transaction and form updated for user ${transaction.user_id}`);
+//     }
+
+//     return res.json({
+//       message: 'Transaction status retrieved successfully',
+//       rrr,
+//       paymentConfirmed: updatesPerformed,
+//       statusResponse: data
+//     });
+
+//   } catch (error) {
+//     console.error('❌ Error checking transaction status:', error);
+//     return res.status(500).json({
+//       error: 'Failed to check transaction status',
+//       details: error.message
+//     });
+//   }
+// };
+
+// exports.checkTransactionStatusBank = async (req, res) => {
+//   try {
+//     const userId = req.user?.id || null;
+//     const formId = req.body?.form_id || null;
+
+//     if (!userId || !formId) {
+//       return res.status(400).json({ error: "Missing required parameters: user ID or form ID" });
+//     }
+
+//     // Step 1: Find the transaction
+//     const transaction = await UserService.findTransactionByUserAndForm(req);
+
+//     if (!transaction || !transaction.rrr) {
+//       return res.status(404).json({ error: "No transaction found with a valid RRR" });
+//     }
+
+//     const rrr = transaction.rrr;
+
+//     // Step 2: Prepare hash and request URL
+//     const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
+//     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
+
+//     const url = `https://demo.remita.net/remita/exapp/api/v1/send/api/echannelsvc/${REMITA_MERCHANT_ID}/${rrr}/${apiHash}/status.reg`;
+
+//     const headers = {
+//       'Content-Type': 'application/json',
+//       'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
+//     };
+
+//     // Step 3: Query Remita
+//     const response = await axios.get(url, { headers });
+
+//     let data;
+//     if (typeof response.data === 'string') {
+//       let resBody = response.data;
+//       if (resBody.startsWith('jsonp')) {
+//         resBody = resBody.substring(7, resBody.length - 1);
+//       }
+//       data = JSON.parse(resBody);
+//     } else {
+//       data = response.data;
+//     }
+
+//     const statusCode = data?.status || '';
+//     const paymentSuccessCodes = ['00', '01']; // success codes
+    
+//     console.log('Remita status code:', statusCode);
+
+//     return res.json({
+//       message: 'Transaction status retrieved successfully',
+//       rrr,
+//       paymentConfirmed: paymentSuccessCodes.includes(statusCode),
+//       statusResponse: data
+//     });
+
+//   } catch (error) {
+//     console.error('❌ Error checking transaction status:', error);
+//     return res.status(500).json({
+//       error: 'Failed to check transaction status',
+//       details: error.message
+//     });
+//   }
+// };
+
 exports.checkTransactionStatusBank = async (req, res) => {
   try {
     const userId = req.user?.id || null;
     const formId = req.body?.form_id || null;
 
     if (!userId || !formId) {
-      return res.status(400).json({ error: "Missing required parameters: user or form ID" });
+      return res.status(400).json({ error: "Missing required parameters: user ID or form ID" });
     }
 
-    // Find transaction with matching user and form
+    // Step 1: Find the transaction
     const transaction = await UserService.findTransactionByUserAndForm(req);
 
     if (!transaction || !transaction.rrr) {
-      return res.status(404).json({ error: "No transaction found with valid RRR" });
+      return res.status(404).json({ error: "No transaction found with a valid RRR" });
     }
 
     const rrr = transaction.rrr;
+
+    // Step 2: Prepare hash and request URL
     const hashData = rrr + REMITA_API_KEY + REMITA_MERCHANT_ID;
     const apiHash = crypto.createHash('sha512').update(hashData).digest('hex');
 
@@ -688,6 +653,7 @@ exports.checkTransactionStatusBank = async (req, res) => {
       'Authorization': `remitaConsumerKey=${REMITA_MERCHANT_ID},remitaConsumerToken=${apiHash}`
     };
 
+    // Step 3: Query Remita
     const response = await axios.get(url, { headers });
 
     let data;
@@ -701,15 +667,30 @@ exports.checkTransactionStatusBank = async (req, res) => {
       data = response.data;
     }
 
-    res.json({
-      message: 'Transaction status retrieved successfully',
+    const statusCode = data?.status || '';
+    const paymentSuccessCodes = ['00', '01']; // success codes
+
+    console.log('Remita status code:', statusCode);
+
+    // Step 4: Update transaction and form status if payment is successful
+    if (paymentSuccessCodes.includes(statusCode)) {
+      await AdminService.updateTransaction(transaction.id, { status: 'completed' });
+      await FormsService.updatePaymentStatus(transaction.form_id, 'paid');
+      await FormsService.updateDraftStatus(transaction.form_id, false);
+
+      console.log(`✅ Payment confirmed. Transaction and form updated for user ${transaction.user_id}`);
+    }
+
+    return res.json({
+      message: 'Transaction status retrieved and form updated successfully',
       rrr,
+      paymentConfirmed: paymentSuccessCodes.includes(statusCode),
       statusResponse: data
     });
 
   } catch (error) {
-    console.error('Error checking transaction status:', error);
-    res.status(500).json({
+    console.error('❌ Error checking transaction status:', error);
+    return res.status(500).json({
       error: 'Failed to check transaction status',
       details: error.message
     });
@@ -752,7 +733,7 @@ exports.handleNotification = async (req, res) => {
     }
 
     // Save or update transaction
-    await AdminService.updateTransactionStatus({
+    await AdminService.updateTransaction({
       rrr,
       orderId,
       amount,

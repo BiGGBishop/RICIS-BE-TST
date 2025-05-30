@@ -746,6 +746,14 @@ exports.createTransaction = async (transactionData) => {
   return await Transaction.create(transactionData);
 };
 
+exports.findTransactionById = async (transactionId) => {
+  return await Transaction.findByPk(transactionId);
+};
+
+exports.updateTransaction = async (updateData, options) => {
+  return await Transaction.update(updateData, options);
+};
+
 exports.getTransactionsByUserId = async (user_id) => {
   return await Transaction.findAll({
     where: { user_id },

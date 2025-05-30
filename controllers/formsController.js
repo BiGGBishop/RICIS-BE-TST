@@ -44,13 +44,22 @@ exports.getAllAuthorizationApproved = async (req, res) => {
 };
 
 exports.updateAuthorizationApproved = async (req, res) => {
-  const { id } = req.params;
-  const data = await FormsService.updateAuthorizationApproved(req, id);
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+  try {
+    const { id } = req.params;
+    const data = await FormsService.updateAuthorizationApproved(req, id);
+
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 exports.getAuthorizationApprovedByUserId= async (req, res) => {

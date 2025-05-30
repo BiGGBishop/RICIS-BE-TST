@@ -39,6 +39,14 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "SET NULL",
 				allowNull: true,
 			  },
+			  
+			application_type:{
+				type:DataTypes.ENUM(
+					"New Application",
+					"Re-Application"
+				),
+				defaultValue:"New Application"
+			},
 			  categoryId:{
 						type: DataTypes.INTEGER,
 						allowNull: true, 

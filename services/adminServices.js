@@ -1809,6 +1809,11 @@ exports.createTransaction = async (transactionData) => {
   return await AdminRepo.createTransaction(transactionData);
 };
 
+exports.updateTransaction = async (transactionId, data) => {
+  await AdminRepo.updateTransaction(data, { where: { id: transactionId } });
+  return await AdminRepo.findTransactionById(transactionId);
+};
+
 exports.getTransactionsByUserId = async (user_id) => {
   return await AdminRepo.getTransactionsByUserId(user_id);
 };

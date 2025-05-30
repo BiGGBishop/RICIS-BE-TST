@@ -100,46 +100,6 @@ exports.findAllApplication = async (filter, page = 1, limit = 10) => {
       where: filter,
       limit: limit,
       offset: offset,
-      /*include: [
-        {
-          model: Categories, // Include the associated category
-          as: "category",
-          attributes: ["name"], // Specify which fields of the category to include
-          required: false,
-        },
-
-        {
-          model: SubCategories, // Include the associated category
-          as: "subcategory",
-          attributes: ["name"], // Specify which fields of the category to include
-          required: false,
-        },
-
-        {
-          model: User, // Include the associated category
-          as: "user",
-          attributes: ["email", "first_name", "last_name"], // Specify which fields of the category to include
-          required: false,
-        },
-        {
-          model: Conversation,
-          as: "conversations",
-          include: [
-            {
-              model: User,
-              as: "userdetails",
-              attributes: ["email", "first_name"],
-              required: false,
-            },
-            {
-              model: AdminStaff,
-              as: "admindetails",
-              attributes: ["email", "full_name"],
-              required: false,
-            },
-          ],
-        },
-      ]*/
     });
     const totalCount = await Application.count({
       where: filter,

@@ -70,6 +70,11 @@ module.exports = (sequelize, DataTypes) => {
 			incidentalIds:{
 				type: DataTypes.ARRAY(DataTypes.INTEGER)
 			},
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
 			feeId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,

@@ -97,6 +97,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true,
           },
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
           type_of_certification: {
             type: DataTypes.STRING
           },

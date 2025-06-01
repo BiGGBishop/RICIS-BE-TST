@@ -66,6 +66,11 @@ OperatorCertification.belongsTo(models.Fee, {
 				onDelete: 'SET NULL',
 				
 			},
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
 			classificationId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,

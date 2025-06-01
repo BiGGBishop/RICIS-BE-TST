@@ -100,6 +100,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			},
 
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
 			
 			boiler_pressure_classification:{
 				type:DataTypes.ENUM(

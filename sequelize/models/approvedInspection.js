@@ -81,6 +81,11 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			} ,
 			form_type: DataTypes.STRING,
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
 			boiler_pressure_vessel_category: DataTypes.STRING,
 			type_of_service: DataTypes.ENUM("Nuclear", "Non-Nuclear"),
 			service_classification: DataTypes.ARRAY(DataTypes.STRING),

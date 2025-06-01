@@ -1017,123 +1017,71 @@ exports.getBoilerRegistrationByUserId = async (userId) => {
   };
 }; 
 
-    exports.getBoilerRegistrationsById = async (id) => {
-      const competencyForm = await FormsRepo.findBoilerRegistrationById(id);
-      if (!competencyForm) {
-        return {
-          STATUS_CODE: StatusCodes.NOT_FOUND,
-          STATUS: false,
-          MESSAGE: "boiler reigistartion form not found.",
-        };
-      }
+exports.getBoilerRegistrationsById = async (id) => {
+  const competencyForm = await FormsRepo.findBoilerRegistrationById(id);
+  if (!competencyForm) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "boiler reigistartion form not found.",
+    };
+  }
+  return {
+    STATUS_CODE: StatusCodes.OK,
+    STATUS: true,
+    MESSAGE: "boiler registration form fetched successfully.",
+    DATA: competencyForm,
+  };
+};
+    
+exports.updateBoilerRegistration = async (id, updatedData) => {
+  try {
+    // Convert incidentalIds string to array of numbers if needed
+    if (updatedData.incidentalIds && typeof updatedData.incidentalIds === 'string') {
+      updatedData.incidentalIds = updatedData.incidentalIds
+        .split(',')
+        .map(val => Number(val.trim()))
+        .filter(val => !isNaN(val));
+      console.log('Converted incidentalIds:', updatedData.incidentalIds);
+    }
+
+    // Check if the record exists before updating (optional, but clearer)
+    const existingRecord = await FormsRepo.findBoilerRegistrationById(id);
+    if (!existingRecord) {
       return {
-        STATUS_CODE: StatusCodes.OK,
-        STATUS: true,
-        MESSAGE: "boiler registration form fetched successfully.",
-        DATA: competencyForm,
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Boiler registration not found.',
       };
+    }
+
+    // Perform update
+    const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, updatedData);
+
+    if (!updatedRegistration) {
+      // Could happen if no rows affected, or other repo logic
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Boiler registration not found or not updated.',
+      };
+    }
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: 'Boiler registration updated successfully.',
+      DATA: updatedRegistration,
     };
-    
-    exports.updateBoilerRegistration = async (req, id) => {
-      const userId = req?.user?.id;
-    
-      if (!userId) {
-        return {
-          STATUS_CODE: StatusCodes.UNAUTHORIZED,
-          STATUS: false,
-          MESSAGE: "User not authenticated.",
-        };
-      }
-    
-      const userExist = await UserRepo.findUser({ id: userId });
-    
-      if (!userExist) {
-        return {
-          STATUS_CODE: StatusCodes.UNAUTHORIZED,
-          STATUS: false,
-          MESSAGE: "User not authenticated.",
-        };
-      }
-    
-      const existingRegistration = await FormsRepo.findBoilerRegistrationById(id);
-    
-      if (!existingRegistration) {
-        return {
-          STATUS_CODE: StatusCodes.NOT_FOUND,
-          STATUS: false,
-          MESSAGE: "Boiler registration not found.",
-        };
-      }
-    
-      let {
-        manufacturers_data_report,
-        construction_drawings,
-        design_calculation,
-        test_parameters_data,
-        accreditation_documents,
-        installation_plan,
-        quality_assurance_program,
-        certificate,
-        ...rest
-      } = req.body;
-    
-      let { certificate_image, ...certificateRest } = certificate || {};
-    
-      try {
-        const [
-          manufacturersDataReportUrl,
-          constructionDrawingsUrl,
-          designCalculationUrl,
-          testParametersDataUrl,
-          accreditationDocumentsUrl,
-          installationPlanUrl,
-          qualityAssuranceProgramUrl,
-          certificateImageUrl,
-        ] = await Promise.all([
-          manufacturers_data_report ? uploadSingleFile(manufacturers_data_report) : existingRegistration.manufacturers_data_report,
-          construction_drawings ? uploadSingleFile(construction_drawings) : existingRegistration.construction_drawings,
-          design_calculation ? uploadSingleFile(design_calculation) : existingRegistration.design_calculation,
-          test_parameters_data ? uploadSingleFile(test_parameters_data) : existingRegistration.test_parameters_data,
-          accreditation_documents ? uploadSingleFile(accreditation_documents) : existingRegistration.accreditation_documents,
-          installation_plan ? uploadSingleFile(installation_plan) : existingRegistration.installation_plan,
-          quality_assurance_program ? uploadSingleFile(quality_assurance_program) : existingRegistration.quality_assurance_program,
-          certificate_image ? uploadSingleFile(certificate_image) : existingRegistration.certificate?.certificate_image,
-        ]);
-    
-        const data = {
-          manufacturers_data_report: manufacturersDataReportUrl,
-          construction_drawings: constructionDrawingsUrl,
-          design_calculation: designCalculationUrl,
-          test_parameters_data: testParametersDataUrl,
-          accreditation_documents: accreditationDocumentsUrl,
-          installation_plan: installationPlanUrl,
-          quality_assurance_program: qualityAssuranceProgramUrl,
-          certificate: {
-            certificate_image: certificateImageUrl,
-            ...certificateRest,
-          },
-          user_id: userId,
-          ...rest,
-        };
-    
-        const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, data);
-    
-        return {
-          STATUS_CODE: StatusCodes.OK,
-          STATUS: true,
-          MESSAGE: "Boiler registration updated successfully.",
-          DATA: updatedRegistration,
-        };
-      } catch (error) {
-        console.error("Error updating boiler registration:", error);
-        return {
-          STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-          STATUS: false,
-          MESSAGE: "Failed to update boiler registration.",
-        };
-      }
+  } catch (error) {
+    console.error('Error in updateBoilerRegistration service:', error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: 'Failed to update boiler registration due to server error.',
     };
-    
+  }
+};
 
     //competency from lift operator
  
@@ -2049,9 +1997,16 @@ exports.createCompetencyCertificationInspection = async (req) => {
 };
 
 
-exports.getCompetencyCertificationInspectionById = async (userId) => {
-  const certifications = await FormsRepo.findCompetencyCertificationInspectionById(userId);
-  return {
+exports.getCompetencyCertificationInspectionById = async (id) => {
+  const certifications = await FormsRepo.findCompetencyCertificationInspectionById(id);
+  if (!certifications) {
+        return {
+          STATUS_CODE: StatusCodes.NOT_FOUND,
+          STATUS: false,
+          MESSAGE: "boiler reigistartion form not found.",
+        };
+      }
+      return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
       MESSAGE: "Competency certifications lifting fetched successfully.",
@@ -2059,89 +2014,51 @@ exports.getCompetencyCertificationInspectionById = async (userId) => {
   };
 };
 
-exports.updateCompetencyCertificationInspection = async (req, id) => {
-  const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({ id: userId });
-
-  if (!userExist) {
-    return {
-      STATUS_CODE: StatusCodes.UNAUTHORIZED,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
-    };
-  }
-
-  const existingCertification = await FormsRepo.findCompetencyCertificationInspectionById(id);
-
-  if (!existingCertification) {
-    return {
-      STATUS_CODE: StatusCodes.NOT_FOUND,
-      STATUS: false,
-      MESSAGE: "Competency certification inspection not found.",
-    };
-  }
-
-  let {
-    applicant_cv,
-    higher_education_certifications,
-    nagobin_experience_certificate,
-    training_certificate,
-    other_certifications,
-    employment_letter,
-    certificate, // Certificate field
-    ...rest
-  } = req.body;
-
-  let { certificate_image, ...certificateRest } = certificate || {};
-
+exports.updateCompetencyCertificationInspection = async (id, req) => {
   try {
-    const [
-      applicantCvUrl,
-      higherEducationCertificationsUrl,
-      nagobinExperienceCertificateUrl,
-      trainingCertificateUrl,
-      otherCertificationsUrl,
-      employmentLetterUrl,
-      certificateImageUrl,
-    ] = await Promise.all([
-      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
-      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
-      nagobin_experience_certificate ? uploadSingleFile(nagobin_experience_certificate) : existingCertification.nagobin_experience_certificate,
-      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
-      other_certifications ? uploadSingleFile(other_certifications) : existingCertification.other_certifications,
-      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
-      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
-    ]);
+    // Convert incidentalIds string to array of numbers if needed
+    if (req.incidentalIds && typeof req.incidentalIds === 'string') {
+      req.incidentalIds = req.incidentalIds
+        .split(',')
+        .map(val => Number(val.trim()))
+        .filter(val => !isNaN(val));
+      console.log('Converted incidentalIds:', req.incidentalIds);
+    }
 
-    const data = {
-      applicant_cv: applicantCvUrl,
-      higher_education_certifications: higherEducationCertificationsUrl,
-      nagobin_experience_certificate: nagobinExperienceCertificateUrl,
-      training_certificate: trainingCertificateUrl,
-      other_certifications: otherCertificationsUrl,
-      employment_letter: employmentLetterUrl,
-      certificate: {
-        certificate_image: certificateImageUrl,
-        ...certificateRest,
-      },
-      user_id: userId,
-      ...rest,
-    };
+    // Check if the record exists before updating (optional, but clearer)
+    const existingRecord = await FormsRepo.findCompetencyCertificationInspectionById(id);
+    if (!existingRecord) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Record not found.',
+      };
+    }
 
-    const updatedCertification = await FormsRepo.updateCompetencyCertificationInspection(id, data);
+    // Perform update
+    const updatedRegistration = await FormsRepo.updateCompetencyCertificationInspection(id, req);
+
+    if (!updatedRegistration) {
+      // Could happen if no rows affected, or other repo logic
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Form not found or not updated.',
+      };
+    }
 
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
-      MESSAGE: "Competency certification inspection updated successfully.",
-      DATA: updatedCertification,
+      MESSAGE: 'Form updated successfully.',
+      DATA: updatedRegistration,
     };
   } catch (error) {
-    console.error("Error updating competency certification inspection:", error);
+    console.error('Error in Form service:', error);
     return {
       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
       STATUS: false,
-      MESSAGE: "Error updating competency certification inspection.",
+      MESSAGE: 'Failed to update Form due to server error.',
     };
   }
 };
@@ -2238,89 +2155,54 @@ exports.getCompetencyCertificationBoiler = async (userId) => {
   };
 };
 
-exports.updateCompetencyCertificationBoiler = async (req, id) => {
-  const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({ id: userId });
-
-  if (!userExist) {
-    return {
-      STATUS_CODE: StatusCodes.UNAUTHORIZED,
-      STATUS: false,
-      MESSAGE: "User not authenticated.",
-    };
-  }
-
-  const existingCertification = await FormsRepo.findByIdCompetencyCertificationFormBoiler(id);
-
-  if (!existingCertification) {
-    return {
-      STATUS_CODE: StatusCodes.NOT_FOUND,
-      STATUS: false,
-      MESSAGE: "Competency certification Form Boiler not found.",
-    };
-  }
-
-  let {
-    applicant_cv,
-    higher_education_certifications,
-    training_certificate,
-    employment_letter,
-    certificate,
-    ...rest
-  } = req.body;
-
-  let { certificate_image, ...certificateRest } = certificate || {};
-
+exports.updateCompetencyCertificationBoiler = async (id, req) => {
   try {
-    const [
-      applicantCvUrl,
-      higherEducationCertificationsUrl,
-      trainingCertificateUrl,
-      employmentLetterUrl,
-      certificateImageUrl,
-    ] = await Promise.all([
-      applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
-      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
-      training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
-      employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
-      certificate_image ? uploadSingleFile(certificate_image) : existingCertification.certificate?.certificate_image,
-    ]);
+    // Convert incidentalIds string to array of numbers if needed
+    if (req.incidentalIds && typeof req.incidentalIds === 'string') {
+      req.incidentalIds = req.incidentalIds
+        .split(',')
+        .map(val => Number(val.trim()))
+        .filter(val => !isNaN(val));
+      console.log('Converted incidentalIds:', req.incidentalIds);
+    }
 
-    // Handle certificate separately
-    const certificateData = {
-      certificate_image: certificateImageUrl,
-      ...certificateRest,
-    };
+    // Check if the record exists before updating (optional, but clearer)
+    const existingRecord = await FormsRepo.findByIdCompetencyCertificationFormBoiler(id);
+    if (!existingRecord) {
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Record not found.',
+      };
+    }
 
-    const data = {
-      applicant_cv: applicantCvUrl,
-      higher_education_certifications: higherEducationCertificationsUrl,
-      training_certificate: trainingCertificateUrl,
-      employment_letter: employmentLetterUrl,
-      certificate: certificateData,
-      user_id: userId,
-      ...rest,
-    };
+    // Perform update
+    const updatedRegistration = await FormsRepo.updateCompetencyCertificationFormBoiler(id, req);
 
-    const updatedCertifications = await FormsRepo.updateCompetencyCertificationFormBoiler(id, data);
+    if (!updatedRegistration) {
+      // Could happen if no rows affected, or other repo logic
+      return {
+        STATUS_CODE: StatusCodes.NOT_FOUND,
+        STATUS: false,
+        MESSAGE: 'Form not found or not updated.',
+      };
+    }
 
     return {
       STATUS_CODE: StatusCodes.OK,
       STATUS: true,
-      MESSAGE: "Competency certification Form Boiler updated successfully.",
-      DATA: updatedCertifications,
+      MESSAGE: 'Form updated successfully.',
+      DATA: updatedRegistration,
     };
   } catch (error) {
-    console.error("Error updating competency certification Form Boiler:", error);
+    console.error('Error in Form service:', error);
     return {
       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
       STATUS: false,
-      MESSAGE: "Error updating competency certification Form Boiler.",
+      MESSAGE: 'Failed to update Form due to server error.',
     };
   }
 };
-
-
 exports.getAllCompetencyCertificationBoiler = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationFormBoiler();
   return {

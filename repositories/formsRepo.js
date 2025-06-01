@@ -60,7 +60,7 @@ exports.updateAuthorizationApproved = async (id, data) => {
 
     return await AuthorizationApproved.findByPk(id);
   } catch (error) {
-    console.error("Error updating AuthorizationApproved:", error);
+    console.error("Error updating Authorization Approved:", error);
     throw error; 
   }
 };
@@ -105,69 +105,17 @@ exports.updateAuthorizationManufacturer = async (id, data) => {
 
 exports.findAuthorizationManufacturerById = async (id) => {
   try {
-    const response = await AuthorizationManufacturer.findByPk(id);
-    
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findAuthorizationManufacturerById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await AuthorizationManufacturer.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Authorization Manufacturer by ID:', error);
     throw error;
   }
-}; 
+};
 
 exports.findByUserIdAuthorizationManufacturer= async (userId,options = {}) => {
   return await AuthorizationManufacturer.findAll({
@@ -185,23 +133,22 @@ exports.findAllTrainingAuthorization = async () => {
     return  TrainingOrganizationForm.findAll();
   };
 
-
-  exports.updateTrainingAuthorization = async(id,data)=>{
-    try {
-      const [updatedRows] = await TrainingOrganizationForm.update(data,
-      {  where: { id: id },
-      });
-     
-      if (updatedRows === 0) {
-        return null; // Indicate that the record was not found
-      }
-  
-      return await TrainingOrganizationForm.findByPk(id); 
-    } catch (error) {
-      console.error("Error updating TrainingOrganizationForm:", error);
-      throw error;
+exports.updateTrainingAuthorization = async(id,data)=>{
+  try {
+    const [updatedRows] = await TrainingOrganizationForm.update(data,
+    {  where: { id: id },
+    });
+    
+    if (updatedRows === 0) {
+      return null; // Indicate that the record was not found
     }
-  };
+
+    return await TrainingOrganizationForm.findByPk(id); 
+  } catch (error) {
+    console.error("Error updating TrainingOrganizationForm:", error);
+    throw error;
+  }
+};
 
 exports.findByUserIdTrainingAuthorization= async (userId,options = {}) => {
   return await TrainingOrganizationForm.findAll({
@@ -212,66 +159,14 @@ exports.findByUserIdTrainingAuthorization= async (userId,options = {}) => {
 
 exports.findTrainingAuthorizationById = async (id) => {
   try {
-    const response = await TrainingOrganizationForm.findByPk(id);
-    
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findTrainingAuthorizationById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await TrainingOrganizationForm.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Training OrganizationForm by ID:', error);
     throw error;
   }
 };
@@ -304,14 +199,25 @@ exports.findByUserIdBoilerRegistrationRepos = async (userId,options = {}) => {
   
       return await BoilerRegistration.findByPk(id); 
     } catch (error) {
-      console.error("Error updating TrainingOrganizationForm:", error);
+      console.error("Error updating Boiler Registration:", error);
       throw error;
     }
   };
 
-  exports.findBoilerRegistrationById = async (id) => {
-    return BoilerRegistration.findByPk(id);
+exports.findBoilerRegistrationById = async (id) => {
+  try {
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findBoilerRegistrationById called with object id:', id);
+      return null; // or throw error
+    }
+    return await BoilerRegistration.findByPk(id);
+  } catch (error) {
+    console.error('Error finding Boiler Registration by ID:', error);
+    throw error;
   }
+};
+
 
 
   //competencyFormLiftOperationCertification
@@ -330,71 +236,19 @@ exports.findByUserIdBoilerRegistrationRepos = async (userId,options = {}) => {
     });
   };
 
-  exports.findCompetencyCertificationLiftFormById = async (id) => {
-    try {
-      const response = await CompetencyCertificationFormLiftOperator.findByPk(id);
-  
-      if (!response) return null;
-  
-      let { application_type } = response;
-  
-      if (application_type === "New Application") {
-        application_type = "Fresh Application";
-      } else if (application_type === "Re-Application") {
-        application_type = "Renewal Application";
-      }
-  
-      // Fetch Classification Data
-      const classificationData = await fetchClassifications({
-        id: response.classificationId,
-      });
-  
-      let incidentalClassifications = [];
-      if (response.incidentalIds && response.incidentalIds.length > 0) {
-        const incidentalIds = Array.isArray(response.incidentalIds) 
-          ? response.incidentalIds 
-          : [response.incidentalIds];
-  
-        const incidentalRecords = await Classification.findAll({
-          where: {
-            [Op.or]: [
-              { classification_number: { [Op.in]: incidentalIds } },
-              { id: { [Op.in]: incidentalIds } },
-            ],
-          },
-          attributes: ["id"],
-        });
-  
-        const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-  
-        incidentalClassifications =
-          incidentalIdsFromRecords.length > 0
-            ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-            : [];
-      }
-  
-      // Filter classificationIdFees based on application_type
-      const classificationIdFees = classificationData.flatMap((classification) =>
-        (classification.classificationFees || []).filter((fee) =>
-          fee.fee.application_type?.includes(application_type)
-        )
-      );
-  
-      // Fetch incidentalIdsFees without filtering based on application_type
-      const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-        classification.classificationFees || []
-      );
-  
-      // Attach fees separately
-      response.dataValues.classificationIdFees = classificationIdFees;
-      response.dataValues.incidentalIdsFees = incidentalIdsFees;
-  
-      return response;
-    } catch (error) {
-      console.error("Error details:", error);
-      throw error;
+exports.findCompetencyCertificationLiftFormById = async (id) => {
+  try {
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('CompetencyCertificationFormLiftOperator called with object id:', id);
+      return null; // or throw error
     }
-  };  
+    return await BoilerRegistration.findByPk(id);
+  } catch (error) {
+    console.error('Error finding Competency CertificationFormLiftOperator by ID:', error);
+    throw error;
+  }
+};
 
   exports.updateCompetencyCertificationLiftForm= async (id, data) => {
     try {
@@ -431,73 +285,21 @@ exports.findByUserIdBoilerRegistrationRepos = async (userId,options = {}) => {
       ...options,
     });
   };
-
+ 
   exports.findByIdCompetencyCertificationFormBoiler = async (id) => {
-    try {
-      const response = await CompetencyCertificationFormBoiler.findByPk(id);
-  
-      if (!response) return null;
-  
-      let { application_type } = response;
-  
-      if (application_type === "New Application") {
-        application_type = "Fresh Application";
-      } else if (application_type === "Re-Application") {
-        application_type = "Renewal Application";
-      }
-  
-      // Fetch Classification Data
-      const classificationData = await fetchClassifications({
-        id: response.classificationId,
-      });
-  
-      let incidentalClassifications = [];
-      if (response.incidentalIds && response.incidentalIds.length > 0) {
-        const incidentalIds = Array.isArray(response.incidentalIds) 
-          ? response.incidentalIds 
-          : [response.incidentalIds];
-  
-        const incidentalRecords = await Classification.findAll({
-          where: {
-            [Op.or]: [
-              { classification_number: { [Op.in]: incidentalIds } },
-              { id: { [Op.in]: incidentalIds } },
-            ],
-          },
-          attributes: ["id"],
-        });
-  
-        const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-  
-        incidentalClassifications =
-          incidentalIdsFromRecords.length > 0
-            ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-            : [];
-      }
-  
-      // Filter classificationIdFees based on application_type
-      const classificationIdFees = classificationData.flatMap((classification) =>
-        (classification.classificationFees || []).filter((fee) =>
-          fee.fee.application_type?.includes(application_type)
-        )
-      );
-  
-      // Fetch incidentalIdsFees without filtering based on application_type
-      const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-        classification.classificationFees || []
-      );
-  
-      // Attach fees separately
-      response.dataValues.classificationIdFees = classificationIdFees;
-      response.dataValues.incidentalIdsFees = incidentalIdsFees;
-  
-      return response;
-    } catch (error) {
-      console.error("Error details:", error);
-      throw error;
+  try {
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findByIdCompetencyCertificationFormBoiler called with object id:', id);
+      return null; // or throw error
     }
-  };  
-  
+    return await CompetencyCertificationFormBoiler.findByPk(id);
+  } catch (error) {
+    console.error('Error finding Competency Certification FormBoiler by ID:', error);
+    throw error;
+  }
+};
+
   exports.updateCompetencyCertificationFormBoiler= async (id, data) => {
     try {
       const [updatedRows] = await CompetencyCertificationFormBoiler.update(data,{
@@ -542,73 +344,19 @@ exports.findRenewalFormsByUserId= async (userId,options = {}) => {
   });
 };
 
- 
 exports.findRenewalFormsById = async (id) => {
   try {
-    const response = await RenewalForm.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findRenewalFormsById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await RenewalForm.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Renewal Form by ID:', error);
     throw error;
   }
 };
-
 
 exports.updateRenewalForms= async (id, data) => {
   try {
@@ -646,66 +394,14 @@ exports.findByUserIdOperatorCertificationsByUserId  = async (userId,options = {}
 
 exports.findOperatorCertificationById = async (id) => {
   try {
-    const response = await OperatorCertification.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findOperatorCertificationById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await OperatorCertification.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Operator Certification by ID:', error);
     throw error;
   }
 };
@@ -738,66 +434,14 @@ exports.findCompetencyCertificationLiftingByUserId= async (userId,options = {}) 
 
 exports.findCompetencyCertificationLiftingById = async (id) => {
   try {
-    const response = await CompetencyCertificationLifting.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findCompetencyCertificationLiftingById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await CompetencyCertificationLifting.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Boiler Registration by ID:', error);
     throw error;
   }
 };
@@ -822,71 +466,17 @@ exports.findAllCompetencyCertificationInspection = async () => {
 
 exports.findCompetencyCertificationInspectionById = async (id) => {
   try {
-    const response = await AuthorizedInspectorCertification.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findCompetencyCertificationInspectionById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await AuthorizedInspectorCertification.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Boiler Registration by ID:', error);
     throw error;
   }
 };
-
-
 
 exports.updateCompetencyCertificationInspection = async (id, data) => {
   console.log("Updating CompetencyCertificationInspection with id:", id);
@@ -932,66 +522,14 @@ exports.findCompetencyCertificationInspectionByUserId  = async (userId ,options 
   
 exports.findCompetencyCertificationInspectionById = async (id) => {
   try {
-    const response = await AuthorizedInspectorCertification.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findCompetencyCertificationInspectionById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await AuthorizedInspectorCertification.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Boiler Registration by ID:', error);
     throw error;
   }
 };
@@ -1013,70 +551,17 @@ exports.findCompetencyCertificationWelderByUserId  = async (userId,options={}) =
 
 exports.findCompetencyCertificationWelderById = async (id) => {
   try {
-    const response = await CompetencyCertificationWelder.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findCompetencyCertificationWelderById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await CompetencyCertificationWelder.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Competency CertificationWelder by ID:', error);
     throw error;
   }
 };
-
 exports.updateCompetencyCertificationWelder = async (id, data) => {
   console.log("Updating CompetencyCertificationwelder with id:", id);
   try{
@@ -1133,66 +618,14 @@ exports.findAllLiftingEquipmentRegistration = async () => {
 
 exports.findLiftingEquipmentRegistrationById = async (id) => {
   try {
-    const response = await LiftingEquipmentRegistration.findByPk(id);
-
-    if (!response) return null;
-
-    let { application_type } = response;
-
-    if (application_type === "New Application") {
-      application_type = "Fresh Application";
-    } else if (application_type === "Re-Application") {
-      application_type = "Renewal Application";
+    // Ensure id is a primitive, not an object
+    if (typeof id === 'object') {
+      console.warn('findLiftingEquipmentRegistrationById called with object id:', id);
+      return null; // or throw error
     }
-
-    // Fetch Classification Data
-    const classificationData = await fetchClassifications({
-      id: response.classificationId,
-    });
-
-    let incidentalClassifications = [];
-    if (response.incidentalIds && response.incidentalIds.length > 0) {
-      const incidentalIds = Array.isArray(response.incidentalIds) 
-        ? response.incidentalIds 
-        : [response.incidentalIds];
-
-      const incidentalRecords = await Classification.findAll({
-        where: {
-          [Op.or]: [
-            { classification_number: { [Op.in]: incidentalIds } },
-            { id: { [Op.in]: incidentalIds } },
-          ],
-        },
-        attributes: ["id"],
-      });
-
-      const incidentalIdsFromRecords = incidentalRecords.map((record) => record.id);
-
-      incidentalClassifications =
-        incidentalIdsFromRecords.length > 0
-          ? await fetchClassifications({ id: { [Op.in]: incidentalIdsFromRecords } })
-          : [];
-    }
-
-    // Filter classificationIdFees based on application_type
-    const classificationIdFees = classificationData.flatMap((classification) =>
-      (classification.classificationFees || []).filter((fee) =>
-        fee.fee.application_type?.includes(application_type)
-      )
-    );
-
-    // Fetch incidentalIdsFees without filtering based on application_type
-    const incidentalIdsFees = incidentalClassifications.flatMap((classification) =>
-      classification.classificationFees || []
-    );
-
-    // Attach fees separately
-    response.dataValues.classificationIdFees = classificationIdFees;
-    response.dataValues.incidentalIdsFees = incidentalIdsFees;
-
-    return response;
+    return await LiftingEquipmentRegistration.findByPk(id);
   } catch (error) {
-    console.error("Error details:", error);
+    console.error('Error finding Lifting EquipmentRegistration by ID:', error);
     throw error;
   }
 };

@@ -119,7 +119,7 @@ OperatorCertification.belongsTo(models.Fee, {
 	},
 			certification_type: DataTypes.STRING,
 			certification_class: DataTypes.STRING,
-			application_type: DataTypes.STRING,
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			available_for_documentation_review: {
 				type: DataTypes.BOOLEAN,
 				allowNull: true,

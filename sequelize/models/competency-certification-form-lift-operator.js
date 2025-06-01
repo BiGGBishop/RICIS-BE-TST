@@ -127,9 +127,7 @@ module.exports = (sequelize, DataTypes) => {
           "Class G"
         ),
       },
-      application_type: {
-        type: DataTypes.ENUM("New Application", "Re-application"),
-      },
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
       available_for_documentation_review: {
         type: DataTypes.BOOLEAN,
         allowNull: true,

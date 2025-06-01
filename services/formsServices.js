@@ -212,7 +212,11 @@ exports.updateAuthorizationApproved = async (req, id) => {
       isoCertification ? uploadSingleFile(isoCertification) : existingAuthorization.isoCertification,
       certificate_image ? uploadSingleFile(certificate_image) : existingAuthorization.certificate?.certificate_image,
     ]);
-
+    delete rest.totalAmount;
+    delete rest.incidentalFees;
+    delete rest.statutoryFees;
+    delete rest.incidentalIds;
+    delete rest.application_type;
     const data = {
       member_nagobin: member_nagobin_url,
       member_leia: member_leia_url,
@@ -232,6 +236,11 @@ exports.updateAuthorizationApproved = async (req, id) => {
       },
       user_id: userId,
       ...rest,
+      totalAmount: existingAuthorization.totalAmount,
+      incidentalFees: existingAuthorization.incidentalFees,
+      statutoryFees: existingAuthorization.statutoryFees,
+      incidentalIds: existingAuthorization.incidentalIds,
+      application_type: existingAuthorization.application_type,
     };
 
     const updatedAuthorization = await FormsRepo.updateAuthorizationApproved(id, data);
@@ -505,8 +514,14 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
     indtDocumentation,
     isoCertification,
     certificate,
+    totalAmount, // Should be preserved, not updated
+    incidentalFees, // Should be preserved, not updated
+    statutoryFees, // Should be preserved, not updated
+    incidentalIds, // Should be preserved, not updated
+    application_type, // Should be preserved, not updated
     ...rest
   } = req.body;
+
   let certificate_image = certificate?.certificate_image;
   let remain = { ...certificate };
   delete remain.certificate_image;
@@ -542,6 +557,7 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
       isoCertification ? uploadSingleFile(isoCertification) : existingAuthorization.isoCertification,
     ]);
 
+    // Preserve the fields you do not want to update
     const data = {
       member_nagobin: member_nagobin_url,
       member_leia: member_leia_url,
@@ -560,6 +576,12 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
         ...remain,
       },
       user_id: userId,
+      // Preserve fields that should not change
+      totalAmount: existingAuthorization.totalAmount,
+      incidentalFees: existingAuthorization.incidentalFees,
+      statutoryFees: existingAuthorization.statutoryFees,
+      incidentalIds: existingAuthorization.incidentalIds,
+      application_type: existingAuthorization.application_type,
       ...rest,
     };
 
@@ -580,6 +602,7 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
     };
   }
 };
+
 
 exports.getAllAuthorizationManufacturer = async () => {
   const allAuthorizations = await FormsRepo.findAllAuthorizationManufacturer();
@@ -779,6 +802,11 @@ exports.updateAuthorizationTraining = async (req, id) => {
     indtDocumentation,
     isoCertification,
     certificate,
+    totalAmount,         
+    incidentalFees,      
+    statutoryFees,       
+    incidentalIds,       
+    application_type,    
     ...rest
   } = req.body;
 
@@ -835,6 +863,12 @@ exports.updateAuthorizationTraining = async (req, id) => {
       },
       user_id: userId,
       ...rest,
+      
+      totalAmount: existingAuthorization.totalAmount,
+      incidentalFees: existingAuthorization.incidentalFees,
+      statutoryFees: existingAuthorization.statutoryFees,
+      incidentalIds: existingAuthorization.incidentalIds,
+      application_type: existingAuthorization.application_type,
     };
 
     const updatedAuthorizationTraining = await FormsRepo.updateTrainingAuthorization(id, data);
@@ -1034,18 +1068,60 @@ exports.getBoilerRegistrationsById = async (id) => {
   };
 };
     
+// exports.updateBoilerRegistration = async (id, updatedData) => {
+//   try {
+//     // Convert incidentalIds string to array of numbers if needed
+//     if (updatedData.incidentalIds && typeof updatedData.incidentalIds === 'string') {
+//       updatedData.incidentalIds = updatedData.incidentalIds
+//         .split(',')
+//         .map(val => Number(val.trim()))
+//         .filter(val => !isNaN(val));
+//       console.log('Converted incidentalIds:', updatedData.incidentalIds);
+//     }
+
+//     // Check if the record exists before updating (optional, but clearer)
+//     const existingRecord = await FormsRepo.findBoilerRegistrationById(id);
+//     if (!existingRecord) {
+//       return {
+//         STATUS_CODE: StatusCodes.NOT_FOUND,
+//         STATUS: false,
+//         MESSAGE: 'Boiler registration not found.',
+//       };
+//     }
+
+//     // Perform update
+//     const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, updatedData);
+
+//     if (!updatedRegistration) {
+//       // Could happen if no rows affected, or other repo logic
+//       return {
+//         STATUS_CODE: StatusCodes.NOT_FOUND,
+//         STATUS: false,
+//         MESSAGE: 'Boiler registration not found or not updated.',
+//       };
+//     }
+
+//     return {
+//       STATUS_CODE: StatusCodes.OK,
+//       STATUS: true,
+//       MESSAGE: 'Boiler registration updated successfully.',
+//       DATA: updatedRegistration,
+//     };
+//   } catch (error) {
+//     console.error('Error in updateBoilerRegistration service:', error);
+//     return {
+//       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+//       STATUS: false,
+//       MESSAGE: 'Failed to update boiler registration due to server error.',
+//     };
+//   }
+// };
+
+    //competency from lift operator
+ 
 exports.updateBoilerRegistration = async (id, updatedData) => {
   try {
-    // Convert incidentalIds string to array of numbers if needed
-    if (updatedData.incidentalIds && typeof updatedData.incidentalIds === 'string') {
-      updatedData.incidentalIds = updatedData.incidentalIds
-        .split(',')
-        .map(val => Number(val.trim()))
-        .filter(val => !isNaN(val));
-      console.log('Converted incidentalIds:', updatedData.incidentalIds);
-    }
-
-    // Check if the record exists before updating (optional, but clearer)
+    // Check if the record exists before updating
     const existingRecord = await FormsRepo.findBoilerRegistrationById(id);
     if (!existingRecord) {
       return {
@@ -1055,11 +1131,17 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
       };
     }
 
+    // 🚫 Ensure certain fields remain unchanged
+    updatedData.totalAmount = existingRecord.totalAmount;
+    updatedData.incidentalFees = existingRecord.incidentalFees;
+    updatedData.statutoryFees = existingRecord.statutoryFees;
+    updatedData.incidentalIds = existingRecord.incidentalIds;
+    updatedData.application_type = existingRecord.application_type;
+
     // Perform update
     const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, updatedData);
 
     if (!updatedRegistration) {
-      // Could happen if no rows affected, or other repo logic
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
@@ -1083,8 +1165,6 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
   }
 };
 
-    //competency from lift operator
- 
     exports.createCompetencyFormLiftOperator = async (req) => {
       const userId = req?.user?.id;
       const userExist = await UserRepo.findUser({ id: userId });
@@ -1188,95 +1268,103 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
     };
   };
   
-  exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
-    console.log("Updating competency form...");
-  
-    const userId = req?.user?.id;
-  
-    if (!userId) {
-      return {
-        STATUS_CODE: StatusCodes.UNAUTHORIZED,
-        STATUS: false,
-        MESSAGE: "User not authenticated.",
-      };
-    }
-  
-    const userExist = await UserRepo.findUser({ id: userId });
-  
-    if (!userExist) {
-      return {
-        STATUS_CODE: StatusCodes.UNAUTHORIZED,
-        STATUS: false,
-        MESSAGE: "User not authenticated.",
-      };
-    }
-  
-    const existingForm = await FormsRepo.findCompetencyCertificationLiftFormById(id);
-  
-    if (!existingForm) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Competency form not found.",
-      };
-    }
-  
-    let {
-      applicant_cv,
-      higher_education_certifications,
-      training_certificate,
-      employment_letter,
-      certificate,
-      ...rest
-    } = req.body;
-  
-    let { certificate_image, ...certificateRest } = certificate || {};
-  
-    try {
-      const [
-        applicantCvUrl,
-        higherEducationCertificationsUrl,
-        trainingCertificateUrl,
-        employmentLetterUrl,
-        certificateImageUrl,
-      ] = await Promise.all([
-        applicant_cv ? uploadSingleFile(applicant_cv) : existingForm.applicant_cv,
-        higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingForm.higher_education_certifications,
-        training_certificate ? uploadSingleFile(training_certificate) : existingForm.training_certificate,
-        employment_letter ? uploadSingleFile(employment_letter) : existingForm.employment_letter,
-        certificate_image ? uploadSingleFile(certificate_image) : existingForm.certificate?.certificate_image,
-      ]);
-  
-      const data = {
-        applicant_cv: applicantCvUrl,
-        higher_education_certifications: higherEducationCertificationsUrl,
-        training_certificate: trainingCertificateUrl,
-        employment_letter: employmentLetterUrl,
-        certificate: {
-          certificate_image: certificateImageUrl,
-          ...certificateRest,
-        },
-        user_id: userId,
-        ...rest,
-      };
-  
-      const updatedForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, data);
-  
-      return {
-        STATUS_CODE: StatusCodes.OK,
-        STATUS: true,
-        MESSAGE: "Competency form updated successfully.",
-        DATA: updatedForm,
-      };
-    } catch (error) {
-      console.error("Error updating competency form:", error);
-      return {
-        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-        STATUS: false,
-        MESSAGE: "Failed to update competency form.",
-      };
-    }
-  };
+exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
+  console.log("Updating competency form...");
+
+  const userId = req?.user?.id;
+
+  if (!userId) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const existingForm = await FormsRepo.findCompetencyCertificationLiftFormById(id);
+
+  if (!existingForm) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Competency form not found.",
+    };
+  }
+
+  let {
+    applicant_cv,
+    higher_education_certifications,
+    training_certificate,
+    employment_letter,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      applicantCvUrl,
+      higherEducationCertificationsUrl,
+      trainingCertificateUrl,
+      employmentLetterUrl,
+      certificateImageUrl,
+    ] = await Promise.all([
+      applicant_cv ? uploadSingleFile(applicant_cv) : existingForm.applicant_cv,
+      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingForm.higher_education_certifications,
+      training_certificate ? uploadSingleFile(training_certificate) : existingForm.training_certificate,
+      employment_letter ? uploadSingleFile(employment_letter) : existingForm.employment_letter,
+      certificate_image ? uploadSingleFile(certificate_image) : existingForm.certificate?.certificate_image,
+    ]);
+
+    const data = {
+      applicant_cv: applicantCvUrl,
+      higher_education_certifications: higherEducationCertificationsUrl,
+      training_certificate: trainingCertificateUrl,
+      employment_letter: employmentLetterUrl,
+      certificate: {
+        certificate_image: certificateImageUrl,
+        ...certificateRest,
+      },
+      user_id: userId,
+      ...rest,
+
+      // 🚫 Keep these fields unchanged:
+      totalAmount: existingForm.totalAmount,
+      incidentalFees: existingForm.incidentalFees,
+      statutoryFees: existingForm.statutoryFees,
+      incidentalIds: existingForm.incidentalIds,
+      application_type: existingForm.application_type,
+    };
+
+    const updatedForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Competency form updated successfully.",
+      DATA: updatedForm,
+    };
+  } catch (error) {
+    console.error("Error updating competency form:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update competency form.",
+    };
+  }
+};
+
   
   // exports.deleteCompetencyCertificationLiftOperator= async (id) => {
   //   const deletedCompetencyForm = await FormsRepo.deleteCompetencyLiftOperator(id);
@@ -1431,113 +1519,121 @@ exports.getRenewalFormByUserId= async (userId) => {
   };
 
 
-  exports.updateRenewalForm = async (req, id) => {
-    const userId = req?.user?.id;
-  
-    if (!userId) {
-      return {
-        STATUS_CODE: StatusCodes.UNAUTHORIZED,
-        STATUS: false,
-        MESSAGE: "User not authenticated.",
-      };
-    }
-  
-    const userExist = await UserRepo.findUser({ id: userId });
-  
-    if (!userExist) {
-      return {
-        STATUS_CODE: StatusCodes.UNAUTHORIZED,
-        STATUS: false,
-        MESSAGE: "User not authenticated.",
-      };
-    }
-  
-    const existingRenewalForm = await FormsRepo.findRenewalFormsById(id);
-  
-    if (!existingRenewalForm) {
-      return {
-        STATUS_CODE: StatusCodes.NOT_FOUND,
-        STATUS: false,
-        MESSAGE: "Renewal form not found.",
-      };
-    }
-  
-    let {
-      company_documentation,
-      supervisor_documentation,
-      inspector_documentation,
-      log_book,
-      application_letter,
-      personnel_leia,
-      personnel_nagobin,
-      company_leia,
-      company_nagobin,
-      certificate,
-      ...rest
-    } = req.body;
-  
-    let { certificate_image, ...certificateRest } = certificate || {};
-  
-    try {
-      const [
-        certificate_image_url,
-        company_documentation_url,
-        supervisor_documentation_url,
-        inspector_documentation_url,
-        log_book_url,
-        application_letter_url,
-        personnel_leia_url,
-        personnel_nagobin_url,
-        company_leia_url,
-        company_nagobin_url,
-      ] = await Promise.all([
-        certificate_image ? uploadSingleFile(certificate_image) : existingRenewalForm.certificate?.certificate_image,
-        company_documentation ? uploadSingleFile(company_documentation) : existingRenewalForm.company_documentation,
-        supervisor_documentation ? uploadSingleFile(supervisor_documentation) : existingRenewalForm.supervisor_documentation,
-        inspector_documentation ? uploadSingleFile(inspector_documentation) : existingRenewalForm.inspector_documentation,
-        log_book ? uploadSingleFile(log_book) : existingRenewalForm.log_book,
-        application_letter ? uploadSingleFile(application_letter) : existingRenewalForm.application_letter,
-        personnel_leia ? uploadSingleFile(personnel_leia) : existingRenewalForm.personnel_leia,
-        personnel_nagobin ? uploadSingleFile(personnel_nagobin) : existingRenewalForm.personnel_nagobin,
-        company_leia ? uploadSingleFile(company_leia) : existingRenewalForm.company_leia,
-        company_nagobin ? uploadSingleFile(company_nagobin) : existingRenewalForm.company_nagobin,
-      ]);
-  
-      const data = {
-        company_documentation: company_documentation_url,
-        supervisor_documentation: supervisor_documentation_url,
-        inspector_documentation: inspector_documentation_url,
-        log_book: log_book_url,
-        application_letter: application_letter_url,
-        personnel_leia: personnel_leia_url,
-        personnel_nagobin: personnel_nagobin_url,
-        company_leia: company_leia_url,
-        company_nagobin: company_nagobin_url,
-        user_id: userId,
-        certificate: {
-          certificate_image: certificate_image_url,
-          ...certificateRest,
-        },
-        ...rest,
-      };
-  
-      const updatedRenewalForm = await FormsRepo.updateRenewalForms(id, data);
-  
-      return {
-        STATUS_CODE: StatusCodes.OK,
-        STATUS: true,
-        MESSAGE: "Renewal form updated successfully.",
-        DATA: updatedRenewalForm,
-      };
-    } catch (error) {
-      console.error("Error updating renewal form:", error);
-      return {
-        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-        STATUS: false,
-        MESSAGE: "Failed to update renewal form.",
-      };
-    }
-  };
+exports.updateRenewalForm = async (req, id) => {
+  const userId = req?.user?.id;
+
+  if (!userId) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const userExist = await UserRepo.findUser({ id: userId });
+
+  if (!userExist) {
+    return {
+      STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      STATUS: false,
+      MESSAGE: "User not authenticated.",
+    };
+  }
+
+  const existingRenewalForm = await FormsRepo.findRenewalFormsById(id);
+
+  if (!existingRenewalForm) {
+    return {
+      STATUS_CODE: StatusCodes.NOT_FOUND,
+      STATUS: false,
+      MESSAGE: "Renewal form not found.",
+    };
+  }
+
+  let {
+    company_documentation,
+    supervisor_documentation,
+    inspector_documentation,
+    log_book,
+    application_letter,
+    personnel_leia,
+    personnel_nagobin,
+    company_leia,
+    company_nagobin,
+    certificate,
+    ...rest
+  } = req.body;
+
+  let { certificate_image, ...certificateRest } = certificate || {};
+
+  try {
+    const [
+      certificate_image_url,
+      company_documentation_url,
+      supervisor_documentation_url,
+      inspector_documentation_url,
+      log_book_url,
+      application_letter_url,
+      personnel_leia_url,
+      personnel_nagobin_url,
+      company_leia_url,
+      company_nagobin_url,
+    ] = await Promise.all([
+      certificate_image ? uploadSingleFile(certificate_image) : existingRenewalForm.certificate?.certificate_image,
+      company_documentation ? uploadSingleFile(company_documentation) : existingRenewalForm.company_documentation,
+      supervisor_documentation ? uploadSingleFile(supervisor_documentation) : existingRenewalForm.supervisor_documentation,
+      inspector_documentation ? uploadSingleFile(inspector_documentation) : existingRenewalForm.inspector_documentation,
+      log_book ? uploadSingleFile(log_book) : existingRenewalForm.log_book,
+      application_letter ? uploadSingleFile(application_letter) : existingRenewalForm.application_letter,
+      personnel_leia ? uploadSingleFile(personnel_leia) : existingRenewalForm.personnel_leia,
+      personnel_nagobin ? uploadSingleFile(personnel_nagobin) : existingRenewalForm.personnel_nagobin,
+      company_leia ? uploadSingleFile(company_leia) : existingRenewalForm.company_leia,
+      company_nagobin ? uploadSingleFile(company_nagobin) : existingRenewalForm.company_nagobin,
+    ]);
+
+    const data = {
+      company_documentation: company_documentation_url,
+      supervisor_documentation: supervisor_documentation_url,
+      inspector_documentation: inspector_documentation_url,
+      log_book: log_book_url,
+      application_letter: application_letter_url,
+      personnel_leia: personnel_leia_url,
+      personnel_nagobin: personnel_nagobin_url,
+      company_leia: company_leia_url,
+      company_nagobin: company_nagobin_url,
+      user_id: userId,
+      certificate: {
+        certificate_image: certificate_image_url,
+        ...certificateRest,
+      },
+      ...rest,
+
+      // 🚫 Keep these fields unchanged:
+      totalAmount: existingRenewalForm.totalAmount,
+      incidentalFees: existingRenewalForm.incidentalFees,
+      statutoryFees: existingRenewalForm.statutoryFees,
+      incidentalIds: existingRenewalForm.incidentalIds,
+      application_type: existingRenewalForm.application_type,
+    };
+
+    const updatedRenewalForm = await FormsRepo.updateRenewalForms(id, data);
+
+    return {
+      STATUS_CODE: StatusCodes.OK,
+      STATUS: true,
+      MESSAGE: "Renewal form updated successfully.",
+      DATA: updatedRenewalForm,
+    };
+  } catch (error) {
+    console.error("Error updating renewal form:", error);
+    return {
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+      STATUS: false,
+      MESSAGE: "Failed to update renewal form.",
+    };
+  }
+};
+
   
   
 // New functions for OperatorCertification
@@ -1670,6 +1766,13 @@ exports.updateOperatorCertification = async (req, id) => {
       },
       user_id: userId,
       ...rest,
+
+      // 🚫 Keep these fields unchanged:
+      totalAmount: existingCertification.totalAmount,
+      incidentalFees: existingCertification.incidentalFees,
+      statutoryFees: existingCertification.statutoryFees,
+      incidentalIds: existingCertification.incidentalIds,
+      application_type: existingCertification.application_type,
     };
 
     const updatedCertification = await FormsRepo.updateOperatorCertification(id, data);
@@ -1689,6 +1792,7 @@ exports.updateOperatorCertification = async (req, id) => {
     };
   }
 };
+
 
 
 exports.getAllOperatorCertifications = async () => {
@@ -1881,7 +1985,9 @@ exports.updateCompetencyCertificationLifting = async (req, id) => {
       certificateImageUrl,
     ] = await Promise.all([
       applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
-      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      higher_education_certifications
+        ? uploadSingleFile(higher_education_certifications)
+        : existingCertification.higher_education_certifications,
       leia_certificate ? uploadSingleFile(leia_certificate) : existingCertification.leia_certificate,
       training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
       employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
@@ -1900,6 +2006,13 @@ exports.updateCompetencyCertificationLifting = async (req, id) => {
       },
       user_id: userId,
       ...rest,
+
+      // 🚫 Keep these fields unchanged:
+      totalAmount: existingCertification.totalAmount,
+      incidentalFees: existingCertification.incidentalFees,
+      statutoryFees: existingCertification.statutoryFees,
+      incidentalIds: existingCertification.incidentalIds,
+      application_type: existingCertification.application_type,
     };
 
     const updatedCertifications = await FormsRepo.updateCompetencyCertificationLifting(id, data);
@@ -2025,7 +2138,7 @@ exports.updateCompetencyCertificationInspection = async (id, req) => {
       console.log('Converted incidentalIds:', req.incidentalIds);
     }
 
-    // Check if the record exists before updating (optional, but clearer)
+    // Check if the record exists before updating
     const existingRecord = await FormsRepo.findCompetencyCertificationInspectionById(id);
     if (!existingRecord) {
       return {
@@ -2035,11 +2148,20 @@ exports.updateCompetencyCertificationInspection = async (id, req) => {
       };
     }
 
+    // Preserve certain fields
+    const data = {
+      ...req,
+      totalAmount: existingRecord.totalAmount,
+      incidentalFees: existingRecord.incidentalFees,
+      statutoryFees: existingRecord.statutoryFees,
+      incidentalIds: existingRecord.incidentalIds,
+      application_type: existingRecord.application_type,
+    };
+
     // Perform update
-    const updatedRegistration = await FormsRepo.updateCompetencyCertificationInspection(id, req);
+    const updatedRegistration = await FormsRepo.updateCompetencyCertificationInspection(id, data);
 
     if (!updatedRegistration) {
-      // Could happen if no rows affected, or other repo logic
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
@@ -2062,6 +2184,7 @@ exports.updateCompetencyCertificationInspection = async (id, req) => {
     };
   }
 };
+
 
 exports.getCompetencyCertificationInspectionByUserId= async (userId) => {
   const certifications = await FormsRepo.findCompetencyCertificationInspectionByUserId(userId);
@@ -2176,11 +2299,20 @@ exports.updateCompetencyCertificationBoiler = async (id, req) => {
       };
     }
 
+    // Preserve fields
+    const data = {
+      ...req,
+      totalAmount: existingRecord.totalAmount,
+      incidentalFees: existingRecord.incidentalFees,
+      statutoryFees: existingRecord.statutoryFees,
+      incidentalIds: existingRecord.incidentalIds,
+      application_type: existingRecord.application_type,
+    };
+
     // Perform update
-    const updatedRegistration = await FormsRepo.updateCompetencyCertificationFormBoiler(id, req);
+    const updatedRegistration = await FormsRepo.updateCompetencyCertificationFormBoiler(id, data);
 
     if (!updatedRegistration) {
-      // Could happen if no rows affected, or other repo logic
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
         STATUS: false,
@@ -2203,6 +2335,7 @@ exports.updateCompetencyCertificationBoiler = async (id, req) => {
     };
   }
 };
+
 exports.getAllCompetencyCertificationBoiler = async () => {
   const certifications = await FormsRepo.findAllCompetencyCertificationFormBoiler();
   return {
@@ -2340,9 +2473,7 @@ exports.getAllCompetencyCertificationWelder = async () => {
 
 exports.updateCompetencyCertificationWelder = async (req, id) => {
   const userId = req?.user?.id;
-  const userExist = await UserRepo.findUser({
-    id: userId,
-  });
+  const userExist = await UserRepo.findUser({ id: userId });
 
   if (!userExist) {
     return {
@@ -2384,7 +2515,9 @@ exports.updateCompetencyCertificationWelder = async (req, id) => {
       certificateImageUrl,
     ] = await Promise.all([
       applicant_cv ? uploadSingleFile(applicant_cv) : existingCertification.applicant_cv,
-      higher_education_certifications ? uploadSingleFile(higher_education_certifications) : existingCertification.higher_education_certifications,
+      higher_education_certifications
+        ? uploadSingleFile(higher_education_certifications)
+        : existingCertification.higher_education_certifications,
       other_certificate ? uploadSingleFile(other_certificate) : existingCertification.other_certificate,
       training_certificate ? uploadSingleFile(training_certificate) : existingCertification.training_certificate,
       employment_letter ? uploadSingleFile(employment_letter) : existingCertification.employment_letter,
@@ -2402,6 +2535,11 @@ exports.updateCompetencyCertificationWelder = async (req, id) => {
         ...certificateRest,
       },
       user_id: userId,
+      totalAmount: existingCertification.totalAmount,
+      incidentalFees: existingCertification.incidentalFees,
+      statutoryFees: existingCertification.statutoryFees,
+      incidentalIds: existingCertification.incidentalIds,
+      application_type: existingCertification.application_type,
       ...rest,
     };
 
@@ -2593,11 +2731,17 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
       qualityAssuranceProgramUrl,
       certificateImageUrl,
     ] = await Promise.all([
-      manufacturers_report_certificate ? uploadSingleFile(manufacturers_report_certificate) : existingRegistration.manufacturers_report_certificate,
-      construction_drawings_lifting_equipment ? uploadSingleFile(construction_drawings_lifting_equipment) : existingRegistration.construction_drawings_lifting_equipment,
+      manufacturers_report_certificate
+        ? uploadSingleFile(manufacturers_report_certificate)
+        : existingRegistration.manufacturers_report_certificate,
+      construction_drawings_lifting_equipment
+        ? uploadSingleFile(construction_drawings_lifting_equipment)
+        : existingRegistration.construction_drawings_lifting_equipment,
       design_calculation ? uploadSingleFile(design_calculation) : existingRegistration.design_calculation,
       test_parameters_data ? uploadSingleFile(test_parameters_data) : existingRegistration.test_parameters_data,
-      accreditation_documents_manufacturer ? uploadSingleFile(accreditation_documents_manufacturer) : existingRegistration.accreditation_documents_manufacturer,
+      accreditation_documents_manufacturer
+        ? uploadSingleFile(accreditation_documents_manufacturer)
+        : existingRegistration.accreditation_documents_manufacturer,
       installation ? uploadSingleFile(installation) : existingRegistration.installation,
       quality_assurance_program ? uploadSingleFile(quality_assurance_program) : existingRegistration.quality_assurance_program,
       certificate_image ? uploadSingleFile(certificate_image) : existingRegistration.certificate?.certificate_image,
@@ -2616,6 +2760,11 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
         ...certificateRest,
       },
       user_id: userId,
+      totalAmount: existingRegistration.totalAmount,
+      incidentalFees: existingRegistration.incidentalFees,
+      statutoryFees: existingRegistration.statutoryFees,
+      incidentalIds: existingRegistration.incidentalIds,
+      application_type: existingRegistration.application_type,
       ...rest,
     };
 

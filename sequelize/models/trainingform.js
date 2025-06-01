@@ -145,14 +145,7 @@ module.exports = (sequelize, DataTypes) => {
 
 			//lifting equipemnt categories
 			
-
-			application_type:{
-				type:DataTypes.ENUM(
-					"New Application",
-					"Re-Application"
-				),
-				defaultValue:"New Application"
-			},
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			
 
 			//document fo review

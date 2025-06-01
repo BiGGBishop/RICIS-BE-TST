@@ -112,9 +112,7 @@ module.exports = (sequelize, DataTypes) => {
 				  'Class SW'
 				),
 			  },
-			  application_type: {
-				type: DataTypes.ENUM('New Application', 'Re-Application'),
-			  },
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			  training_start_date: {
 				type: DataTypes.DATE,
 			  },

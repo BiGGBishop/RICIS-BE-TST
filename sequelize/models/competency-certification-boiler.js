@@ -129,10 +129,7 @@ module.exports = (sequelize, DataTypes) => {
 				"Class 2",
 				"Class 3",
 			),
-			application_type: {
-				type: DataTypes.ENUM("New Application", "Re-application"),
-				allowNull: true
-			},
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			training_start_date: {
 			  type: DataTypes.DATE,
 			  allowNull:true

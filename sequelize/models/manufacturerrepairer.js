@@ -113,7 +113,7 @@ module.exports = (sequelize, DataTypes) => {
 				"Class F",
 				"Class G"
 			),
-			application_type: DataTypes.ENUM("New Application", "Re-Application"),
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			documentation_available: DataTypes.BOOLEAN,
 			exemption_requested: DataTypes.BOOLEAN,
 			form_type: DataTypes.STRING,

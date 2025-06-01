@@ -39,13 +39,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			  
-			application_type:{
-				type:DataTypes.ENUM(
-					"New Application",
-					"Re-Application"
-				),
-				defaultValue:"New Application"
-			},
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			  categoryId:{
 						type: DataTypes.INTEGER,
 						allowNull: true, 

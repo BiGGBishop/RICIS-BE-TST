@@ -99,7 +99,8 @@ module.exports = (sequelize, DataTypes) => {
 			service_classification: DataTypes.ARRAY(DataTypes.STRING),
 			lifting_equipment_category: DataTypes.STRING,
 			lifting_service_classification: DataTypes.ARRAY(DataTypes.STRING),
-			application_type: DataTypes.ENUM("New Application", "Re-Application"),
+			// application_type: DataTypes.ENUM("New Application", "Re-Application"),
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
 			documentation_available: DataTypes.BOOLEAN,
 			exemption_requested: DataTypes.BOOLEAN,
 

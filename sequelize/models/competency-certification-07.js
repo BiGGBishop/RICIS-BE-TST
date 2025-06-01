@@ -108,9 +108,8 @@ module.exports = (sequelize, DataTypes) => {
           Class_Certification: {
             type: DataTypes.STRING,
           },
-          application_type: {
-            type: DataTypes.STRING,
-          },
+          
+			application_type: DataTypes.ENUM("Fresh Application", "Renewal Application"),
           training_start_date: {
             type: DataTypes.DATE,
           },

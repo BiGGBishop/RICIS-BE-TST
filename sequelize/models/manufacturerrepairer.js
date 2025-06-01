@@ -75,6 +75,14 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: true,
 			defaultValue: 0.00
 			},
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			feeId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,

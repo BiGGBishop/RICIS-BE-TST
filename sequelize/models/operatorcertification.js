@@ -71,6 +71,14 @@ OperatorCertification.belongsTo(models.Fee, {
 			allowNull: true,
 			defaultValue: 0.00
 			},
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			classificationId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,

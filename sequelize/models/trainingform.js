@@ -70,6 +70,19 @@ module.exports = (sequelize, DataTypes) => {
 				},
 				onDelete: 'SET NULL',
 			},
+			totalAmount: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: true,
+			defaultValue: 0.00
+			},
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			feeId:{
 				type: DataTypes.INTEGER,
 				allowNull: false,

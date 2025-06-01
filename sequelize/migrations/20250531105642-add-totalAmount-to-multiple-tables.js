@@ -15,7 +15,7 @@ module.exports = {
       'CompetencyCertificationFormLiftOperator',
       'CompetencyCertificationLiftings',
       'AuthorizationManufacturers',
-      'TrainingOrganizationForms',
+      'TrainingOrganizationForm',
     ];
 
     for (const table of tables) {
@@ -41,7 +41,7 @@ module.exports = {
       'CompetencyCertificationFormLiftOperator',
       'CompetencyCertificationLiftings',
       'AuthorizationManufacturers',
-      'TrainingOrganizationForms',
+      'TrainingOrganizationForm',
     ];
 
     for (const table of tables) {

@@ -98,6 +98,14 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: true,
 			defaultValue: 0.00
 			},
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			  class_of_certification: {
 				type: DataTypes.ENUM(
 				  'Class MW',

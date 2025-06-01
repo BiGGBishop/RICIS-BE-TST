@@ -106,6 +106,14 @@ module.exports = (sequelize, DataTypes) => {
 			defaultValue: 0.00
 			},
 			
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			boiler_pressure_classification:{
 				type:DataTypes.ENUM(
 				  "Class I",

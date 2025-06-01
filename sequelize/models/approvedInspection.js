@@ -86,6 +86,14 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: true,
 			defaultValue: 0.00
 			},
+			incidentalFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
+			statutoryFees: {
+			type: DataTypes.FLOAT,
+			allowNull: true
+			},
 			boiler_pressure_vessel_category: DataTypes.STRING,
 			type_of_service: DataTypes.ENUM("Nuclear", "Non-Nuclear"),
 			service_classification: DataTypes.ARRAY(DataTypes.STRING),

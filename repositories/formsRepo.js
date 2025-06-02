@@ -187,22 +187,39 @@ exports.findByUserIdBoilerRegistrationRepos = async (userId,options = {}) => {
   });
 };
 
-  exports.updateBoilerRegistration = async(id,data)=>{
-    try {
-      const [updatedRows] = await BoilerRegistration.update(data,{
-        where: { id: id },
-     } );
-     
-      if (updatedRows === 0) {
-        return null; // Indicate that the record was not found
-      }
-  
-      return await BoilerRegistration.findByPk(id); 
-    } catch (error) {
-      console.error("Error updating Boiler Registration:", error);
-      throw error;
+exports.updateBoilerRegistration = async (id, data) => {
+  try {
+    // Fetch existing record first
+    const existingRecord = await BoilerRegistration.findByPk(id);
+
+    if (!existingRecord) {
+      return null; // No record found
     }
-  };
+
+    // If incidentalIds is not included in update data, retain the existing one
+    if (!('incidentalIds' in data)) {
+      data.incidentalIds = existingRecord.incidentalIds;
+    }
+
+    // Perform the update
+    const [updatedRows] = await BoilerRegistration.update(data, {
+      where: { id: id },
+    });
+
+    if (updatedRows === 0) {
+      return null; // No rows updated
+    }
+
+    // Get the updated record
+    const updatedRecord = await BoilerRegistration.findByPk(id);
+    return updatedRecord;
+  } catch (error) {
+    console.error("Error updating Boiler Registration:", error);
+    throw error;
+  }
+};
+
+
 
 exports.findBoilerRegistrationById = async (id) => {
   try {

@@ -177,7 +177,11 @@ exports.updateAuthorizationApproved = async (req, id) => {
     let certificate_image = certificate?.certificate_image;
     let remain = { ...certificate };
     delete remain.certificate_image;
-
+    let parsedIncidentalIds = Array.isArray(existingAuthorization.incidentalIds)
+    ? existingAuthorization.incidentalIds
+    : typeof existingAuthorization.incidentalIds === 'string'
+      ? existingAuthorization.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingAuthorization.incidentalIds;
     try {
     const [
       member_nagobin_url,
@@ -239,7 +243,7 @@ exports.updateAuthorizationApproved = async (req, id) => {
       totalAmount: existingAuthorization.totalAmount,
       incidentalFees: existingAuthorization.incidentalFees,
       statutoryFees: existingAuthorization.statutoryFees,
-      incidentalIds: existingAuthorization.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingAuthorization.application_type,
     };
 
@@ -525,7 +529,12 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
   let certificate_image = certificate?.certificate_image;
   let remain = { ...certificate };
   delete remain.certificate_image;
-
+  
+  let parsedIncidentalIds = Array.isArray(existingAuthorization.incidentalIds)
+    ? existingAuthorization.incidentalIds
+    : typeof existingAuthorization.incidentalIds === 'string'
+      ? existingAuthorization.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingAuthorization.incidentalIds;
   try {
     const [
       certificate_image_url,
@@ -580,7 +589,7 @@ exports.updateAuthorizationManufacturer = async (req, id) => {
       totalAmount: existingAuthorization.totalAmount,
       incidentalFees: existingAuthorization.incidentalFees,
       statutoryFees: existingAuthorization.statutoryFees,
-      incidentalIds: existingAuthorization.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingAuthorization.application_type,
       ...rest,
     };
@@ -812,7 +821,12 @@ exports.updateAuthorizationTraining = async (req, id) => {
 
   let certificate_image = certificate?.certificate_image;
   let remain = certificate ? { ...certificate } : {};
-
+  
+  let parsedIncidentalIds = Array.isArray(existingAuthorization.incidentalIds)
+    ? existingAuthorization.incidentalIds
+    : typeof existingAuthorization.incidentalIds === 'string'
+      ? existingAuthorization.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingAuthorization.incidentalIds;
   try {
     const [
       certificate_image_url,
@@ -867,7 +881,7 @@ exports.updateAuthorizationTraining = async (req, id) => {
       totalAmount: existingAuthorization.totalAmount,
       incidentalFees: existingAuthorization.incidentalFees,
       statutoryFees: existingAuthorization.statutoryFees,
-      incidentalIds: existingAuthorization.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingAuthorization.application_type,
     };
 
@@ -1123,6 +1137,10 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
   try {
     // Check if the record exists before updating
     const existingRecord = await FormsRepo.findBoilerRegistrationById(id);
+
+    // ✅ Console log incidentalIds immediately after finding the record
+    console.log('incidentalIds:', existingRecord?.incidentalIds);
+
     if (!existingRecord) {
       return {
         STATUS_CODE: StatusCodes.NOT_FOUND,
@@ -1135,8 +1153,12 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
     updatedData.totalAmount = existingRecord.totalAmount;
     updatedData.incidentalFees = existingRecord.incidentalFees;
     updatedData.statutoryFees = existingRecord.statutoryFees;
-    updatedData.incidentalIds = existingRecord.incidentalIds;
     updatedData.application_type = existingRecord.application_type;
+    updatedData.incidentalIds = Array.isArray(existingRecord.incidentalIds)
+    ? existingRecord.incidentalIds
+    : typeof existingRecord.incidentalIds === 'string'
+      ? existingRecord.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingRecord.incidentalIds;
 
     // Perform update
     const updatedRegistration = await FormsRepo.updateBoilerRegistration(id, updatedData);
@@ -1311,7 +1333,11 @@ exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingForm.incidentalIds)
+    ? existingForm.incidentalIds
+    : typeof existingForm.incidentalIds === 'string'
+      ? existingForm.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingForm.incidentalIds;
   try {
     const [
       applicantCvUrl,
@@ -1343,8 +1369,8 @@ exports.updateCompetencyCertificationLiftOperator = async (req, id) => {
       totalAmount: existingForm.totalAmount,
       incidentalFees: existingForm.incidentalFees,
       statutoryFees: existingForm.statutoryFees,
-      incidentalIds: existingForm.incidentalIds,
       application_type: existingForm.application_type,
+      incidentalIds: parsedIncidentalIds,
     };
 
     const updatedForm = await FormsRepo.updateCompetencyCertificationLiftForm(id, data);
@@ -1565,7 +1591,11 @@ exports.updateRenewalForm = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingRenewalForm.incidentalIds)
+    ? existingRenewalForm.incidentalIds
+    : typeof existingRenewalForm.incidentalIds === 'string'
+      ? existingRenewalForm.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingRenewalForm.incidentalIds;
   try {
     const [
       certificate_image_url,
@@ -1612,7 +1642,7 @@ exports.updateRenewalForm = async (req, id) => {
       totalAmount: existingRenewalForm.totalAmount,
       incidentalFees: existingRenewalForm.incidentalFees,
       statutoryFees: existingRenewalForm.statutoryFees,
-      incidentalIds: existingRenewalForm.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingRenewalForm.application_type,
     };
 
@@ -1734,7 +1764,11 @@ exports.updateOperatorCertification = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingCertification.incidentalIds)
+    ? existingCertification.incidentalIds
+    : typeof existingCertification.incidentalIds === 'string'
+      ? existingCertification.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingCertification.incidentalIds;
   try {
     const [
       applicantCvUrl,
@@ -1772,6 +1806,7 @@ exports.updateOperatorCertification = async (req, id) => {
       incidentalFees: existingCertification.incidentalFees,
       statutoryFees: existingCertification.statutoryFees,
       incidentalIds: existingCertification.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingCertification.application_type,
     };
 
@@ -1974,7 +2009,11 @@ exports.updateCompetencyCertificationLifting = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingCertification.incidentalIds)
+    ? existingCertification.incidentalIds
+    : typeof existingCertification.incidentalIds === 'string'
+      ? existingCertification.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingCertification.incidentalIds;
   try {
     const [
       applicantCvUrl,
@@ -2011,7 +2050,7 @@ exports.updateCompetencyCertificationLifting = async (req, id) => {
       totalAmount: existingCertification.totalAmount,
       incidentalFees: existingCertification.incidentalFees,
       statutoryFees: existingCertification.statutoryFees,
-      incidentalIds: existingCertification.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingCertification.application_type,
     };
 
@@ -2130,13 +2169,6 @@ exports.getCompetencyCertificationInspectionById = async (id) => {
 exports.updateCompetencyCertificationInspection = async (id, req) => {
   try {
     // Convert incidentalIds string to array of numbers if needed
-    if (req.incidentalIds && typeof req.incidentalIds === 'string') {
-      req.incidentalIds = req.incidentalIds
-        .split(',')
-        .map(val => Number(val.trim()))
-        .filter(val => !isNaN(val));
-      console.log('Converted incidentalIds:', req.incidentalIds);
-    }
 
     // Check if the record exists before updating
     const existingRecord = await FormsRepo.findCompetencyCertificationInspectionById(id);
@@ -2147,14 +2179,18 @@ exports.updateCompetencyCertificationInspection = async (id, req) => {
         MESSAGE: 'Record not found.',
       };
     }
-
+    let parsedIncidentalIds = Array.isArray(existingRecord.incidentalIds)
+    ? existingRecord.incidentalIds
+    : typeof existingRecord.incidentalIds === 'string'
+      ? existingRecord.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingRecord.incidentalIds;
     // Preserve certain fields
     const data = {
       ...req,
       totalAmount: existingRecord.totalAmount,
       incidentalFees: existingRecord.incidentalFees,
       statutoryFees: existingRecord.statutoryFees,
-      incidentalIds: existingRecord.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingRecord.application_type,
     };
 
@@ -2280,15 +2316,6 @@ exports.getCompetencyCertificationBoiler = async (userId) => {
 
 exports.updateCompetencyCertificationBoiler = async (id, req) => {
   try {
-    // Convert incidentalIds string to array of numbers if needed
-    if (req.incidentalIds && typeof req.incidentalIds === 'string') {
-      req.incidentalIds = req.incidentalIds
-        .split(',')
-        .map(val => Number(val.trim()))
-        .filter(val => !isNaN(val));
-      console.log('Converted incidentalIds:', req.incidentalIds);
-    }
-
     // Check if the record exists before updating (optional, but clearer)
     const existingRecord = await FormsRepo.findByIdCompetencyCertificationFormBoiler(id);
     if (!existingRecord) {
@@ -2298,14 +2325,18 @@ exports.updateCompetencyCertificationBoiler = async (id, req) => {
         MESSAGE: 'Record not found.',
       };
     }
-
+    let parsedIncidentalIds = Array.isArray(existingRecord.incidentalIds)
+        ? existingRecord.incidentalIds
+        : typeof existingRecord.incidentalIds === 'string'
+          ? existingRecord.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+          : existingRecord.incidentalIds;
     // Preserve fields
     const data = {
       ...req,
       totalAmount: existingRecord.totalAmount,
       incidentalFees: existingRecord.incidentalFees,
       statutoryFees: existingRecord.statutoryFees,
-      incidentalIds: existingRecord.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingRecord.application_type,
     };
 
@@ -2504,7 +2535,11 @@ exports.updateCompetencyCertificationWelder = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingCertification.incidentalIds)
+    ? existingCertification.incidentalIds
+    : typeof existingCertification.incidentalIds === 'string'
+      ? existingCertification.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingCertification.incidentalIds;
   try {
     const [
       applicantCvUrl,
@@ -2538,7 +2573,7 @@ exports.updateCompetencyCertificationWelder = async (req, id) => {
       totalAmount: existingCertification.totalAmount,
       incidentalFees: existingCertification.incidentalFees,
       statutoryFees: existingCertification.statutoryFees,
-      incidentalIds: existingCertification.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingCertification.application_type,
       ...rest,
     };
@@ -2696,7 +2731,7 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
     };
   }
 
-  const existingRegistration = await FormsRepo.findLiftingEquipmentRegsitrationById(id);
+  const existingRegistration = await FormsRepo.findLiftingEquipmentRegistrationById(id);
 
   if (!existingRegistration) {
     return {
@@ -2719,7 +2754,11 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
   } = req.body;
 
   let { certificate_image, ...certificateRest } = certificate || {};
-
+  let parsedIncidentalIds = Array.isArray(existingRegistration.incidentalIds)
+    ? existingRegistration.incidentalIds
+    : typeof existingRegistration.incidentalIds === 'string'
+      ? existingRegistration.incidentalIds.replace(/[{}]/g, '').split(',').map(id => id.replace(/"/g, '').trim())
+      : existingRegistration.incidentalIds;
   try {
     const [
       manufacturersReportCertificateUrl,
@@ -2763,7 +2802,7 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
       totalAmount: existingRegistration.totalAmount,
       incidentalFees: existingRegistration.incidentalFees,
       statutoryFees: existingRegistration.statutoryFees,
-      incidentalIds: existingRegistration.incidentalIds,
+      incidentalIds: parsedIncidentalIds,
       application_type: existingRegistration.application_type,
       ...rest,
     };

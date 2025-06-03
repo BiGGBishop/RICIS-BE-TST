@@ -219,8 +219,6 @@ exports.updateBoilerRegistration = async (id, data) => {
   }
 };
 
-
-
 exports.findBoilerRegistrationById = async (id) => {
   try {
     // Ensure id is a primitive, not an object

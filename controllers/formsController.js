@@ -3,20 +3,15 @@ const StatusCodes = require("../utils/statusCodes");
 const{createCompetencyFormLiftOperator} = require("../services/formsServices")
 
 
-
-//Authorization Approved
-
 exports.createAuthorizationApproved = async (req, res) => {
-  
-    const data = await FormsService.createAuthorizationApproved(req, res);
- console.log("the data",data.DATA)
-    return res.status(data.STATUS_CODE).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA
-    });
-};
+  const data = await FormsService.createAuthorizationApproved(req);
 
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
+};
 
 exports.getAuthorizationApprovedById = async (req, res) => {
   const { id } = req.params;
@@ -679,21 +674,14 @@ exports.updateCompetencyCertificationWelder = async (req,res)=>{
   res.status(response.STATUS_CODE).json(response);
 }
 
-
 exports.createLiftingEquipmentRegistration = async (req, res) => {
-  try {
-    const response = await FormsService.createLiftingEquipmentRegistration(req);
-    res.status(response.STATUS_CODE).json(response);
-  } catch (error) {
-    console.error("Error creating lifting equipment registration:", error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({
-        STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
-        STATUS: false,
-        MESSAGE: "Error creating lifting equipment registration.",
-      });
-  }
+  const data = await FormsService.createLiftingEquipmentRegistration(req);
+
+  return res.status(data.STATUS_CODE).json({
+    status: data.STATUS,
+    message: data.MESSAGE,
+    data: data.DATA,
+  });
 };
 
 exports.getLiftingEquipmentRegistrationByUserId = async (req, res) => {
@@ -731,6 +719,7 @@ exports.updateLiftingEquipmentRegistration = async (req,res)=>{
   console.log(response);
   res.status(response.STATUS_CODE).json(response);
 }
+
 exports.getLiftingEquipmentRegistrationById = async (req, res) => {
 
   const {id} = req.params

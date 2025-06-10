@@ -258,13 +258,13 @@ exports.findCompetencyCertificationLiftFormById = async (id) => {
       console.warn('CompetencyCertificationFormLiftOperator called with object id:', id);
       return null; // or throw error
     }
-    return await BoilerRegistration.findByPk(id);
+    return await CompetencyCertificationFormLiftOperator.findByPk(id);
   } catch (error) {
     console.error('Error finding Competency CertificationFormLiftOperator by ID:', error);
     throw error;
   }
 };
-
+  
   exports.updateCompetencyCertificationLiftForm= async (id, data) => {
     try {
       const [updatedRows] = await CompetencyCertificationFormLiftOperator.update(data,{
@@ -617,7 +617,7 @@ exports.updateCompetencyCertificationWelder = async (id, data) => {
 
 // LiftingEquipmentRegistration
 exports.createLiftingEquipmentRegistration = async (data) => {
-  return LiftingEquipmentRegistration.create(data);
+  return await LiftingEquipmentRegistration.create(data);
 };
 
 exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) => {

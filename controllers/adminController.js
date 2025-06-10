@@ -1,8 +1,9 @@
 const AdminService = require("../services/adminServices");
 const UserService = require("../services/userServices");
 const UserRepo = require("../repositories/userRepo");
+const FormsRepo = require("../repositories/formsRepo");
 const AdminRepo = require("../repositories/adminRepo")
-const { ClassificationMerge, Classification } = require("../sequelize/models");
+const {Otp, User, Categories,SubCategories,Fee,Classification,ClassificationFees, ClassificationMerge} = require("../sequelize/models" );
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken'); // Assuming you are using JWT
 const { uploadSingleFile } = require('../utils/cloudinary');
@@ -420,19 +421,102 @@ exports.getClassificationWithIncidental = async (req, res) => {
   });
 };
 
-exports.getAllUsersForms = async (req, res) => {
-  console.log("initaitaion started");
-  const data = await AdminService.getAllUsersForms(req,res);
+// exports.getAllUsersForms = async (req, res) => {
+//   console.log("initaitaion started");
+//   const data = await AdminService.getAllUsersForms(req,res);
 
-  return res.status(200).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-    totalCount: data.totalCount,
-    totalPages: data.totalPages,
-    page: data.page,
-    limit: data.limit,
-  });
+//   return res.status(200).json({
+//     status: data.STATUS,
+//     message: data.MESSAGE,
+//     data: data.DATA,
+//     totalCount: data.totalCount,
+//     totalPages: data.totalPages,
+//     page: data.page,
+//     limit: data.limit,
+//   });
+// };
+exports.getAllUsersForms = async (req, res) => {
+  const includes = [
+    {
+      model: Classification,
+      as: "classification",
+      attributes: ["id", "classification_name"],
+      include: {
+        model: ClassificationFees,
+        as: "classificationFees",
+        attributes: ["amount"],
+      },
+    },
+    { model: Categories, as: 'category', attributes: ['name'] },
+    { model: SubCategories, as: 'subcategory', attributes: ['name'] },
+    { model: Fee, as: 'fee', attributes: ['fee_type'] },
+  ];
+
+  // Mapping of queries for all users (admin-level)
+  const queryMap = [
+    { name: "AuthorizationApproved", query: FormsRepo.findAllAuthorizationApproved({ include: includes }) },
+    { name: "AuthorizationManufacturer", query: FormsRepo.findAllAuthorizationManufacturer({ include: includes }) },
+    { name: "TrainingAuthorization", query: FormsRepo.findAllTrainingAuthorization({ include: includes }) },
+    { name: "CompetencyCertificationLiftOperator", query: FormsRepo.findAllCompetencyCertificationLiftOperator({ include: includes }) },
+    { name: "BoilerRegistrationRepos", query: FormsRepo.findAllBoilerRegistrationRepos({ include: includes }) },
+    { name: "CompetencyCertificationFormBoiler", query: FormsRepo.findAllCompetencyCertificationFormBoiler({ include: includes }) },
+    { name: "OperatorCertifications", query: FormsRepo.findAllOperatorCertifications({ include: includes }) },
+    { name: "CompetencyCertificationLifting", query: FormsRepo.findAllCompetencyCertificationLifting({ include: includes }) },
+    { name: "CompetencyCertificationInspection", query: FormsRepo.findAllCompetencyCertificationInspection({ include: includes }) },
+    { name: "CompetencyCertificationWelder", query: FormsRepo.findAllCompetencyCertificationWelder({ include: includes }) },
+    { name: "RenewalForms", query: FormsRepo.findAllRenewalForms({ include: includes }) },
+    { name: "LiftingEquipmentRegistration", query: FormsRepo.findAllLiftingEquipmentRegistration({ include: includes }) },
+  ];
+
+  const queryPromises = queryMap.map(q => q.query);
+
+  console.time("Admin DB Queries");
+
+  try {
+    const results = await Promise.allSettled(queryPromises);
+
+    console.timeEnd("Admin DB Queries");
+
+    results.forEach((result, index) => {
+      const name = queryMap[index].name;
+      if (result.status === 'rejected') {
+        console.error(`❌ Admin Query "${name}" failed:`, result.reason);
+      } else {
+        console.log(`✅ Admin Query "${name}" succeeded with ${result.value.length} items.`);
+      }
+    });
+
+    const successfulResults = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value);
+
+    const flatForms = successfulResults.flat().filter(Boolean);
+
+    let totalAmount = 0;
+    flatForms.forEach(form => {
+      const fees = form.classification?.classificationFees;
+      if (Array.isArray(fees)) {
+        fees.forEach(fee => totalAmount += fee.amount || 0);
+      } else if (fees) {
+        totalAmount += fees.amount || 0;
+      }
+    });
+
+    return res.status(200).json({
+      status: true,
+      message: "All user forms fetched successfully.",
+      data: {
+        forms: successfulResults,
+        totalAmount
+      }
+    });
+  } catch (error) {
+    console.error("Unexpected error while fetching admin forms:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error"
+    });
+  }
 };
 
 exports.createBlog = async (req, res) => {

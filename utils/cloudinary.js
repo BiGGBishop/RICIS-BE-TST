@@ -24,7 +24,7 @@ async function uploadSingleFile(media) {
         }
         
         const uploadedResponse = await cloudinary.uploader.upload(media, {
-            public_id: "ricis",
+            public_id: `ricis_${Date.now()}`,
             resource_type: 'auto',
             timeout: 600000,
             chunk_size: 6000000
@@ -38,9 +38,8 @@ async function uploadSingleFile(media) {
         console.error("Cloudinary upload error:", error);
         throw error;
     }
-        
-    
 }
+
 async function uploadMultiple(files) {
     if (!files || files.length === 0) {
         return [];

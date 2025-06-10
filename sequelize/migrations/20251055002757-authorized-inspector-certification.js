@@ -174,7 +174,7 @@ module.exports = {
       incidental_line_number: {
         type: Sequelize.STRING,
       },
-      High_school: {
+      highschool: {
         type: Sequelize.JSONB,
       },
       polytechnic: {

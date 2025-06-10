@@ -158,7 +158,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			year_of_commencing_business: {
-				type: DataTypes.DATE,
+				type: DataTypes.STRING,
 				allowNull: true,
 			  },
 			  number_of_employees: {
@@ -229,7 +229,7 @@ module.exports = (sequelize, DataTypes) => {
 				allowNull: true,
 			  },
 			personnel_year_of_commencing_business: {
-				type: DataTypes.DATE,
+				type: DataTypes.STRING,
 				allowNull: true,
 			  },
 			  personnel_number_of_employees: {

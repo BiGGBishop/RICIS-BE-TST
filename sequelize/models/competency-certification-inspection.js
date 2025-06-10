@@ -208,7 +208,7 @@ module.exports = (sequelize, DataTypes) => {
       incidental_line_number: {
         type: DataTypes.STRING,
       },
-      High_school: {
+      highschool: {
 				type: DataTypes.JSONB
 			/*	name_of_school:{
 					type:DataTypes.STRING,
@@ -266,7 +266,10 @@ module.exports = (sequelize, DataTypes) => {
 					allowNull: true,
 				}*/
 			},
-		
+      training_organization_approval: {
+        type: DataTypes.STRING,
+        allowNull: true, // Change to false if the field should be required
+      },
 			professional_qualification_institution: DataTypes.STRING,
 			date_of_issue: DataTypes.DATE
 			,

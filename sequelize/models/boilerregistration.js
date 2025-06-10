@@ -337,6 +337,30 @@ module.exports = (sequelize, DataTypes) => {
 			certificate:{
 				type: DataTypes.JSONB,
 				allowNull: true,
+			},
+			object_use: {
+			type: DataTypes.STRING,
+			allowNull: true
+			},
+			installationDateStart: {
+			type: DataTypes.DATE,
+			allowNull: true
+			},
+			installationDateCompletion: {
+			type: DataTypes.DATE,
+			allowNull: true
+			},
+			newOrUsed: {
+			type: DataTypes.STRING,
+			allowNull: true
+			},
+			company_responsible_charge: {
+			type: DataTypes.STRING,
+			allowNull: true
+			},
+			declaration_date: {
+			type: DataTypes.DATE,
+			allowNull: true
 			}
 		},
 		{

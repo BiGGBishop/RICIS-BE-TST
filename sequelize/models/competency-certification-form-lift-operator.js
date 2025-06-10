@@ -229,6 +229,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      training_start_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      training_completion_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       professional_expiration_date: {
         type: DataTypes.DATE,
         allowNull: true,

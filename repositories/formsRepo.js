@@ -17,7 +17,8 @@ const boilerregistration = require("../sequelize/models/boilerregistration");
 const { ClassificationFees, Fee } = require("../sequelize/models");
 const { fetchClassifications } = require("../repositories/adminRepo");
 const { Op } = require("sequelize");
-
+const { sequelize } = require('../sequelize/models');
+const withClassificationDetails = require('../utils/withClassificationDetails');
 
 exports.create = async (data) => {
   try {
@@ -66,9 +67,22 @@ exports.updateAuthorizationApproved = async (id, data) => {
 };
 
 exports.findAuthorizationApprovedById = async (id) => {
-    return AuthorizationApproved.findByPk(id);
-  }
+  try {
 
+    const auth = await AuthorizationApproved.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
+  } catch (error) {
+    console.error('Error finding Authorization Approved by ID:', error);
+    throw error;
+  }
+};
 
 exports.findByUserIdAuthorizationApproved= async (userId,options = {}) => {
   return await AuthorizationApproved.findAll({
@@ -105,12 +119,15 @@ exports.updateAuthorizationManufacturer = async (id, data) => {
 
 exports.findAuthorizationManufacturerById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findAuthorizationManufacturerById called with object id:', id);
-      return null; // or throw error
-    }
-    return await AuthorizationManufacturer.findByPk(id);
+    const auth = await AuthorizationManufacturer.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
     console.error('Error finding Authorization Manufacturer by ID:', error);
     throw error;
@@ -159,18 +176,21 @@ exports.findByUserIdTrainingAuthorization= async (userId,options = {}) => {
 
 exports.findTrainingAuthorizationById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findTrainingAuthorizationById called with object id:', id);
-      return null; // or throw error
-    }
-    return await TrainingOrganizationForm.findByPk(id);
+
+    const auth = await TrainingOrganizationForm.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Training OrganizationForm by ID:', error);
+    console.error('Error finding Training Organization Form by ID:', error);
     throw error;
   }
 };
-
   //Boier registration
 exports.createBoilerRegistrationRepo = async (data) => {
     return  await BoilerRegistration.create(data);
@@ -221,19 +241,21 @@ exports.updateBoilerRegistration = async (id, data) => {
 
 exports.findBoilerRegistrationById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findBoilerRegistrationById called with object id:', id);
-      return null; // or throw error
-    }
-    return await BoilerRegistration.findByPk(id);
+
+    const auth = await BoilerRegistration.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
     console.error('Error finding Boiler Registration by ID:', error);
     throw error;
   }
 };
-
-
 
   //competencyFormLiftOperationCertification
   exports.createCompetencyCertificationLiftOperator= async(data)=>{
@@ -301,16 +323,20 @@ exports.findCompetencyCertificationLiftFormById = async (id) => {
     });
   };
  
-  exports.findByIdCompetencyCertificationFormBoiler = async (id) => {
+exports.findByIdCompetencyCertificationFormBoiler = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findByIdCompetencyCertificationFormBoiler called with object id:', id);
-      return null; // or throw error
-    }
-    return await CompetencyCertificationFormBoiler.findByPk(id);
+
+    const auth = await CompetencyCertificationFormBoiler.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Competency Certification FormBoiler by ID:', error);
+    console.error('Error finding Competency Certification Form Boiler by ID:', error);
     throw error;
   }
 };
@@ -361,12 +387,16 @@ exports.findRenewalFormsByUserId= async (userId,options = {}) => {
 
 exports.findRenewalFormsById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findRenewalFormsById called with object id:', id);
-      return null; // or throw error
-    }
-    return await RenewalForm.findByPk(id);
+
+    const auth = await RenewalForm.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
     console.error('Error finding Renewal Form by ID:', error);
     throw error;
@@ -409,12 +439,16 @@ exports.findByUserIdOperatorCertificationsByUserId  = async (userId,options = {}
 
 exports.findOperatorCertificationById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findOperatorCertificationById called with object id:', id);
-      return null; // or throw error
-    }
-    return await OperatorCertification.findByPk(id);
+
+    const auth = await OperatorCertification.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
     console.error('Error finding Operator Certification by ID:', error);
     throw error;
@@ -481,14 +515,18 @@ exports.findAllCompetencyCertificationInspection = async () => {
 
 exports.findCompetencyCertificationInspectionById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findCompetencyCertificationInspectionById called with object id:', id);
-      return null; // or throw error
-    }
-    return await AuthorizedInspectorCertification.findByPk(id);
+
+    const auth = await AuthorizedInspectorCertification.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Boiler Registration by ID:', error);
+    console.error('Error finding Authorized Inspector Certification by ID:', error);
     throw error;
   }
 };
@@ -534,21 +572,6 @@ exports.findCompetencyCertificationInspectionByUserId  = async (userId ,options 
   });
 };
 
-  
-exports.findCompetencyCertificationInspectionById = async (id) => {
-  try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findCompetencyCertificationInspectionById called with object id:', id);
-      return null; // or throw error
-    }
-    return await AuthorizedInspectorCertification.findByPk(id);
-  } catch (error) {
-    console.error('Error finding Boiler Registration by ID:', error);
-    throw error;
-  }
-};
-
 // New functions for LifingOperatorCertification08
 exports.createCompetencyCertificationWelder = async (data) => {
   return CompetencyCertificationWelder.create(data);
@@ -566,17 +589,22 @@ exports.findCompetencyCertificationWelderByUserId  = async (userId,options={}) =
 
 exports.findCompetencyCertificationWelderById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findCompetencyCertificationWelderById called with object id:', id);
-      return null; // or throw error
-    }
-    return await CompetencyCertificationWelder.findByPk(id);
+
+    const auth = await CompetencyCertificationWelder.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Competency CertificationWelder by ID:', error);
+    console.error('Error finding Competency Certification Welder by ID:', error);
     throw error;
   }
 };
+
 exports.updateCompetencyCertificationWelder = async (id, data) => {
   console.log("Updating CompetencyCertificationwelder with id:", id);
   try{
@@ -633,14 +661,18 @@ exports.findAllLiftingEquipmentRegistration = async () => {
 
 exports.findLiftingEquipmentRegistrationById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findLiftingEquipmentRegistrationById called with object id:', id);
-      return null; // or throw error
-    }
-    return await LiftingEquipmentRegistration.findByPk(id);
+
+    const auth = await LiftingEquipmentRegistration.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Lifting EquipmentRegistration by ID:', error);
+    console.error('Error finding Lifting Equipment Registration by ID:', error);
     throw error;
   }
 };

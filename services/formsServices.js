@@ -10,6 +10,11 @@ const {AdminStaff} = require("../sequelize/models");
 const { sendReportNotification } = require("../utils/emails/report");
  
 
+const parseValidDate = (value) => {
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? null : date;
+};
+
 //Authourization Approved
 
 exports.getAuthorizationApprovedByUserId= async (userId) => {
@@ -2927,6 +2932,10 @@ exports.updateLiftingEquipmentRegistration = async (req, id) => {
       incidentalIds: parsedIncidentalIds,
       application_type: existingRegistration.application_type,
       ...rest,
+      installation_start_date: parseValidDate(rest.installation_start_date),
+      installation_completion_date: parseValidDate(rest.installation_completion_date),
+      date_of_test: parseValidDate(rest.date_of_test),
+      declaration_date: parseValidDate(rest.declaration_date),
     };
 
     const updatedRegistration = await FormsRepo.updateLiftingEquipmentRegsitration(id, data);

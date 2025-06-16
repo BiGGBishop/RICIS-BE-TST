@@ -536,27 +536,11 @@ exports.getAllCompetencyCertificationInspectionByUserId = async (req, res) => {
     }
 };
 
-exports.updateCompetencyCertificationInspection = async (req,res)=>{
-  try {
-    const id = req.params.id; // <-- Make sure this is a string or number
-    const updatedData = req.body; // or however you get update data
-
-    const data = await FormsService.updateCompetencyCertificationInspection(id, updatedData);
-
-    return res.status(data.STATUS_CODE).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      status: false,
-      message: "Internal Server Error",
-    });
-  }
+exports.updateCompetencyCertificationInspection = async (req, res) => {
+  const { id } = req.params;
+  const response = await FormsService.updateCompetencyCertificationInspection(req, id);
+  res.status(response.STATUS_CODE).json(response);
 };
-
 
 // CompetencyCertificationInspection Controller Functions
 exports.createCompetencyCertificationBoiler = async (req, res) => {

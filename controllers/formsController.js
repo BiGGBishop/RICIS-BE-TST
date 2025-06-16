@@ -302,17 +302,28 @@ exports.updateBoilerRegistration = async (req, res) => {
 
   // New functions for CompetencyCertificationForm
 exports.createCompetencyCertificationLiftOperator = async (req, res) => {
-  try{
-  const data = await createCompetencyFormLiftOperator(req);
-  return res.status(data.STATUS_CODE).json({
-      status: data.STATUS,
-      message: data.MESSAGE,
-      data: data.DATA,
-  });
-}catch(error){
-  console.log(error)
+  try {
+    const data = await createCompetencyFormLiftOperator(req);
+
+    // Validate STATUS_CODE
+    const statusCode = typeof data?.STATUS_CODE === 'number' ? data.STATUS_CODE : 500;
+
+    return res.status(statusCode).json({
+      status: data?.STATUS ?? false,
+      message: data?.MESSAGE ?? 'Unexpected error',
+      data: data?.DATA ?? null,
+    });
+  } catch (error) {
+    console.error('Unhandled error:', error);
+
+    // Always send a response on error
+    return res.status(500).json({
+      status: false,
+      message: 'Internal server error',
+    });
   }
 };
+
 
 exports.getAllCompetencyCertificationLiftOperator = async (req, res) => {
   const data = await FormsService.getAllCompetencyCertificationLiftOperator();

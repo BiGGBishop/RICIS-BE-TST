@@ -133,9 +133,9 @@ router.get(
 
 
 // Competency Certification Form Routes
-router.post('/competency-form-lifting', authToken, formsController.createCompetencyCertificationLiftOperator);
-router.get('/competency-form-lifting', authToken, formsController.getAllCompetencyCertificationLiftOperator);
-router.get('/user-competency-form-lifting', authToken, formsController.getCompetencyCertificationLiftOperatorByUserId);
+router.post('/competency-form-lifting', authToken, asyncHandler(formsController.createCompetencyCertificationLiftOperator));
+router.get('/competency-form-lifting', authToken, asyncHandler(formsController.getAllCompetencyCertificationLiftOperator));
+router.get('/user-competency-form-lifting', authToken, asyncHandler(formsController.getCompetencyCertificationLiftOperatorByUserId));
 router.get('/competency-form-lifting/:id', authToken, formsController.getCompetencyCertifcationLiftOperatorById);
 router.put('/update-cfl/:id', authToken, formsController.updateCompetencyCertifcationLiftOperator);
 // router.delete('/delete-competency-form-lifting/:id', authToken, formsController.deleteCompetencyCertifcationLiftOperator);

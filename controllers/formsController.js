@@ -301,15 +301,39 @@ exports.updateBoilerRegistration = async (req, res) => {
 
 
   // New functions for CompetencyCertificationForm
-exports.createCompetencyCertificationLiftOperator = async (req, res) => {
-  const data = await FormsService.createCompetencyFormLiftOperator(req);
+// exports.createCompetencyCertificationLiftOperator = async (req, res) => {
+//   const data = await FormsService.createCompetencyFormLiftOperator(req);
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+//   return res.status(data.STATUS_CODE).json({
+//     status: data.STATUS,
+//     message: data.MESSAGE,
+//     data: data.DATA,
+//   });
+// };
+
+exports.createCompetencyCertificationLiftOperator = async (req, res) => {
+  try {
+    const data = await FormsService.createCompetencyFormLiftOperator(req);
+
+    const statusCode = data?.STATUS_CODE || 500; // fallback
+    const status = data?.STATUS ?? false;
+    const message = data?.MESSAGE || "Something went wrong.";
+    const responseData = data?.DATA || null;
+
+    return res.status(statusCode).json({
+      status,
+      message,
+      data: responseData,
+    });
+  } catch (err) {
+    console.error("Unexpected error in createCompetencyCertificationLiftOperator:", err);
+    return res.status(500).json({
+      status: false,
+      message: "Unexpected server error.",
+    });
+  }
 };
+
 
 exports.getAllCompetencyCertificationLiftOperator = async (req, res) => {
   const data = await FormsService.getAllCompetencyCertificationLiftOperator();

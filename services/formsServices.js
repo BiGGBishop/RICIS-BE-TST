@@ -1263,6 +1263,78 @@ exports.updateBoilerRegistration = async (id, updatedData) => {
   }
 };
 
+// exports.createCompetencyFormLiftOperator = async (req) => {
+//   const userId = req?.user?.id;
+//   const userExist = await UserRepo.findUser({ id: userId });
+
+//   if (!userExist) {
+//     return {
+//       STATUS_CODE: StatusCodes.UNAUTHORIZED,
+//       STATUS: false,
+//       MESSAGE: "User not authenticated.",
+//     };
+//   }
+
+//   try {
+//     let {
+//       applicant_cv,
+//       higher_education_certificate,
+//       training_certificate,
+//       employement_letter,
+//       leia_experience,
+//       other_certificate,
+//       ...rest
+//     } = req.body;
+
+    
+
+//     // Upload all files in parallel
+//     const [
+//       applicantCvUrl,
+//       higherEducationCertificationsUrl,
+//       trainingCertificateUrl,
+//       employmentLetterUrl,
+//       leia_experienceUrl,
+//       otherCertificateUrl,
+      
+//     ] = await Promise.all([
+//       uploadSingleFile(applicant_cv),
+//       uploadSingleFile(higher_education_certificate),
+//       uploadSingleFile(training_certificate),
+//       uploadSingleFile(employement_letter),
+//       uploadSingleFile(leia_experience),
+//       uploadSingleFile(other_certificate),
+      
+//     ]);
+
+//     const data = {
+//       applicant_cv: applicantCvUrl,
+//       higher_education_certificate: higherEducationCertificationsUrl,
+//       training_certificate: trainingCertificateUrl,
+//       employement_letter: employmentLetterUrl,
+//       leia_experience: leia_experienceUrl,
+//       other_certificate: otherCertificateUrl,      
+//       user_id: userId,
+//       ...rest
+//     };
+
+//     const newCompetencyForm = await FormsRepo.createCompetencyCertificationLiftOperator(data);
+//     return {
+//       STATUS_CODE: StatusCodes.CREATED,
+//       STATUS: true,
+//       MESSAGE: "Competency form created successfully.",
+//       DATA: newCompetencyForm,
+//     };
+//   } catch (error) {
+//     console.error("Error in createCompetencyFormLiftOperator service:", error);
+//     return {
+//       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+//       STATUS: false,
+//       MESSAGE: "Failed to create competency form.",
+//     };
+//   }
+// };
+    
 exports.createCompetencyFormLiftOperator = async (req) => {
   const userId = req?.user?.id;
   const userExist = await UserRepo.findUser({ id: userId });
@@ -1272,10 +1344,12 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       STATUS_CODE: StatusCodes.UNAUTHORIZED,
       STATUS: false,
       MESSAGE: "User not authenticated.",
+      DATA: null,
     };
   }
 
   try {
+    // Destructure and upload
     let {
       applicant_cv,
       higher_education_certificate,
@@ -1286,9 +1360,6 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       ...rest
     } = req.body;
 
-    
-
-    // Upload all files in parallel
     const [
       applicantCvUrl,
       higherEducationCertificationsUrl,
@@ -1296,7 +1367,6 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       employmentLetterUrl,
       leia_experienceUrl,
       otherCertificateUrl,
-      
     ] = await Promise.all([
       uploadSingleFile(applicant_cv),
       uploadSingleFile(higher_education_certificate),
@@ -1304,7 +1374,6 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       uploadSingleFile(employement_letter),
       uploadSingleFile(leia_experience),
       uploadSingleFile(other_certificate),
-      
     ]);
 
     const data = {
@@ -1313,12 +1382,13 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       training_certificate: trainingCertificateUrl,
       employement_letter: employmentLetterUrl,
       leia_experience: leia_experienceUrl,
-      other_certificate: otherCertificateUrl,      
+      other_certificate: otherCertificateUrl,
       user_id: userId,
-      ...rest
+      ...rest,
     };
 
     const newCompetencyForm = await FormsRepo.createCompetencyCertificationLiftOperator(data);
+
     return {
       STATUS_CODE: StatusCodes.CREATED,
       STATUS: true,
@@ -1331,10 +1401,11 @@ exports.createCompetencyFormLiftOperator = async (req) => {
       STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
       STATUS: false,
       MESSAGE: "Failed to create competency form.",
+      DATA: null,
     };
   }
 };
-    
+
 exports.getAllCompetencyCertificationLiftOperator = async () => {
     const allCompetencyCertificationLiftOperator = await FormsRepo.findAllCompetencyCertificationLiftOperator();
 

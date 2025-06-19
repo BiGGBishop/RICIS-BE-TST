@@ -20,7 +20,7 @@ const { Op } = require("sequelize");
 const { sequelize } = require('../sequelize/models');
 const withClassificationDetails = require('../utils/withClassificationDetails');
 
-exports.create = async (data) => {
+exports.createAuthorizationApproved = async (data) => {
   try {
     const response = await AuthorizationApproved.create(data);
     console.log("the data ...",response)

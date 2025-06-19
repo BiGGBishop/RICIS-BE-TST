@@ -693,71 +693,143 @@ exports.getUser = async (req) => {
 //   };
 // };
 
-exports.registerStaffAndAdmin = async (req, res) => {
+// exports.registerStaffAndAdmin = async (req, res) => {
+//   try {
+//     // Check if req.user exists
+//     if (!req.user || !req.user.id) {
+//       return res.status(StatusCodes.UNAUTHORIZED).json({
+//         STATUS: false,
+//         MESSAGE: 'Unauthorized: admin token missing or invalid.',
+//       });
+//     }
+
+//     const filter = { id: req.user.id };
+//     console.log({ filter });
+
+//     // Check if the admin user exists
+//     const adminExist = await UserRepo.findAdminUser(filter);
+//     if (!adminExist) {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         STATUS: false,
+//         MESSAGE: 'Invalid credentials: admin not found.',
+//       });
+//     }
+
+//     // Check if the user to be created already exists
+//     const userToBeAddedExist = await UserRepo.findAdminUser({
+//       email: req.body.email,
+//     });
+//     if (userToBeAddedExist) {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         STATUS: false,
+//         MESSAGE: 'This user has been registered and already exists.',
+//       });
+//     }
+
+//     // Generate password and reference number
+//     const defaultPassword = await generateDefaultPassword();
+//     const refnumber = await generateRefNumber();
+
+//     // Encrypt the password
+//     const salt = await bcrypt.genSaltSync(10);
+//     const password = await bcrypt.hash(defaultPassword, salt);
+
+//     const userObject = {
+//       email: req.body.email,
+//       full_name: req.body.full_name,
+//       password: password,
+//       userroleId: req.body.role,
+//       ref_number: `APP_${refnumber}`,
+//     };
+
+//     // Create the new staff/admin user
+//     await UserRepo.createAdminUser(userObject);
+
+//     // Send email notification with the credentials
+//     await sendCredentails(req.body.email, defaultPassword);
+
+//     return res.status(StatusCodes.OK).json({
+//       STATUS: true,
+//       MESSAGE: 'Account registered and email sent to user successfully!',
+//     });
+//   } catch (error) {
+//     console.error('Error registering staff/admin:', error);
+//     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+//       STATUS: false,
+//       MESSAGE: 'Internal server error',
+//     });
+//   }
+// };
+
+exports.registerStaffAndAdmin = async (req) => {
   try {
-    // Check if req.user exists
     if (!req.user || !req.user.id) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
+      return {
         STATUS: false,
         MESSAGE: 'Unauthorized: admin token missing or invalid.',
-      });
+        STATUS_CODE: StatusCodes.UNAUTHORIZED,
+      };
     }
 
-    const filter = { id: req.user.id };
-    console.log({ filter });
-
-    // Check if the admin user exists
-    const adminExist = await UserRepo.findAdminUser(filter);
-    if (!adminExist) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
+    const adminExists = await UserRepo.findAdminUser({ id: req.user.id });
+    if (!adminExists) {
+      return {
         STATUS: false,
         MESSAGE: 'Invalid credentials: admin not found.',
-      });
+        STATUS_CODE: StatusCodes.BAD_REQUEST,
+      };
     }
 
-    // Check if the user to be created already exists
-    const userToBeAddedExist = await UserRepo.findAdminUser({
-      email: req.body.email,
-    });
-    if (userToBeAddedExist) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
+    const userExists = await UserRepo.findAdminUser({ email: req.body.email });
+    if (userExists) {
+      return {
         STATUS: false,
-        MESSAGE: 'This user has been registered and already exists.',
-      });
+        MESSAGE: `A user with email "${req.body.email}" is already registered.`,
+        STATUS_CODE: StatusCodes.BAD_REQUEST,
+      };
     }
 
-    // Generate password and reference number
     const defaultPassword = await generateDefaultPassword();
-    const refnumber = await generateRefNumber();
+    const refNumber = await generateRefNumber();
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(defaultPassword, salt);
 
-    // Encrypt the password
-    const salt = await bcrypt.genSaltSync(10);
-    const password = await bcrypt.hash(defaultPassword, salt);
-
-    const userObject = {
+    const newUser = {
       email: req.body.email,
       full_name: req.body.full_name,
-      password: password,
+      password: hashedPassword,
       userroleId: req.body.role,
-      ref_number: `APP_${refnumber}`,
+      ref_number: `APP_${refNumber}`,
     };
 
-    // Create the new staff/admin user
-    await UserRepo.createAdminUser(userObject);
+    const createdUser = await UserRepo.createAdminUser(newUser);
 
-    // Send email notification with the credentials
     await sendCredentails(req.body.email, defaultPassword);
 
-    return res.status(StatusCodes.OK).json({
+    return {
       STATUS: true,
-      MESSAGE: 'Account registered and email sent to user successfully!',
-    });
+      MESSAGE: 'Account registered and email sent successfully!',
+      DATA: { id: createdUser.id, email: createdUser.email },
+      STATUS_CODE: StatusCodes.OK,
+    };
   } catch (error) {
-    console.error('Error registering staff/admin:', error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    console.error('Error in registerStaffAndAdmin service:', error);
+
+    // Customize DB unique constraint error if you want (example for Sequelize)
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      return {
+        STATUS: false,
+        MESSAGE: `User with email "${req.body.email}" already exists (database constraint).`,
+        STATUS_CODE: StatusCodes.BAD_REQUEST,
+      };
+    }
+
+    // Generic fallback error
+    return {
       STATUS: false,
       MESSAGE: 'Internal server error',
-    });
+      STATUS_CODE: StatusCodes.INTERNAL_SERVER_ERROR,
+    };
   }
 };
 

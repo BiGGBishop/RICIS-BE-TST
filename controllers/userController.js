@@ -131,13 +131,21 @@ exports.getUserDetails = async (req, res) => {
 };
 
 exports.registerStaffAndAdmin = async (req, res) => {
-  const data = await UserService.registerStaffAndAdmin(req, res);
+  try {
+    const result = await UserService.registerStaffAndAdmin(req);
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+    return res.status(result.STATUS_CODE).json({
+      STATUS: result.STATUS,
+      MESSAGE: result.MESSAGE,
+      DATA: result.DATA || null,
+    });
+  } catch (error) {
+    console.error('Error in controller:', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      STATUS: false,
+      MESSAGE: 'Internal server error',
+    });
+  }
 };
 
 exports.staffLogin = async (req, res) => {

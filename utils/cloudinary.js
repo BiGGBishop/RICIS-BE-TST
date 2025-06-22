@@ -10,31 +10,36 @@ async function uploadSingleFile(media) {
     function isValidDataURI(str) {
         return typeof str === 'string' && str.startsWith('data:');
     }
-    
-    try{
-        if (!media){
-            return null;
-        }
-        if (typeof media !== 'string' ) {
-            return null;
-        }
-        if (!isValidDataURI(media)) {
+
+    function getExtensionFromDataURI(dataURI) {
+        const match = dataURI.match(/^data:(.*?);/);
+        if (!match) return '';
+        const mimeType = match[1];
+        const mimeToExt = {
+            'text/csv': 'csv',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+        };
+        return mimeToExt[mimeType] || '';
+    }
+
+    try {
+        if (!media || typeof media !== 'string' || !isValidDataURI(media)) {
             console.log("Invalid file format or path");
             return null;
         }
-        
+
+        const extension = getExtensionFromDataURI(media);
         const uploadedResponse = await cloudinary.uploader.upload(media, {
-            public_id: `ricis_${Date.now()}`,
+            public_id: `ricis_${Date.now()}${extension ? `.${extension}` : ''}`,
             resource_type: 'auto',
             timeout: 600000,
             chunk_size: 6000000
-        },);
-        media = uploadedResponse.secure_url;
-        console.log(media)
-        return media
+        });
 
-    }catch(error){
-       
+        console.log(uploadedResponse.secure_url);
+        return uploadedResponse.secure_url;
+
+    } catch (error) {
         console.error("Cloudinary upload error:", error);
         throw error;
     }

@@ -122,7 +122,11 @@ exports.sendCredentails = async (email, password) => {
       subject: "WELCOME ONBOARD",
       html: ` <b>  Hi, </b></br>
             <p>
-             account created for you on the RICIS platform kindly login with your email and the temporal password created for you: 
+             Account created for you on the RICIS platform kindly login with your email and the temporal password created for you: 
+            </p>
+
+            <p>
+             Visit https://ricinspection.com/ to login
             </p>
 
             <p>

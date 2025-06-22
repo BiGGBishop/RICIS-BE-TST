@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         as: "user",
       });
 
+      Feedback.belongsTo(models.AdminStaff, {
+        foreignKey: "adminId",
+        as: "admin",
+      });
+
       // Generic association to any form
       Feedback.belongsTo(models.TrainingOrganizationForm, {
         foreignKey: "formId",
@@ -116,7 +121,11 @@ module.exports = (sequelize, DataTypes) => {
     {
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+      },
+    adminId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       formId: { // Generic form ID
         type: DataTypes.INTEGER,

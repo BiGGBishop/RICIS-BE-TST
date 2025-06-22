@@ -8,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
 		AuthorizationManufacturer.belongsTo(models.User, {
 			foreignKey: "user_id",
 			as: "user",
-		  });
-	  AuthorizationManufacturer.belongsTo(models.Categories, {
-		foreignKey: "categoryId",
-		as: "category",
+		});
+		AuthorizationManufacturer.belongsTo(models.Categories, {
+			foreignKey: "categoryId",
+			as: "category",
 		});
 		AuthorizationManufacturer.belongsTo(models.SubCategories, {
 			foreignKey: "subcategoryId",

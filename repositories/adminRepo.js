@@ -24,7 +24,10 @@ exports.findUser = async (filter) => {
   const response = await User.findOne({ where: filter });
   return response;
 };
-
+exports.findAdminStaff = async (filter) => {
+  const response = await AdminStaff.findOne({ where: filter });
+  return response;
+};
 exports.findUsers = async (filter) => {
   const response = await User.findAll({
     where: filter,
@@ -60,6 +63,14 @@ exports.findRole = async (filter) => {
 exports.findAdminUser = async (filter) => {
   const response = await AdminStaff.findOne({ where: filter });
   return response;
+};
+exports.findAdminUserFeedback = async ({ email }) => {
+  return await AdminStaff.findOne({
+    where: {
+      email,
+      userroleId: 1
+    }
+  });
 };
 
 exports.findAdminUsers = async (filter) => {

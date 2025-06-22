@@ -30,24 +30,11 @@ exports.createAuthorizationApproved = async (data) => {
   }                                               
 };
 
-exports.findAllAuthorizationApproved = async () => {
-  try {
-    const response = await AuthorizationApproved.findAll({
-      include: [
-        {
-          model: Classification,
-          as: 'classification',
-          attributes: ['id', 'classification_name'], // Adjust attributes as needed
-        },
-      ],
-      attributes: { exclude: [] },              
-      order: [['createdAt', 'DESC']], // Sort by most recent
-    });
-    return response;    
-  }catch (error) {
-    console.error("Error details:", error);
-  }                                                                                             
-};   
+exports.findAllAuthorizationApproved = async ({ include }) => {
+  return await AuthorizationApproved.findAll({
+    include: include || [],
+  });
+}; 
 
 exports.updateAuthorizationApproved = async (id, data) => {
   try {
@@ -96,8 +83,10 @@ exports.createAuthorizationManufacturer = async (data) => {
   return AuthorizationManufacturer.create(data);                                                            
 };
 
-exports.findAllAuthorizationManufacturer = async () => {
-  return AuthorizationManufacturer.findAll();
+exports.findAllAuthorizationManufacturer = async ({ include }) => {
+  return AuthorizationManufacturer.findAll({
+    include: include || [],
+  });
 };       
 
 exports.updateAuthorizationManufacturer = async (id, data) => {
@@ -146,8 +135,10 @@ exports.createTrainingAuthorization = async (data) => {
   return   TrainingOrganizationForm.create(data);
 };        
 
-exports.findAllTrainingAuthorization = async () => {
-    return  TrainingOrganizationForm.findAll();
+exports.findAllTrainingAuthorization = async ({ include }) => {
+    return  TrainingOrganizationForm.findAll({
+      include: include || [],
+    });
   };
 
 exports.updateTrainingAuthorization = async(id,data)=>{
@@ -196,8 +187,10 @@ exports.createBoilerRegistrationRepo = async (data) => {
     return  await BoilerRegistration.create(data);
   };
   
-  exports.findAllBoilerRegistrationRepos = async () => {
-      return await BoilerRegistration.findAll();
+  exports.findAllBoilerRegistrationRepos = async ({ include }) => {
+      return await BoilerRegistration.findAll({
+        include: include || [],
+      });
   };
   
 exports.findByUserIdBoilerRegistrationRepos = async (userId,options = {}) => {
@@ -262,8 +255,10 @@ exports.findBoilerRegistrationById = async (id) => {
     return CompetencyCertificationFormLiftOperator.create(data);
   };
 
-  exports.findAllCompetencyCertificationLiftOperator= async()=>{
-    return CompetencyCertificationFormLiftOperator.findAll();
+  exports.findAllCompetencyCertificationLiftOperator= async({ include })=>{
+    return CompetencyCertificationFormLiftOperator.findAll({
+      include: include || [],
+    });
   };
 
   exports.findByUserIdCompetencyCertificationLiftOperator= async(userId,options = {}) => {
@@ -275,34 +270,38 @@ exports.findBoilerRegistrationById = async (id) => {
 
 exports.findCompetencyCertificationLiftFormById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('CompetencyCertificationFormLiftOperator called with object id:', id);
-      return null; // or throw error
-    }
-    return await CompetencyCertificationFormLiftOperator.findByPk(id);
+
+    const auth = await CompetencyCertificationFormLiftOperator.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Competency CertificationFormLiftOperator by ID:', error);
+    console.error('Error finding Competency Certification Form Lift Operator by ID:', error);
     throw error;
   }
 };
-  
-  exports.updateCompetencyCertificationLiftForm= async (id, data) => {
-    try {
-      const [updatedRows] = await CompetencyCertificationFormLiftOperator.update(data,{
-        where: { id: id },
-     } );
-     
-      if (updatedRows === 0) {
-        return null; // Indicate that the record was not found
-      }
-  
-      return await CompetencyCertificationFormLiftOperator.findByPk(id); 
-    } catch (error) {
-      console.error("Error updating cerification:", error);
-      throw error;
+
+exports.updateCompetencyCertificationLiftForm= async (id, data) => {
+  try {
+    const [updatedRows] = await CompetencyCertificationFormLiftOperator.update(data,{
+      where: { id: id },
+    } );
+    
+    if (updatedRows === 0) {
+      return null; // Indicate that the record was not found
     }
-  };
+
+    return await CompetencyCertificationFormLiftOperator.findByPk(id); 
+  } catch (error) {
+    console.error("Error updating cerification:", error);
+    throw error;
+  }
+};
 
 
 
@@ -312,8 +311,10 @@ exports.findCompetencyCertificationLiftFormById = async (id) => {
     return CompetencyCertificationFormBoiler.create(data);
   };
   
-  exports.findAllCompetencyCertificationFormBoiler = async () => {
-    return CompetencyCertificationFormBoiler.findAll();
+  exports.findAllCompetencyCertificationFormBoiler = async ({ include }) => {
+    return CompetencyCertificationFormBoiler.findAll({
+      include: include || [],
+    });
   };
   
   exports.findByUserIdCompetencyCertificationFormBoiler= async (userId,options = {}) => {
@@ -374,8 +375,10 @@ exports.createRenewalForm = async (data) => {
 };
 
 
-exports.findAllRenewalForms = async () => {
-  return RenewalForm.findAll();
+exports.findAllRenewalForms = async ({ include }) => {
+  return RenewalForm.findAll({
+    include: include || [],
+  });
 };
 
 exports.findRenewalFormsByUserId= async (userId,options = {}) => {
@@ -426,8 +429,10 @@ exports.createOperatorCertification = async (data) => {
   return OperatorCertification.create(data);
 };
 
-exports.findAllOperatorCertifications = async () => {
-  return OperatorCertification.findAll();
+exports.findAllOperatorCertifications = async ({ include }) => {
+  return OperatorCertification.findAll({
+    include: include || [],
+  });
 };
 
 exports.findByUserIdOperatorCertificationsByUserId  = async (userId,options = {}) => {
@@ -463,15 +468,15 @@ exports.deleteOperatorCertification = async (id) => {
     return OperatorCertification.destroy({ where: { id } });
 };
 
-
-
 // New functions for LifingOperatorCertification08
 exports.createCompetencyCertificationLifting = async (data) => {
   return CompetencyCertificationLifting.create(data);
 };
 
-exports.findAllCompetencyCertificationLifting  = async () => {
-  return CompetencyCertificationLifting.findAll();
+exports.findAllCompetencyCertificationLifting  = async ({ include }) => {
+  return CompetencyCertificationLifting.findAll({
+    include: include || [],
+  });
 };
 
 exports.findCompetencyCertificationLiftingByUserId= async (userId,options = {}) => {
@@ -483,14 +488,18 @@ exports.findCompetencyCertificationLiftingByUserId= async (userId,options = {}) 
 
 exports.findCompetencyCertificationLiftingById = async (id) => {
   try {
-    // Ensure id is a primitive, not an object
-    if (typeof id === 'object') {
-      console.warn('findCompetencyCertificationLiftingById called with object id:', id);
-      return null; // or throw error
-    }
-    return await CompetencyCertificationLifting.findByPk(id);
+
+    const auth = await CompetencyCertificationLifting.findByPk(id, {
+      include: [
+        { model: sequelize.models.Classification, as: 'classification', attributes: ['id', 'classification_name'] },
+        { model: sequelize.models.Categories, as: 'category', attributes: ['id', 'name'] },
+        { model: sequelize.models.SubCategories, as: 'subcategory', attributes: ['id', 'name'] },
+      ],
+    });
+
+    return await withClassificationDetails(auth);
   } catch (error) {
-    console.error('Error finding Boiler Registration by ID:', error);
+    console.error('Error finding Competency CertificationLifting by ID:', error);
     throw error;
   }
 };
@@ -509,8 +518,10 @@ exports.createCompetencyCertificationInspection = async (data) => {
   return AuthorizedInspectorCertification.create(data);
 };
 
-exports.findAllCompetencyCertificationInspection = async () => {
-  return AuthorizedInspectorCertification.findAll();
+exports.findAllCompetencyCertificationInspection = async ({ include }) => {
+  return AuthorizedInspectorCertification.findAll({
+    include: include || [],
+  });
 };
 
 exports.findCompetencyCertificationInspectionById = async (id) => {
@@ -577,8 +588,10 @@ exports.createCompetencyCertificationWelder = async (data) => {
   return CompetencyCertificationWelder.create(data);
 };
 
-exports.findAllCompetencyCertificationWelder = async () => {
-  return CompetencyCertificationWelder.findAll();
+exports.findAllCompetencyCertificationWelder = async ({ include }) => {
+  return CompetencyCertificationWelder.findAll({
+    include: include || [],
+  });
 };
 
 exports.findCompetencyCertificationWelderByUserId  = async (userId,options={}) => {
@@ -655,8 +668,10 @@ exports.findByUserIdLiftingEquipmentRegistration = async (userId,options = {}) =
   });
 };
 
-exports.findAllLiftingEquipmentRegistration = async () => {
-  return LiftingEquipmentRegistration.findAll();
+exports.findAllLiftingEquipmentRegistration = async ({ include }) => {
+  return LiftingEquipmentRegistration.findAll({
+    include: include || [],
+  });
 };
 
 exports.findLiftingEquipmentRegistrationById = async (id) => {

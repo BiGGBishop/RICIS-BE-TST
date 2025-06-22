@@ -1,4 +1,5 @@
 'use strict';
+
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -7,28 +8,23 @@ module.exports = (sequelize, DataTypes) => {
 		AuthorizationApproved.belongsTo(models.User, {
 			foreignKey: "user_id",
 			as: "user",
-		  });
-      AuthorizationApproved.belongsTo(models.Classification, {
-        foreignKey: "classificationId",
-        as: "classification",
-      });
-	  AuthorizationApproved.belongsTo(models.Categories, {
-        foreignKey: "categoryId",
-        as: "category",
-    });
-    AuthorizationApproved.belongsTo(models.SubCategories, {
-        foreignKey: "subcategoryId",
-        as: "subcategory",
-    });
-	AuthorizationApproved.hasMany(models.ClassificationFees, {
-		foreignKey: "classificationId",
-		as: "classificationFees",
-	  });	  
-  
-    AuthorizationApproved.belongsTo(models.Fee, {
-        foreignKey: "feeId",
-        as: "fee",
-    });
+		});
+		AuthorizationApproved.belongsTo(models.Categories, {
+			foreignKey: "categoryId",
+			as: "category",
+		});
+		AuthorizationApproved.belongsTo(models.SubCategories, {
+			foreignKey: "subcategoryId",
+			as: "subcategory",
+		});
+		AuthorizationApproved.belongsTo(models.Classification, {
+			foreignKey: "classificationId",
+			as: "classification",
+		});
+		AuthorizationApproved.belongsTo(models.Fee, {
+			foreignKey: "feeId",
+			as: "fee",
+		});
     }
   }
 

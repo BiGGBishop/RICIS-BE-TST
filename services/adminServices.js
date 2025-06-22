@@ -24,7 +24,7 @@ exports.getAdminDetails = async (req) => {
   const role = await AdminRepo.findRole({ id: adminExist?.userroleId });
   // console.log({ userExistRole: role });
 
-  if (role?.name != "admin") {
+  if (role?.name !== "admin" && role?.name !== "staff") {
     return {
       STATUS_CODE: StatusCodes.BAD_REQUEST,
       STATUS: false,

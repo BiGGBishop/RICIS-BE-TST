@@ -70,13 +70,21 @@ exports.signIn = async (req, res) => {
 };
 
 exports.recoveryOtp = async (req, res) => {
-  const data = await UserService.recoveryOtp(req, res);
+  try {
+    const data = await UserService.recoveryOtp(req);
 
-  return res.status(data.STATUS_CODE).json({
-    status: data.STATUS,
-    message: data.MESSAGE,
-    data: data.DATA,
-  });
+    return res.status(data.STATUS_CODE).json({
+      status: data.STATUS,
+      message: data.MESSAGE,
+      data: data.DATA,
+    });
+  } catch (error) {
+    console.error("Recovery OTP Error:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal Server Error",
+    });
+  }
 };
 
 exports.verifyRecoveryOTP = async (req, res) => {

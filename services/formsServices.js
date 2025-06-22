@@ -3267,53 +3267,74 @@ exports.deleteReport = async (id) => {
   return FormsRepo.deleteReport(id);
 };
 
-exports.createFeedback = async (feedbackData, userId,email) => {
-  const userRole = await AdminRepo.findAdminUser({ email: email });
-  const isAdmin = userRole?.userroleId === 1 ?true:false
-  const adminFeedbackUrl = process.env.FEEDBACK_URL_ADMIN;
-  const userFeedbackUrl = process.env.FEEDBACK_URL_USER;
-
-  console.log(email)
+exports.createFeedback = async (feedbackData, userId, email) => {
   try {
     const { formId, formType, message } = feedbackData;
-      const newFeedback = await Feedback.create({
-        userId:userId,
-        formId: formId,
-        formType: formType,
-        message: message,
-        isAdmin: isAdmin
-      });
-      if(!newFeedback){
-        return {
-          STATUS_CODE: 400,
-          STATUS: false,
-          MESSAGE: "Failed to create feedback",
-        };
-      }
-     if(isAdmin){
-      const mail = {
-        message:newFeedback.message,
-        url:adminFeedbackUrl
-      }
-        await sendFeedbackNotification(email, mail);
-        await User.update({isFeedBackReceived: true} ,{ where: { email } });
-        
-  
-      }else{
-        const mail = {
-        message:newFeedback.message,
-        url:userFeedbackUrl
-        }
-        await sendFeedbackNotification(email, mail);
-        await AdminStaff.update({isFeedBackReceived: true} ,{ where: {userroleId:1 } });
 
-      }
+    // First: Try to find this user in the users table
+    const user = await User.findOne({ where: { id: userId, email } });
+
+    // Then: Try to find them in admin_staffs table
+    const admin = await AdminStaff.findOne({ where: { email } });
+
+    const isAdmin = !user && admin?.userroleId === 1;
+
+    const feedbackPayload = {
+      formId,
+      formType,
+      message,
+      isAdmin,
+    };
+
+    if (isAdmin && admin) {
+      feedbackPayload.adminId = admin.id;
+    } else if (user) {
+      feedbackPayload.userId = user.id;
+    } else {
       return {
-        STATUS_CODE: 201,
-        STATUS: true,
-        MESSAGE: "Feedback created successfully",
-        DATA: newFeedback,
-      }
+        STATUS_CODE: 404,
+        STATUS: false,
+        MESSAGE: "User not found in the system.",
+      };
+    }
+
+    // Create feedback
+    const newFeedback = await Feedback.create(feedbackPayload);
+
+    if (!newFeedback) {
+      return {
+        STATUS_CODE: 400,
+        STATUS: false,
+        MESSAGE: "Failed to create feedback",
+      };
+    }
+
+    // Send email
+    const mail = {
+      message: newFeedback.message,
+      url: isAdmin ? process.env.FEEDBACK_URL_ADMIN : process.env.FEEDBACK_URL_USER,
+    };
+    await sendFeedbackNotification(email, mail);
+
+    // Update feedback status flag
+    if (isAdmin) {
+      await AdminStaff.update(
+        { isFeedBackReceived: true },
+        { where: { id: admin.id } }
+      );
+    } else {
+      await User.update(
+        { isFeedBackReceived: true },
+        { where: { id: user.id } }
+      );
+    }
+
+    return {
+      STATUS_CODE: 201,
+      STATUS: true,
+      MESSAGE: "Feedback created successfully",
+      DATA: newFeedback,
+    };
   } catch (error) {
     console.error("Error creating feedback:", error);
     return {

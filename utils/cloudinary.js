@@ -16,6 +16,7 @@ async function uploadSingleFile(media) {
         if (!match) return '';
         const mimeType = match[1];
         const mimeToExt = {
+            'application/pdf': 'pdf',
             'text/csv': 'csv',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
         };

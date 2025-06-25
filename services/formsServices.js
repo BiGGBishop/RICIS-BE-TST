@@ -3069,7 +3069,7 @@ exports.createReport = async (req) => {
   let { report } = req.body;
   
   // Check if a report is provided, and upload it if so
-  report = report ? await uploadSingleFile(report) : null;
+  report = report ? await uploadMultiple(report) : null;
 
   const data = {
     ...req.body,

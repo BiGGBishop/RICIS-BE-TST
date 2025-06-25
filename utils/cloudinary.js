@@ -11,27 +11,14 @@ async function uploadSingleFile(media) {
         return typeof str === 'string' && str.startsWith('data:');
     }
 
-    function getExtensionFromDataURI(dataURI) {
-        const match = dataURI.match(/^data:(.*?);/);
-        if (!match) return '';
-        const mimeType = match[1];
-        const mimeToExt = {
-            'application/pdf': 'pdf',
-            'text/csv': 'csv',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
-        };
-        return mimeToExt[mimeType] || '';
-    }
-
     try {
         if (!media || typeof media !== 'string' || !isValidDataURI(media)) {
             console.log("Invalid file format or path");
             return null;
         }
 
-        const extension = getExtensionFromDataURI(media);
         const uploadedResponse = await cloudinary.uploader.upload(media, {
-            public_id: `ricis_${Date.now()}${extension ? `.${extension}` : ''}`,
+            public_id: `ricis_${Date.now()}`, // Removed extension
             resource_type: 'auto',
             timeout: 600000,
             chunk_size: 6000000
@@ -46,22 +33,41 @@ async function uploadSingleFile(media) {
     }
 }
 
-async function uploadMultiple(files) {
+const allowedExtensions = [
+    '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp'
+];
+
+async function uploadMultiple(files, folder = 'uploads') {
     if (!files || files.length === 0) {
         return [];
     }
+
     const uploadPromises = files.map(file => {
+        const ext = path.extname(file.originalname || file.path || file).toLowerCase();
+        if (!allowedExtensions.includes(ext)) {
+            return Promise.reject(new Error(`Unsupported file type: ${ext}`));
+        }
+
         return new Promise((resolve, reject) => {
-            cloudinary.uploader.upload(file, { resource_type: 'auto' }, (error, result) => {
+            cloudinary.uploader.upload(file.path || file, {
+                resource_type: 'auto',
+                folder: folder,
+            }, (error, result) => {
                 if (error) {
                     console.error("Cloudinary upload error:", error);
                     reject(error);
                 } else {
-                    resolve(result.secure_url);
+                    resolve({
+                        url: result.secure_url,
+                        public_id: result.public_id,
+                        resource_type: result.resource_type,
+                        format: result.format
+                    });
                 }
             });
         });
     });
+
     return Promise.all(uploadPromises);
 }
 
